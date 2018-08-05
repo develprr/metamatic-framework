@@ -1,1 +1,1 @@
-module.exports = require('./es5/synchronous-dispatcher.js');
+module.exports = require('./es5/metamatic.js');
