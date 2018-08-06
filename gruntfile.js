@@ -1,7 +1,7 @@
 module.exports = function gruntConfig(grunt) {
   require('load-grunt-tasks')(grunt);
 
-  const files = ['gruntfile.js', 'index.js', 'test/**/*.js', 'lib/**/*.js'];
+  var files = ['gruntfile.js', 'index.js', 'test/**/*.js', 'lib/**/*.js'];
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -12,7 +12,8 @@ module.exports = function gruntConfig(grunt) {
       },
       dist: {
         files: {
-          'es5/metamatic.js': 'lib/metamatic.js',
+          'lib/metamatic.js': 'src/metamatic.js',
+          'test/test.spec.js': 'src/test.spec.js',
         },
       },
     },
@@ -22,7 +23,7 @@ module.exports = function gruntConfig(grunt) {
     },
 
     mochaTest: {
-      src: ['test/**/*-test.js'],
+      src: ['test/**/*.js'],
       options: {
         reporter: 'spec',
         require: ['babel/register', 'should'],

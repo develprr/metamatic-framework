@@ -1,1 +1,1 @@
-module.exports = require('./es5/metamatic.js');
+module.exports = require('./lib/metamatic.js');
