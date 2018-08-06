@@ -1,7 +1,7 @@
 /*
   The Metamatic Framework
   Author: Heikki Kupiainen
-
+  License: Apache 2.0
  */
 
 const idDictionary = {};
@@ -77,7 +77,7 @@ export const attach = (listenerId, eventId, handler ) => {
   addActionToListenerDictionary(action);
 };
 
-const getId = (component) => component.constructor && component.constructor.name ? component.constructor.name : component.toString();
+const getId = (component) => component.constructor.name === 'String' ? component : component.constructor.name;
 
 export const handle = (eventId, handler) => attach('DEFAULT', eventId, handler);
 
@@ -103,13 +103,13 @@ export const detachListener = (listenerId) =>
 
   This works when there is only one instance of the listener component. Since it currently uses component's class name as ID (component.constructor.name)
   it's only suitable to be used by components that have only one instance at a time. If you have many instances of the same component,
-  such as list elements, pass unique id as parameter:
+  such as list elements, pass unique id as parameter, The unique ID must be a String:
 
   connect(someUniqueId, CAR_INFO_CHANGE, (newCarInfo) => this.setState({carInfo: newCarInfo});
 
  */
-export const connect = (componentOrId, eventId, handler) =>
-  attach(getId(componentOrId), eventId, handler);
+export const connect = (componentOrId, eventId, handler) => attach(getId(componentOrId), eventId, handler);
+
 
 /*
   If you want to connect a component to listen more than one event from MetaStore, you can use connectAll function instead of repeating many times connect
