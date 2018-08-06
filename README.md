@@ -6,16 +6,23 @@ but has improvements that make it more suitable to be used together with ReactJS
 
 It is similar to 'Redux' but it is superior in terms of simplicity - you need to write far less code. It has a far more advanced architecture -
 you don't need to write endless awkward switch-cases since Metamatic connects events to their handlers elegantly using hash tables. 
+Yet the silly thing about Metamatic that its internal implementation is drop-dead simple consisting only of 100 (one hundred) lines of code.
 Applications that use Metamatic are more readable. When you implement your state container using Metamatic you can get things done faster because 
 you don't need to write endless amounts of repetitive 'spells' to get what you want. It helps you create clean and maintainable code. 
 
 Please read more about using Metamatic on [Metamatic blog](http://www.oppikone.fi/blog/introducing-metamate-framework.html)
 or check out a [sample Metamatic Car App](https://github.com/develprr/metamatic-car-app) to see Metamatic in action, a reference implementation
-on using Metamatic.
+on using Metamatic. 
 
-## Installationt s
+## Install Metamatic
 
+The Metamatic is available as [installable package at Npmjs.com](https://www.npmjs.com/package/metamatic). 
+
+Type:
+
+```js
 npm install metamatic
+```
 
 ## Usage
 When you want to dispatch an event somewhere in your app:
@@ -74,7 +81,11 @@ Apache 2.0
 
 ## Author
 
-Heikki Kupiainen / Oppikone
+Heikki Kupiainen / [metamatic.net][http://www.metamatic.net]
+
+## Source Code
+
+Explore the [Metamatic source code at GitHub](https://github.com/develprr/metamatic-framework)!
 
 ## Read Also
 
