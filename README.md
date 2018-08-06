@@ -17,7 +17,7 @@ One fundamental difference to 'Redux' is that Metamatic directly binds event han
 when you define them by calling **handle** or **connect** function. When the handlers are already inherently connected to the events, 
 then you don't need to to write explicitly clumpy **switch-case** structures to explain the application what action shall be invoked upon which event.
 
-Remember that **switch-case** structures fare fuundamentally only a different syntax for **if else if else if else** concoctions.
+Remember that **switch-case** structures are fundamentally only a different syntax for **if else if else if else** concoctions. 
 
 ## Writings and Samples
 
@@ -49,13 +49,26 @@ dispatch('MY-EVENT', someObject);
 
 ```
 
-And when you want connect React component's state to the Metamatic event store, add connect to constructor, for example:
+To register a component as listener to MetaStore use **connect** function. It is meant to register such components as listeners that have a limited lifetime
+such as React components. You can unregister later listeners that have been added with connect function.
+
+If you connect React components that have only one living instance at time, you can pass the React component itself as parameter (this).
+But if you connect React comppnents that have many simultaneously living instances, instead pass a unique identifier has parameter.
+
+When connection a React component, preferrably call connect function already in the component's constructor.
+Example of connecting single instance React component:
 
 ```js
-
-connect(this, CAR_DATA_CHANGE, (carData) => this.setState({car: carData));
-
+connect(this, CAR_INFO_CHANGE, (newCarInfo) => this.setState({carInfo: newCarInfo});
 ```
+  
+This works when there is only one instance of the listener component. Since it currently uses component's class name as ID (component.constructor.name) 
+it's only suitable to be used by components that have only one instance at a time. If you have many instances of the same component, 
+such as list elements, pass unique id as parameter:
+
+```js  
+connect(someUniqueId, CAR_INFO_CHANGE, (newCarInfo) => this.setState({carInfo: newCarInfo});
+```  
 
 If you want to connect your React component to many Metamatic events simultaneously, 
 use connectAll:
@@ -80,7 +93,7 @@ componentWillUnmount() {
 ```
 
 If want to handle Metamatic events from components that don't need to be unmounted, such as static methods and utility functions,
-use simply handle functions for listenint for Metamatic events:
+use simply handle functions for listening for Metamatic events:
 
 ```js
 handle('MY-EVENT', function(item) {
@@ -105,3 +118,7 @@ but has improvements that make it more suitable to be used together with ReactJS
 today's coding standards. If you are interested in Metamatic backgrounds, 
 read an article about Metamatic framework's prototype [Synchronous Dispatcher]((http://www.oppikone.fi/blog/introducing-synchronous-dispatcher.html)).
 
+## Read More
+
+Wikipedia article about hash tables https://en.wikipedia.org/wiki/Associative_array
+and associative arrays.
