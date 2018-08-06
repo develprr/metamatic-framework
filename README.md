@@ -14,9 +14,13 @@ Please read more about using Metamatic on [Metamatic blog](http://www.oppikone.f
 or check out a [sample Metamatic Car App](https://github.com/develprr/metamatic-car-app) to see Metamatic in action, a reference implementation
 on using Metamatic. 
 
-## Install Metamatic
+## Source Code
 
-The Metamatic is available as [installable package at Npmjs.com](https://www.npmjs.com/package/metamatic). 
+The Metamatic is available as [installable package at Npmjs.com](https://www.npmjs.com/package/metamatic).  
+You can also explore the [Metamatic source code at GitHub](https://github.com/develprr/metamatic-framework). Ora visit the official
+Metamatic home page at [www.metamatic.net](http://www.metamatic.net).
+
+## Install Metamatic
 
 Type:
 
@@ -81,11 +85,8 @@ Apache 2.0
 
 ## Author
 
-Heikki Kupiainen / [metamatic.net][http://www.metamatic.net]
+Heikki Kupiainen / [metamatic.net](http://www.metamatic.net)
 
-## Source Code
-
-Explore the [Metamatic source code at GitHub](https://github.com/develprr/metamatic-framework)!
 
 ## Read Also
 
