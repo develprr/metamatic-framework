@@ -17,8 +17,8 @@ on using Metamatic.
 ## Source Code
 
 The Metamatic is available as [installable package at Npmjs.com](https://www.npmjs.com/package/metamatic).  
-You can also explore the [Metamatic source code at GitHub](https://github.com/develprr/metamatic-framework). Ora visit the official
-Metamatic home page at [www.metamatic.net](http://www.metamatic.net).
+You can also explore the [Metamatic source code at GitHub](https://github.com/develprr/metamatic-framework). 
+Or visit the official Metamatic home page at [www.metamatic.net](http://www.metamatic.net).
 
 ## Install Metamatic
 
