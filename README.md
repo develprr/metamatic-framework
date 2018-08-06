@@ -120,5 +120,5 @@ read an article about Metamatic framework's prototype [Synchronous Dispatcher]((
 
 ## Read More
 
-Wikipedia article about hash tables https://en.wikipedia.org/wiki/Associative_array
-and associative arrays.
+Wikipedia article about [hash tables](https://en.wikipedia.org/wiki/Hash_table).
+Wikipedia article about [associative arrays](https://en.wikipedia.org/wiki/Associative_array).
