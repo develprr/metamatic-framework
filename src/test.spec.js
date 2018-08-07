@@ -1,8 +1,17 @@
 import {assert, describe, it} from 'mocha';
-import {connect, dispatch, handle} from '../lib/metamatic';
+import {connect, dispatch, handle, reset, getEventDictionary, getListenerDictionary} from '../lib/metamatic';
 
-describe('dispatch function', () => {
-  it('should be caught with matching handler', () => {
+let responses = [];
+let value;
+
+describe('metamatic framework', () => {
+
+  beforeEach(() => {
+    responses = [];
+    reset();
+  });
+
+  it('should handle dispatch functions that have matching event ID', () => {
 
     handle('TEST-EVENT-1', (value) => {
       value.should.equal('HELLO EARTH');
@@ -11,9 +20,7 @@ describe('dispatch function', () => {
     dispatch('TEST-EVENT-1', 'HELLO EARTH');
 
   });
-});
 
-describe('connect function', () => {
   it('should register handler with unique ID', () => {
 
     connect('ID-0', 'TEST-EVENT-2', (value) => {
@@ -23,13 +30,8 @@ describe('connect function', () => {
     dispatch('TEST-EVENT-2', 'HELLO ROSS 128b');
 
   });
-})
 
-describe('connect function', () => {
-  it('should handle one event in many places according to their ID', () => {
-
-    const responses = [];
-    let value;
+  it('should execute all connect-listeners with matching event ID', () => {
 
     connect('PROXIMA-CENTAURI-B', 'EARTH-CALLING', (value) => {
       value = 'Proxima Centauri b received call: ' + value;
@@ -47,4 +49,21 @@ describe('connect function', () => {
     responses[0].should.equal('Proxima Centauri b received call: Sending out an SOS');
     responses[1].should.equal('Trappist 1 e received call: Sending out an SOS');
   });
-})
+
+  it('should execute all handle-listeners with matching event ID', () => {
+
+     handle('EARTH-CALLING', (value) => {
+       value = 'Trappist 1 e received message: ' + value;
+       responses.push(value);
+     });
+
+     handle('EARTH-CALLING', (value) => {
+       value = 'Trappist 1 e replies to message: ' + value;
+       responses.push(value);
+     })
+
+     dispatch('EARTH-CALLING', 'Sending out an SOS');
+     responses.length.should.equal(2);
+   });
+
+});
