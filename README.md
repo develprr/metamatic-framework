@@ -46,7 +46,15 @@ When you want to dispatch an event somewhere in your app:
 import { dispatch } from 'metamatic';
 
 dispatch('MY-EVENT', someObject);
+```
 
+Define a listener for your event using **handle** function:
+
+```js
+handle('SOME-EVENT', (value) => {
+    console.log(value);
+    ...
+ })
 ```
 
 To register a component as listener to MetaStore use **connect** function. It is meant to register such components as listeners that have a limited lifetime
@@ -74,6 +82,15 @@ If you want to connect your React component to many Metamatic events simultaneou
 use connectAll:
 
 ```js
+connectAll(this, {
+  LOGIN_STATE_CHANGE: (loggedIn) => this.setState({loggedIn}),
+  CAR_MODEL_SELECTION_CHANGE: (selectedCarModel) => this.setState({selectedCarModel})
+});
+```
+
+Inside a React component's constructor that would look like:
+
+```js
 constructor(props) {
     super(props);
     this.state = {loggedIn: true};
@@ -84,11 +101,26 @@ constructor(props) {
   }
 ```
 
-Remember to disconnect your React component from the Metamatic Store before unmounting:
+When you have connected a React component to MetaStore, it is important to disconnect the component from MetaStore upon unmounting it.
+In React, it's not allowed to set state of an unmounted component. If you don't disconnect a React component from MetaStore upon unmounting the listener
+function won't die along with the component and it will erratically try to set state of a "dead" component when it receives an event,  which will cause an error.
+
+Disconnecting a component from MetaStore upon unmounting:
+
+```js
+disconnect(this);
+```
+Or if you connected the component earlier using some unique id:
+
+```js
+disconnect(someUniqueId);
+```
+
+To call disconnect upon unmmounting a React component:
 
 ```js
 componentWillUnmount() {
-    disconnect(this);
+    disconnect(someUniqueId);
 }
 ```
 

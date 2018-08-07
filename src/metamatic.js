@@ -70,7 +70,7 @@ const removeActionFromListenerDictionary = (action) => {
   delete map[action.id];
 };
 
-export const attach = (listenerId, eventId, handler ) => {
+const attach = (listenerId, eventId, handler ) => {
   const action = createAction(listenerId, eventId, handler);
   addActionToIdDictionary(action);
   addActionToEventDictionary(action);
@@ -79,18 +79,27 @@ export const attach = (listenerId, eventId, handler ) => {
 
 const getId = (component) => component.constructor.name === 'String' ? component : component.constructor.name;
 
+/*
+ Bind listeners to events using handle function:
+
+ handle('SOME-EVENT', (value) => {
+    console.log(value);
+    ...
+ })
+ */
 export const handle = (eventId, handler) => attach('DEFAULT', eventId, handler);
 
-export const detach = (eventId) => detachEvent(eventId);
+/*
+  WHen you want to kill an event, meaning that you don't want any handler to listen for it any more, call unhandle function:
 
-export const detachEvent = (eventId) =>
-  removeActions(getActionsByEvent(eventId));
+  unhandle('SOME-EVENT');
 
-export const detachListener = (listenerId) =>
-  removeActions(getActionsByListener(listenerId));
+ */
+
+export const unhandle = (eventId) => removeActions(getActionsByEvent(eventId));
 
 /*
-  Register a component to MetaStore with connect function. Use connect function to register such components as listeners that have a limited lifetime
+  Register a component to MetaStore with connect function. This is similar to handle but it should be used to register such components as listeners that have a limited lifetime
   such as React components. You can unregister later listeners that have been added with connect function.
 
   If you connect React components that have only one living instance at time, you can pass the React component itself as parameter (this).
@@ -106,16 +115,18 @@ export const detachListener = (listenerId) =>
   such as list elements, pass unique id as parameter, The unique ID must be a String:
 
   connect(someUniqueId, CAR_INFO_CHANGE, (newCarInfo) => this.setState({carInfo: newCarInfo});
-
  */
 export const connect = (componentOrId, eventId, handler) => attach(getId(componentOrId), eventId, handler);
 
-
 /*
   If you want to connect a component to listen more than one event from MetaStore, you can use connectAll function instead of repeating many times connect
-  call.
- */
+  call:
 
+  connectAll(this, {
+    LOGIN_STATE_CHANGE: (loggedIn) => this.setState({loggedIn}),
+    CAR_MODEL_SELECTION_CHANGE: (selectedCarModel) => this.setState({selectedCarModel})
+   });
+*/
 export const connectAll = (componentOrId, handlerMap) => {
   const listenerId = getId(componentOrId);
   for (let eventId in handlerMap) {
@@ -124,8 +135,31 @@ export const connectAll = (componentOrId, handlerMap) => {
   }
 };
 
-export const disconnect = (component) =>
-  detachListener(component.constructor.name);
+/*
+  When you have connected a React component to MetaStore, it is important to disconnect the component from MetaStore upon unmounting it.
+  It's not allowed to set state of an unmounted component. If you don't disconnect a React component from MetaStore upon unmounting, the listener
+  function won't die along with the compnent and it will erratically try to set state of a "dead" component, which will cause an error.
 
-export const dispatch = (eventId, passenger) =>
-  getActionsByEvent(eventId).map((action) => action.handler(passenger));
+  Disconnecting a component from MetaStore upon unmounting:
+
+  disconnect(this);
+
+  Or if you connected the component before using some unique id:
+
+  disconnect(someUniqueId);
+
+ */
+
+export const disconnect = (componentOrId) => removeActions(getActionsByListener(getId(componentOrId)));
+
+/*
+  Dispatch metamatic events everywhere in your app. Pass an eventId and a passenger object to the dispatcher. The event id must be a string
+  and the passenger object to be passed alongside the event can be any kind of object or primary type:
+
+  dispatch('SOME-EVENT', anyObject);
+
+  Or if you have defined the event in a constant:
+
+  dispatch('SOME-EVENT', anyObject);
+ */
+export const dispatch = (eventId, passenger) =>  getActionsByEvent(eventId).map((action) => action.handler(passenger));
