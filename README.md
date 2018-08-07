@@ -127,8 +127,8 @@ componentWillUnmount() {
 }
 ```
 
-But want to handle Metamatic events from components that don't need to be unmounted, such as static methods and utility functions,
-use simply handle functions for listening for Metamatic events:
+But when you want to handle Metamatic events inside components that don't need to be unmounted or any static methods and utility functions,
+simply use handle functions for registering handlers for Metamatic events:
 
 ```js
 handle('MY-EVENT', function(item) {
