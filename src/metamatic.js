@@ -4,9 +4,8 @@
   License: Apache 2.0
  */
 
-const idDictionary = {};
-const eventDictionary = {};
-const listenerDictionary = {};
+let eventDictionary = {};
+let listenerDictionary = {};
 
 const createAction = (listenerId, eventId, handler) => ({
   id: listenerId + '-' + eventId,
@@ -14,10 +13,6 @@ const createAction = (listenerId, eventId, handler) => ({
   listenerId: listenerId,
   handler: handler
 })
-
-const addActionToIdDictionary = (action) => {
-  idDictionary[action.id] = action;
-};
 
 const addActionToEventDictionary = (action) => {
   const actionMap = getActionMapByEvent(action.eventId);
@@ -53,12 +48,9 @@ const removeActionsByListener = (listenerId) =>
 const removeActions = (actions) => actions.map(removeAction);
 
 const removeAction = (action) => {
-  removeActionFromIdDictionary(action);
   removeActionFromEventDictionary(action);
   removeActionFromListenerDictionary(action);
 }
-
-const removeActionFromIdDictionary = (action) => delete idDictionary[action.id];
 
 const removeActionFromEventDictionary = (action) => {
   const map = getActionsByEvent(action);
@@ -72,7 +64,6 @@ const removeActionFromListenerDictionary = (action) => {
 
 const attach = (listenerId, eventId, handler ) => {
   const action = createAction(listenerId, eventId, handler);
-  addActionToIdDictionary(action);
   addActionToEventDictionary(action);
   addActionToListenerDictionary(action);
 };
@@ -163,3 +154,11 @@ export const disconnect = (componentOrId) => removeActions(getActionsByListener(
   dispatch('SOME-EVENT', anyObject);
  */
 export const dispatch = (eventId, passenger) =>  getActionsByEvent(eventId).map((action) => action.handler(passenger));
+
+/*
+  Clear all events and listeners with reset function
+ */
+export const reset = () => {
+  eventDictionary = {};
+  listenerDictionary = {};
+};
