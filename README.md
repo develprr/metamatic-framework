@@ -40,7 +40,7 @@ npm install metamatic
 ```
 
 ## Usage
-When you want to dispatch an event somewhere in your app:
+When you want to **dispatch** an event somewhere in your app:
 
 ```js
 import { dispatch } from 'metamatic';
@@ -51,28 +51,31 @@ dispatch('MY-EVENT', someObject);
 Define a listener for your event using **handle** function:
 
 ```js
+import { handle } from 'metamatic';
+
 handle('SOME-EVENT', (value) => {
     console.log(value);
     ...
  })
 ```
 
-To register a component as listener to MetaStore use **connect** function. It is meant to register such components as listeners that have a limited lifetime
+To register a component as listener to MetaStore use **connect** function. It is meant to register components that have a limited lifetime
 such as React components. You can unregister later listeners that have been added with connect function.
 
-If you connect React components that have only one living instance at time, you can pass the React component itself as parameter (this).
-But if you connect React comppnents that have many simultaneously living instances, instead pass a unique identifier has parameter.
+If you connect React components that have only one living instance at time, you can pass the React component itself as parameter (**this**).
+But if you connect React components that have many simultaneously living instances, instead pass a unique identifier as parameter.
 
-When connection a React component, preferrably call connect function already in the component's constructor.
+When connecting a React component, preferrably call connect function already in the component's constructor.
 Example of connecting single instance React component:
 
 ```js
 connect(this, CAR_INFO_CHANGE, (newCarInfo) => this.setState({carInfo: newCarInfo});
 ```
   
-This works when there is only one instance of the listener component. Since it currently uses component's class name as ID (component.constructor.name) 
-it's only suitable to be used by components that have only one instance at a time. If you have many instances of the same component, 
-such as list elements, pass unique id as parameter:
+But **this** as constructor parameter works only when there is only one instance of the listener component since it uses component's class name as ID (component.constructor.name).
+This limitation is caused by JavaScript's inherent feature that objects don't have IDs by default.
+
+If you have many instances of the same component, such as list elements, define a unique id explicitly in the component and pass it ass parameter:
 
 ```js  
 connect(someUniqueId, CAR_INFO_CHANGE, (newCarInfo) => this.setState({carInfo: newCarInfo});
@@ -101,9 +104,9 @@ constructor(props) {
   }
 ```
 
-When you have connected a React component to MetaStore, it is important to disconnect the component from MetaStore upon unmounting it.
-In React, it's not allowed to set state of an unmounted component. If you don't disconnect a React component from MetaStore upon unmounting the listener
-function won't die along with the component and it will erratically try to set state of a "dead" component when it receives an event,  which will cause an error.
+When you have connected a React component to MetaStore, it is important to **disconnect** the component from MetaStore upon unmounting it.
+In React, it's not allowed to set state of an unmounted component. If you don't disconnect a React component from MetaStore upon unmounting, the listener
+function won't die along with the component but it will instead be "kicking a dead body" when it receives an event. And that will cause an error.
 
 Disconnecting a component from MetaStore upon unmounting:
 
@@ -116,7 +119,7 @@ Or if you connected the component earlier using some unique id:
 disconnect(someUniqueId);
 ```
 
-To call disconnect upon unmmounting a React component:
+To call disconnect inside **componentWillUnmount** React life cycle function:
 
 ```js
 componentWillUnmount() {
@@ -124,7 +127,7 @@ componentWillUnmount() {
 }
 ```
 
-If want to handle Metamatic events from components that don't need to be unmounted, such as static methods and utility functions,
+But want to handle Metamatic events from components that don't need to be unmounted, such as static methods and utility functions,
 use simply handle functions for listening for Metamatic events:
 
 ```js
@@ -132,7 +135,11 @@ handle('MY-EVENT', function(item) {
   console.log('I catch the event here..');
   console.log(item);
 });
+```
 
+Cancelling handlers can be done via **unhandle** call. Then all listeners of an event will be removed:
+```js
+undhandle('MY-EVENT');
 ```
 
 ## License
