@@ -8,13 +8,13 @@ With Metamatic you can implement a central data management policy in frontend ap
 you don't need to write endless amounts of repetitive 'spells' to get what you want. It helps you create cleaner and more maintainable code.
 
 You don't need to write endless ugly switch-case structures since Metamatic connects events to their handlers elegantly using hash tables, 
-taking internally advantage of JavaScript's associative arrays. With this solution, you don't need to manually connect events to their handlers anymore. 
+taking internally advantage of JavaScript's` ass`ociative arrays. With this solution, you don't need to manually connect events to their handlers anymore. 
 Metamatic does it automatically, due to its very nature! Yet the silly thing about Metamatic is that its internal implementation is drop-dead simple 
 consisting only about one hundred lines of code!
 
 One fundamental difference to 'Redux' is that Metamatic directly binds event handlers to corresponding events already at the very moment
 when you define them by calling **handle** or **connect** function. When the handlers are already inherently connected to the events, 
-then you don't need to to write explicitly clumpy **switch-case** structures to explain the application what action shall be invoked upon which event.
+then you don't need to explicitly write clumpy **switch-case** structures to explain the application what action shall be invoked upon which event.
 
 Remember that **switch-case** structures are fundamentally only a different syntax for **if else if else if else** concoctions. 
 
@@ -75,7 +75,7 @@ connect(this, CAR_INFO_CHANGE, (newCarInfo) =>
 But **this** as constructor parameter works only when there is only one instance of the listener component since it uses component's class name as ID (component.constructor.name).
 This limitation is caused by JavaScript's inherent feature that objects don't have IDs by default.
 
-If you have many instances of the same component, such as list elements, define a unique id explicitly in the component and pass it ass parameter:
+If you have many instances of the same component, such as list elements, define a unique id explicitly in the component and pass it as parameter:
 
 ```js  
 connect(someUniqueId, CAR_INFO_CHANGE, (newCarInfo) => 
@@ -141,14 +141,14 @@ handle('MY-EVENT', function(item) {
 
 Cancelling handlers can be done via **unhandle** call. Then all listeners of an event will be removed:
 ```js
-undhandle('MY-EVENT');
+unhandle('MY-EVENT');
 ```
 
 ## License
 
 Apache 2.0
 
-## Author
+## Author 
 
 Heikki Kupiainen / [metamatic.net](http://www.metamatic.net)
 
