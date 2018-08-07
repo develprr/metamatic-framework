@@ -2,10 +2,9 @@
 
 The Metamatic framework is a simple and easy-to-use predictable state container for JavaScript apps. 
 Metamatic is similar to existing main stream state containers such as 'Redux' 
-but it is simpler by one order of magnitude both in the way it has been designed and in the amount of code that is required from you to get what you want.  
-With Metamatic you can implement a central data management policy in frontend applications fast and painlessly.
+but it is simpler by one order of magnitude both in the way it is designed and in the amount of code that is required from you to get what you want.  
 
-When you implement your state container using Metamatic, you can get things done faster because 
+With Metamatic you can implement a central data management policy in frontend applications fast and painlessly. When you implement your state container using Metamatic, you can get things done faster because 
 you don't need to write endless amounts of repetitive 'spells' to get what you want. It helps you create cleaner and more maintainable code.
 
 You don't need to write endless ugly switch-case structures since Metamatic connects events to their handlers elegantly using hash tables, 
@@ -69,7 +68,8 @@ When connecting a React component, preferrably call connect function already in 
 Example of connecting single instance React component:
 
 ```js
-connect(this, CAR_INFO_CHANGE, (newCarInfo) => this.setState({carInfo: newCarInfo});
+connect(this, CAR_INFO_CHANGE, (newCarInfo) => 
+  this.setState({carInfo: newCarInfo});
 ```
   
 But **this** as constructor parameter works only when there is only one instance of the listener component since it uses component's class name as ID (component.constructor.name).
@@ -78,7 +78,8 @@ This limitation is caused by JavaScript's inherent feature that objects don't ha
 If you have many instances of the same component, such as list elements, define a unique id explicitly in the component and pass it ass parameter:
 
 ```js  
-connect(someUniqueId, CAR_INFO_CHANGE, (newCarInfo) => this.setState({carInfo: newCarInfo});
+connect(someUniqueId, CAR_INFO_CHANGE, (newCarInfo) => 
+  this.setState({carInfo: newCarInfo});
 ```  
 
 If you want to connect your React component to many Metamatic events simultaneously, 
@@ -99,7 +100,8 @@ constructor(props) {
     this.state = {loggedIn: true};
     connectAll(this, {
       LOGIN_STATE_CHANGE: (loggedIn) => this.setState({loggedIn}),
-      CAR_MODEL_SELECTION_CHANGE: (selectedCarModel) => this.setState({selectedCarModel})
+      CAR_MODEL_SELECTION_CHANGE: (selectedCarModel) 
+        => this.setState({selectedCarModel})
     });
   }
 ```
@@ -159,5 +161,5 @@ read an article about Metamatic framework's prototype [Synchronous Dispatcher]((
 
 ## Read More
 
-Wikipedia article about [hash tables](https://en.wikipedia.org/wiki/Hash_table).
-Wikipedia article about [associative arrays](https://en.wikipedia.org/wiki/Associative_array).
+* Wikipedia article about [hash tables](https://en.wikipedia.org/wiki/Hash_table).
+* Wikipedia article about [associative arrays](https://en.wikipedia.org/wiki/Associative_array).
