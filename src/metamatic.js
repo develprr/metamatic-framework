@@ -1,14 +1,15 @@
 /*
-  The Metamatic Framework
+  The Metamatitc Framework
   Author: Heikki Kupiainen
   License: Apache 2.0
  */
 
 let eventDictionary = {};
 let listenerDictionary = {};
+let idCounter = 0;
 
-const createAction = (listenerId, eventId, handler) => ({
-  id: listenerId + '-' + eventId,
+const createAction = (listenerId, eventId, handler, actionId) => ({
+  id: actionId || listenerId + '-' + eventId,
   eventId: eventId,
   listenerId: listenerId,
   handler: handler
@@ -62,14 +63,18 @@ const removeActionFromListenerDictionary = (action) => {
   delete map[action.id];
 };
 
-const attach = (listenerId, eventId, handler ) => {
-  const action = createAction(listenerId, eventId, handler);
+const attach = (listenerId, eventId, handler, customId) => {
+  const action = createAction(listenerId, eventId, handler, customId);
   addActionToEventDictionary(action);
   addActionToListenerDictionary(action);
 };
 
 const getId = (component) => component.constructor.name === 'String' ? component : component.constructor.name;
 
+const generateId = () => {
+  idCounter += 1;
+  return idCounter.toString();
+};
 /*
  Bind listeners to events using handle function:
 
@@ -78,7 +83,7 @@ const getId = (component) => component.constructor.name === 'String' ? component
     ...
  })
  */
-export const handle = (eventId, handler) => attach('DEFAULT', eventId, handler);
+export const handle = (eventId, handler) => attach('DEFAULT', eventId, handler, generateId());
 
 /*
   WHen you want to kill an event, meaning that you don't want any handler to listen for it any more, call unhandle function:
@@ -156,9 +161,21 @@ export const disconnect = (componentOrId) => removeActions(getActionsByListener(
 export const dispatch = (eventId, passenger) =>  getActionsByEvent(eventId).map((action) => action.handler(passenger));
 
 /*
-  Clear all events and listeners with reset function
+  Clear all events and listeners with reset function. Mainly needed only for tests and debugging
  */
+
 export const reset = () => {
   eventDictionary = {};
   listenerDictionary = {};
+  idCounter = 0;
 };
+
+/*
+  get clone of event dictionary . Mainly needed only for debugging by author
+ */
+export const getEventDictionary = () => ({...eventDictionary});
+
+/*
+  get clone of listener dictionary . Mainly needed only for debugging by author
+ */
+export const getListenerDictionary = () => ({...listenerDictionary});
