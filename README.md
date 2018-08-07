@@ -8,7 +8,7 @@ With Metamatic you can implement a central data management policy in frontend ap
 you don't need to write endless amounts of repetitive 'spells' to get what you want. It helps you create cleaner and more maintainable code.
 
 You don't need to write endless ugly switch-case structures since Metamatic connects events to their handlers elegantly using hash tables, 
-taking internally advantage of JavaScript's` ass`ociative arrays. With this solution, you don't need to manually connect events to their handlers anymore. 
+taking internally advantage of JavaScript's` associative arrays. With this solution, you don't need to manually connect events to their handlers anymore. 
 Metamatic does it automatically, due to its very nature! Yet the silly thing about Metamatic is that its internal implementation is drop-dead simple 
 consisting only about one hundred lines of code!
 
