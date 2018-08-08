@@ -41,7 +41,7 @@ npm install metamatic
 # Usage
 
 
-## Dispatching and Handling Eveents
+## Dispatching and Handling Events
 
 When you want to **dispatch** an event somewhere in your app:
 
@@ -153,7 +153,7 @@ unhandle('MY-EVENT');
 
 ## Implementing the MetaStore Container
 
-There are two major strategies to implement a state container, which are the **Two-Way-Events* strategy and the *One-Way-Events** strategy.
+There are two major strategies to implement a state container, which are the **Two-Way-Events** strategy and the **One-Way-Events** strategy.
 The *Two-Way-Events* strategy means that the central data container (MetaStore) communicates with the rest of the software only through events. 
 In Two-Way-Events strategy, the state container uses events for both sending and receiving data. It listens for events for receiving data and
 dispatches events for sending data. But in *One-Way-Events* strategy instead, events are used only for broadcasting. The State Container does not 
@@ -165,17 +165,16 @@ In the Two-Way strategy, the events flow in two directions. They flow downstream
 And they flow upstream, from components upward back to the container. Downstream flow happens when the state container fires an event. 
 The event is being handled down the stream in the UI components that listen for the events from the State
 container. And when they flow upstream, from the UI components back to the state container, when a UI component dispatches an event back to the State Container.
-Two-Way-Events is is the way how State containers are typically implemented in Redux-type containers.
 
-With Metamatic, both *Two-Way-Events* strategy and *One-Way-Events* strategy are available. If you wish to over-engineer and create complicated code, 
-the Two-Way-Events is the natural choice for you. But if you want to be practical and create clear code, *One-Way-Events* are your thing. 
-Either way, it's your choice, but Metamatic supports these both approaches. Now let's take a deep dive to understand why *two-way* is bad and *one-way* is good!
+With Metamatic, both *Two-Way-Events* strategy and *One-Way-Events* strategy are available. *One-Way-Events* strategy enables you to write more straightforward
+code because it will be easier to track the program flow upstream back to container from the components but *Two-Way-Events* will make it possible
+to add interceptors to upstream data flow.
 
 ### Why Direct Invocation is Natural
 
-THe main way to connect two components to each other should always be primarily through direct function invocations. 
+The main way to connect two components to each other should always be primarily through direct function invocations. 
 Direct invocations are in most cases the superior way of sending data from one component to another component. The
-reason for that is that it is just simpler. If you use a proper IDE, you can easily navigate to the actual implementation of the callable function just by 
+reason for this is that it is just simpler. If you use a proper IDE, you can easily navigate to the actual implementation of the callable function just by 
 clicking on the function call itself and the IDE will bring you to the function definition. When your component wants to send data to another component, 
 directly invoking functions of that other component is by definition the obvious way to go. You know exactly to whom you are sending data because 
 you directly call a function of that recipient component.
@@ -248,17 +247,18 @@ That's all what you need!
 
 ### With Two-Way-Events Strategy...
 
-Two Way events strategy is not recommendable because loss for followability, but it's supported by Metamatic anyway:
+Two Way events strategy is not recommendable because for most cassloss for followability, but it's supported by Metamatic anyway. 
+If you want to add interceptors such as logging to upstream events, *Two-Way-Events* may in deed be the desirable strategy:
 
 ```js
-export const EMAIL_ADDRESS_REQUEST = 'EMAIL_ADDRESS_REQUEST';
+export const EMAIL_ADDRESS_UPDATE = 'EMAIL_ADDRESS_UPDATE';
 export const EMAIL_ADDRESS_CHANGE = 'EMAIL_ADDRESS_CHANGE';
 
 const metaStore = {}
 
 const initMetaStore = () => {
   
-    handle(EMAIL_ADDRESS_REQUEST, (changedEmailAddress) => {
+    handle(EMAIL_ADDRESS_UPDATE, (changedEmailAddress) => {
       metaStore.emailAddress = changedEmailAddress;
       dispatch(EMAIL_ADDRESS_CHANGE, emailAddress);    
     })
