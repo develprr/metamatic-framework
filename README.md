@@ -38,7 +38,11 @@ Type:
 npm install metamatic
 ```
 
-## Usage
+# Usage
+
+
+## Dispatching and Handling Eveents
+
 When you want to **dispatch** an event somewhere in your app:
 
 ```js
@@ -57,6 +61,7 @@ handle('SOME-EVENT', (value) => {
     ...
  })
 ```
+## Registering Componets to Listen for MetaStore Container
 
 To register a component as listener to MetaStore use **connect** function. It is meant to register components that have a limited lifetime
 such as React components. You can unregister later listeners that have been added with connect function.
@@ -110,6 +115,8 @@ When you have connected a React component to MetaStore, it is important to **dis
 In React, it's not allowed to set state of an unmounted component. If you don't disconnect a React component from MetaStore upon unmounting, the listener
 function won't die along with the component but it will instead be "kicking a dead body" when it receives an event. And that will cause an error.
 
+## Disconnection Components from MetaStore 
+
 Disconnecting a component from MetaStore upon unmounting:
 
 ```js
@@ -144,7 +151,123 @@ Cancelling handlers can be done via **unhandle** call. Then all listeners of an 
 unhandle('MY-EVENT');
 ```
 
-## License
+## Implementing the MetaStore Container
+
+There are two major strategies to implement a state container, which are the *Two-Way-Events* strategy and the *One-Way-Events* strategy.
+The *Two-Way-Events* strategy means that the central data container (MetaStore) communicates with the rest of the software only through events. 
+In Two-Way-Events strategy, the state container uses events for both sending and receiving data. It listens for events for receiving data and
+dispatches events for sending data. But in **One-Way-Events strategy** instead, events are used only for broadcasting. The State Container does not 
+listen for events to receive data. The data is placed inside the container directly through setter or update method invocations from outside.
+
+### The Two-Way-Events State Container Strategy
+
+In the Two-Way strategy, the events flow in two directions. They flow downstream, from the state container downward to the UI components. That 
+happens when the state container fires an event. The event is being handled down the stream in the UI components that listen for the events from the State
+container. And when they flow upstream, from the UI components back to the state container, when a UI component dispatches an event back to the State Container.
+This is the way how State containers are implemented in typical Redux apps. 
+
+With Metamatic, both Two-Way-Events strategy and One-Way-Events Strategy are available. If you wish to over-engineer and create complicated code, 
+the Two-Way-Events the natural choice for you. But if you want to be practical and create clear code, One-Way-Events are your thing. 
+Either way, Metamatic supports these both approaches! 
+
+### Why Direct Invocation Is Natural
+
+THe main way to connect two components to each other should always be primarily through direct function invocations. 
+Direct invocations are in most cases the superior way of sending data from one component to another component. The
+reason for that is that it is just simpler. If you use a proper IDE, you can easily navigate to the actual implementation of the callable function just by 
+clicking on the function call itself and the IDE will bring you to the function definition. When your component wants to send data to another component, 
+directly invoking functions of that other component is by definition the obvious way to go. You know exactly to whom you are sending data because 
+you directly call a function of that recipient component.
+
+### Why Events Are Bad for Readability
+
+The very idea of the event-based communication scheme is by nature exactly the opposite to the direct invocation variant. When a component fires an event,
+it does not know what party listens for that event. If you look into the piece of code that fires an event you can't tell where that event is being handled
+and what are the components that will process it - if any. When you want to know what happens and where when an event was fired, you must
+first navigate to the place where the event was defined and then explicitly search for places where the event is being listened for. This adds more 
+steps to the coding work. For this reason it is  inherently more difficult to follow the logic of an application that overly relies on event-based communication.
+
+### Why the State Container Must Broadcast Events
+
+Despite the problems there are some important use cases that justify using events. Communication through event dispatching is a better solution in a very
+special invocation scenario. Such scenario is the **one-to-many** communication case. In such case, there is one single place in the application, a state container, 
+that holds the "master copy" of certain data. When this data changes, the central state container then must broadcast this change to all places where needed.
+Let's say, the central state contains user email info. When the user's email address is changed, this change must radiate to all components of the app
+that display the email address. So all components that display the email address in a way just mirror the original data. Then the problem of data incońsistencies
+can be eliminated. The practical solution to implement such broadcast mechanism is to fire a change event from the state container
+when the email was changed. The state container, when it triggers an event containing the changed data, does not know and does not need to know which components 
+will catch this event. Those components for whom the data in question is relevant just need to "subscribe" themselves to receive that event when an update occurs.
+ 
+If this kind of **one-to-many** notification logic had to be implemented without events, rather using direct invocation, it would mean that every time you 
+add a component that shall display the data, you would need to explicitly update the central state container and add a new method call,
+such as **yetAnotherComponent.setEmailAddress(newAddress)*. Not only would it make coding slow and error-prone because of the need to constantly update the 
+state container methods when the components change, but it would also require the state container to have direct references to almost all components of the app.
+That would make the state container a big monster, eventually rendering the application quite unmaintainable. 
+
+For this reason, it is quite justified that the state container uses event dispatching as the strategy to broadcast events all around when something changes.
+
+### Why State Container Should Not Listen For Events
+
+When the case is, however, that a component must notify the state container about data change, *we do not* have a **one-to-many** scenario. We have rather
+a **many-to-one** or at least **one-to-one** communication case. The idea of a central state container is in deed that there is just a single source of truth. 
+Therefore it's not advisable to implement a state container that has a **two-way-events** communication scenario. There is absolutely no need to make the
+communication FROM components TO the container to use events. The better and cleaner way to implement the upstream flow, from components to the
+container, is simply through direct method invocation. All components that want to notify the container about a change will just need to directly invoke 
+the container's change function.
+
+# Creating the MetaStore
+
+## Implement the Core
+Create MetaStore.js file. In that file, type:
+
+```js
+const metaStore = {};
+
+```
+
+You can also name it as you wish, I just call it *MetaStore* for convenience!
+
+## Enabling MetaStore to Receive And Broadcast Changes 
+
+### With One-Way-Events Strategy...
+
+Let's say that you want MetaStore to centrally hold some piece of data, let's say email address, and when the email address changes, to
+broadcast the change:
+
+```js
+export const EMAIL_ADDRESS_CHANGE = 'EMAIL_ADDRESS_CHANGE';
+
+export const setEmailAddress = (changedEmailAddress) => {
+  metaStore.emailAddress = changedEmailAddress;
+  dispatch(EMAIL_ADDRESS_CHANGE, emailAddress)
+}
+```
+
+That's all what you need!
+
+### With Two-Way-Events Strategy...
+
+Two Way events strategy is not recommendable because loss for followability, but it's supported by Metamatic anyway:
+
+```js
+export const EMAIL_ADDRESS_REQUEST = 'EMAIL_ADDRESS_REQUEST';
+export const EMAIL_ADDRESS_CHANGE = 'EMAIL_ADDRESS_CHANGE';
+
+const metaStore = {}
+
+const initMetaStore = () => {
+  
+    handle(EMAIL_ADDRESS_REQUEST, (changedEmailAddress) => {
+      metaStore.emailAddress = changedEmailAddress;
+      dispatch(EMAIL_ADDRESS_CHANGE, emailAddress);    
+    })
+
+}
+
+```
+
+
+## License 
 
 Apache 2.0
 
