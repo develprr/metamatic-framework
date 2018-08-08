@@ -1,4 +1,4 @@
 node_modules
-lib
+src
 test
 package-lock.json

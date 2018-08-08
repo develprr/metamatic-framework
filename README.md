@@ -12,8 +12,8 @@ taking internally advantage of JavaScript's` associative arrays. With this solut
 Metamatic does it automatically, due to its very nature! Yet the silly thing about Metamatic is that its internal implementation is drop-dead simple 
 consisting only about one hundred lines of code!
 
-One fundamental difference to 'Redux' is that Metamatic directly binds event handlers to corresponding events already at the very moment
-when you define them by calling **handle** or **connect** function. When the handlers are already inherently connected to the events, 
+One fundamental difference to 'Redux' is that Metamatic directly binds event handlers to corresponding events already in the very moment
+you define them by calling **handle** or **connect** function. When the handlers are already inherently connected to the events, 
 then you don't need to explicitly write clumpy **switch-case** structures to explain the application what action shall be invoked upon which event.
 
 Remember that **switch-case** structures are fundamentally only a different syntax for **if else if else if else** concoctions. 
