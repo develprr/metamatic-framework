@@ -153,7 +153,7 @@ unhandle('MY-EVENT');
 
 ## Implementing the MetaStore Container
 
-There are two major strategies to implement a state container, which are the **Two-Way-Events*Ä strategy and the *ÄOne-Way-Events** strategy.
+There are two major strategies to implement a state container, which are the **Two-Way-Events* strategy and the *One-Way-Events** strategy.
 The *Two-Way-Events* strategy means that the central data container (MetaStore) communicates with the rest of the software only through events. 
 In Two-Way-Events strategy, the state container uses events for both sending and receiving data. It listens for events for receiving data and
 dispatches events for sending data. But in *One-Way-Events* strategy instead, events are used only for broadcasting. The State Container does not 
@@ -167,11 +167,11 @@ The event is being handled down the stream in the UI components that listen for 
 container. And when they flow upstream, from the UI components back to the state container, when a UI component dispatches an event back to the State Container.
 Two-Way-Events is is the way how State containers are typically implemented in Redux-type containers.
 
-With Metamatic, both Two-Way-Events strategy and One-Way-Events Strategy are available. If you wish to over-engineer and create complicated code, 
-the Two-Way-Events the natural choice for you. But if you want to be practical and create clear code, One-Way-Events are your thing. 
-Either way, Metamatic supports these both approaches. Now let's take a deep dive to understand why two-way is bad and one-way is good!
+With Metamatic, both *Two-Way-Events* strategy and *One-Way-Events* strategy are available. If you wish to over-engineer and create complicated code, 
+the Two-Way-Events is the natural choice for you. But if you want to be practical and create clear code, *One-Way-Events* are your thing. 
+Either way, it's your choice, but Metamatic supports these both approaches. Now let's take a deep dive to understand why *two-way* is bad and *one-way* is good!
 
-### Why Direct Invocation Is Natural
+### Why Direct Invocation is Natural
 
 THe main way to connect two components to each other should always be primarily through direct function invocations. 
 Direct invocations are in most cases the superior way of sending data from one component to another component. The
@@ -180,7 +180,7 @@ clicking on the function call itself and the IDE will bring you to the function 
 directly invoking functions of that other component is by definition the obvious way to go. You know exactly to whom you are sending data because 
 you directly call a function of that recipient component.
 
-### Why Events Are Bad for Readability
+### Why Events are Bad for Readability
 
 The very idea of the event-based communication scheme is by nature exactly the opposite to the direct invocation variant. When a component fires an event,
 it does not know what party listens for that event. If you look into the piece of code that fires an event you can't tell where that event is being handled
