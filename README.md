@@ -153,22 +153,23 @@ unhandle('MY-EVENT');
 
 ## Implementing the MetaStore Container
 
-There are two major strategies to implement a state container, which are the *Two-Way-Events* strategy and the *One-Way-Events* strategy.
+There are two major strategies to implement a state container, which are the **Two-Way-Events*Ä strategy and the *ÄOne-Way-Events** strategy.
 The *Two-Way-Events* strategy means that the central data container (MetaStore) communicates with the rest of the software only through events. 
 In Two-Way-Events strategy, the state container uses events for both sending and receiving data. It listens for events for receiving data and
-dispatches events for sending data. But in **One-Way-Events strategy** instead, events are used only for broadcasting. The State Container does not 
+dispatches events for sending data. But in *One-Way-Events* strategy instead, events are used only for broadcasting. The State Container does not 
 listen for events to receive data. The data is placed inside the container directly through setter or update method invocations from outside.
 
 ### The Two-Way-Events State Container Strategy
 
-In the Two-Way strategy, the events flow in two directions. They flow downstream, from the state container downward to the UI components. That 
-happens when the state container fires an event. The event is being handled down the stream in the UI components that listen for the events from the State
+In the Two-Way strategy, the events flow in two directions. They flow downstream, from the state container downward to the UI components.
+And they flow upstream, from components upward back to the container. Downstream flow happens when the state container fires an event. 
+The event is being handled down the stream in the UI components that listen for the events from the State
 container. And when they flow upstream, from the UI components back to the state container, when a UI component dispatches an event back to the State Container.
-This is the way how State containers are implemented in typical Redux apps. 
+Two-Way-Events is is the way how State containers are typically implemented in Redux-type containers.
 
 With Metamatic, both Two-Way-Events strategy and One-Way-Events Strategy are available. If you wish to over-engineer and create complicated code, 
 the Two-Way-Events the natural choice for you. But if you want to be practical and create clear code, One-Way-Events are your thing. 
-Either way, Metamatic supports these both approaches! 
+Either way, Metamatic supports these both approaches. Now let's take a deep dive to understand why two-way is bad and one-way is good!
 
 ### Why Direct Invocation Is Natural
 
