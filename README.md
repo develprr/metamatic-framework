@@ -222,7 +222,6 @@ Create MetaStore.js file. In that file, type:
 
 ```js
 const metaStore = {};
-
 ```
 
 You can also name it as you wish, I just call it *MetaStore* for convenience!
@@ -247,7 +246,7 @@ That's all what you need!
 
 ### With Two-Way-Events Strategy...
 
-Two Way events strategy is not recommendable because for most cassloss for followability, but it's supported by Metamatic anyway. 
+The Two-Way-Events strategy is not recommendable for most cases because of the loss of followability, but it's supported by Metamatic anyway. 
 If you want to add interceptors such as logging to upstream events, *Two-Way-Events* may in deed be the desirable strategy:
 
 ```js

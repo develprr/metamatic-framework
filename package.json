@@ -1,8 +1,8 @@
 {
   "name": "metamatic",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Metamatic is a framework for central application data management and event driven coding.",
-  "main": "index.js",
+  "main": "index.j",
   "scripts": {
     "test": "grunt test -v"
   },
