@@ -115,7 +115,7 @@ When you have connected a React component to MetaStore, it is important to **dis
 In React, it's not allowed to set state of an unmounted component. If you don't disconnect a React component from MetaStore upon unmounting, the listener
 function won't die along with the component but it will instead be "kicking a dead body" when it receives an event. And that will cause an error.
 
-## Disconnection Components from MetaStore 
+## Disconnecting Components from MetaStore 
 
 Disconnecting a component from MetaStore upon unmounting:
 
