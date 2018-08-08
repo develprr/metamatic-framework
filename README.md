@@ -61,7 +61,7 @@ handle('SOME-EVENT', (value) => {
     ...
  })
 ```
-## Registering Componets to Listen for MetaStore Container
+## Registering Components to Listen for MetaStore Container
 
 To register a component as listener to MetaStore use **connect** function. It is meant to register components that have a limited lifetime
 such as React components. You can unregister later listeners that have been added with connect function.
