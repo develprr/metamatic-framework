@@ -157,7 +157,7 @@ Heikki Kupiainen / [metamatic.net](http://www.metamatic.net)
 Metamatic is based on earlier prototype [Synchronous Dispatcher](https://www.npmjs.com/package/synchronous-dispatcher) package
 but has improvements that make it more suitable to be used together with ReactJS framework. Also the internal implementation has been upgraded to meet
 today's coding standards. If you are interested in Metamatic backgrounds, 
-read an article about Metamatic framework's prototype [Synchronous Dispatcher]((http://www.oppikone.fi/blog/introducing-synchronous-dispatcher.html)).
+read an article about Metamatic framework's prototype [Synchronous Dispatcher](http://www.oppikone.fi/blog/introducing-synchronous-dispatcher.html).
 
 ## Read More
 
