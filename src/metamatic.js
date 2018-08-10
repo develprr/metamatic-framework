@@ -75,6 +75,8 @@ const generateId = () => {
   idCounter += 1;
   return idCounter.toString();
 };
+
+const clone = (object) => JSON.parse(JSON.stringify(object));
 /*
  Bind listeners to events using handle function:
 
@@ -133,7 +135,7 @@ export const connectAll = (componentOrId, handlerMap) => {
 
 /*
   When you have connected a React component to MetaStore, it is important to disconnect the component from MetaStore upon unmounting it.
-  It's not allowed to set state of an unmounted component. If you don't disconnect a React component from MetaStore upon unmounting, the listener
+  It's not allowed to set state of an unmounted component. I f you don't disconnect a React component from MetaStore upon unmounting, the listener
   function won't die along with the compnent and it will erratically try to set state of a "dead" component, which will cause an error.
 
   Disconnecting a component from MetaStore upon unmounting:
@@ -158,7 +160,7 @@ export const disconnect = (componentOrId) => removeActions(getActionsByListener(
 
   dispatch('SOME-EVENT', anyObject);
  */
-export const dispatch = (eventId, passenger) =>  getActionsByEvent(eventId).map((action) => action.handler(passenger));
+export const dispatch = (eventId, passenger) =>  getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
 
 /*
   Clear all events and listeners with reset function. Mainly needed only for tests and debugging
