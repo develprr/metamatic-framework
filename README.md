@@ -61,6 +61,14 @@ handle('SOME-EVENT', (value) => {
     ...
  })
 ```
+
+## Dispatcher Is a Teleporter
+
+You may have seen in some other state container frameworks that you must also clone the object using a spread operator ( {...someObject} ) always when it is received by the 'reducer' function. In Metamatic, this is not the case. When you dispatch an object with **dispatch** function, the object
+is always being automatically cloned. *Dispatch* behaves like a fax machine. The object that lands to the handler function looks like the original one, smells and tastes like the original one, but it's still only a copy! The reason why the object was cloned on the way is to prevent **spooky action at a distance**, meaning that if cloning was not done and the original copy was passed to the handler instead, it would mean that when the sender component then later modifies the object, the corresponding object reference would also be modified
+accordingly in the state container. That's something we don't want because the idea of a central state container is that its objects can't be secretly changed from outside.
+If it was possible to uncontrollably to modify them from outside then the state container would not be able to detect a change and broadcast the change event across the application!
+
 ## Registering Components to Listen for MetaStore Container
 
 To register a component as listener to MetaStore use **connect** function. It is meant to register components that have a limited lifetime
@@ -191,7 +199,7 @@ steps to the coding work. For this reason it is  inherently more difficult to fo
 
 Despite the problems there are some important use cases that justify using events. Communication through event dispatching is a better solution in a very
 special invocation scenario. Such scenario is the **one-to-many** communication case. In such case, there is one single place in the application, a state container, 
-that holds the "master copy" of certain data. When this data changes, the central state container then must broadcast this change to all places where needed.
+that holds the "master copy" of data. When this data changes, the central state container then must broadcast this change to all places where needed.
 Let's say, the central state contains user email info. When the user's email address is changed, this change must radiate to all components of the app
 that display the email address. So all components that display the email address in a way just mirror the original data. Then the problem of data incońsistencies
 can be eliminated. The practical solution to implement such broadcast mechanism is to fire a change event from the state container
