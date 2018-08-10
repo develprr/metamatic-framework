@@ -2,3 +2,7 @@ node_modules
 src
 test
 package-lock.json
+gruntfile.js
+.idea
+.git
+.gitignore
