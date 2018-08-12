@@ -76,7 +76,13 @@ const generateId = () => {
   return idCounter.toString();
 };
 
-const clone = (object) => JSON.parse(JSON.stringify(object));
+const clone = (object) => {
+  try {
+    return JSON.parse(JSON.stringify(object));
+  } catch (e) {
+    return object;
+  }
+}
 /*
  Bind listeners to events using handle function:
 

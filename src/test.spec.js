@@ -66,4 +66,18 @@ describe('metamatic framework', () => {
      responses.length.should.equal(2);
    });
 
+  it('should handle strings',  () => {
+    handle('STRING-EVENT', (value) => {
+      value.toString().should.equal('SOME STRING');
+    })
+    dispatch('STRING-EVENT', 'SOME STRING')
+  });
+
+  it('should handle integeers',  () => {
+    handle('INTEGER-EVENT', (value) => {
+      parseInt(value).should.equal(3);
+    })
+    dispatch('INTEGER-EVENT', 3)
+  });
+
 });
