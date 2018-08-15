@@ -54,12 +54,12 @@ const removeAction = (action) => {
 }
 
 const removeActionFromEventDictionary = (action) => {
-  const map = getActionsByEvent(action);
+  const map = getActionMapByEvent(action);
   delete map[action.id];
 };
 
 const removeActionFromListenerDictionary = (action) => {
-  const map = getActionsByListener(action);
+  const map = getActionMapByListener();
   delete map[action.id];
 };
 
