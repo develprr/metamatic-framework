@@ -1,79 +1,49 @@
 /*
-  The Metamatitc Framework
+  The Metamatic Framework
   Author: Heikki Kupiainen
   License: Apache 2.0
  */
 
-let eventDictionary = {};
-let listenerDictionary = {};
-let idCounter = 0;
+let actionArray = [];
+let actionMap = {};
+let componentIdCounter = 0;
+let actionIdCounter = 0;
 
-const createAction = (listenerId, eventId, handler, actionId) => ({
-  id: actionId || listenerId + '-' + eventId,
-  eventId: eventId,
+const createActionId = (listenerId, eventId) => listenerId + '-' + eventId;
+
+const createAction = (actionId, listenerId, eventId, handler) => ({
+  id: actionId,
   listenerId: listenerId,
+  eventId: eventId,
   handler: handler
 })
 
-const addActionToEventDictionary = (action) => {
-  const actionMap = getActionMapByEvent(action.eventId);
-  actionMap[action.id] = action;
+const existsAction = (action) => actionArray.some((actionInActions) => equalActions(actionInActions, action));
+
+const equalActions = (action1, action2) => action1.id === action2.id;
+
+const addAction = (action) => {
+  actionArray.push(action);
 };
 
-const addActionToListenerDictionary = (action) => {
-  const actionMap = getActionMapByListener(action.listenerId);
-  actionMap[action.id] = action;
+const getComponentId = (component) => {
+  if (component._metamaticId) {
+    return component._metamaticId;
+  }
+  component._metamaticId = generateComponentId();
+  return component._metamaticId;
 };
 
-const getActionMapByListener = (listenerId) => {
-  const actionMap = listenerDictionary[listenerId] || {};
-  listenerDictionary[listenerId] = actionMap;
-  return actionMap;
+const getListenerId = (component) => component.constructor.name === 'String' ? component : getComponentId(component);
+
+const generateComponentId = () => {
+  componentIdCounter += 1;
+  return componentIdCounter.toString();
 };
 
-const getActionMapByEvent = (eventId) => {
-  const actionMap = eventDictionary[eventId] || {};
-  eventDictionary[eventId] = actionMap;
-  return actionMap;
-}
-
-const getActionsByListener = (listenerId) =>
-  Object.values(getActionMapByListener(listenerId));
-
-const getActionsByEvent = (eventId) =>
-  Object.values(getActionMapByEvent(eventId));
-
-const removeActionsByListener = (listenerId) =>
-  removeActions(getActionsByListener(listenerId));
-
-const removeActions = (actions) => actions.map(removeAction);
-
-const removeAction = (action) => {
-  removeActionFromEventDictionary(action);
-  removeActionFromListenerDictionary(action);
-}
-
-const removeActionFromEventDictionary = (action) => {
-  const map = getActionsByEvent(action);
-  delete map[action.id];
-};
-
-const removeActionFromListenerDictionary = (action) => {
-  const map = getActionsByListener(action);
-  delete map[action.id];
-};
-
-const attach = (listenerId, eventId, handler, customId) => {
-  const action = createAction(listenerId, eventId, handler, customId);
-  addActionToEventDictionary(action);
-  addActionToListenerDictionary(action);
-};
-
-const getId = (component) => component.constructor.name === 'String' ? component : component.constructor.name;
-
-const generateId = () => {
-  idCounter += 1;
-  return idCounter.toString();
+const generateActionId = () => {
+  actionIdCounter += 1;
+  return "DEFAULT-" + actionIdCounter;
 };
 
 const clone = (object) => {
@@ -82,7 +52,49 @@ const clone = (object) => {
   } catch (e) {
     return object;
   }
+};
+
+const removeAction = (action) => {
+  actionArray = actionArray.filter((actionInArray) => actionInArray.id !== action.id);
+};
+
+const replaceAction = (action) => {
+  removeAction(action);
+  addAction(action);
 }
+
+
+const addNewAction = (actionId, listenerId, eventId, handler) => {
+  const action = createAction(actionId, listenerId, eventId, handler);
+  replaceAction(action);
+};
+
+const containsActionListenerAndEvent = (action, listenerId, eventId) => action.listenerId === listenerId && action.eventId === eventId;
+
+const containsActionListener = (action, listenerId) => action.listenerId === listenerId;
+
+const removeActionsByListenerAndEvent = (listenerId, eventId) => {
+  actionArray = actionArray.filter((action) => !containsActionListenerAndEvent(action, listenerId, eventId));
+};
+
+const removeActionsByListener = (listenerId) => {
+  actionArray = actionArray.filter((action) => !containsActionListener(action, listenerId));
+};
+
+const mapAction = (action) => {
+    const eventId = action.eventId;
+    const eventArray = getActionsByEvent(eventId);
+    eventArray.push(action);
+    actionMap[eventId] = eventArray;
+}
+
+const buildActionMap = () => {
+  actionMap = {};
+  actionArray.map(mapAction);
+}
+
+const getActionsByEvent = (eventId) =>  actionMap[eventId] || [];
+
 /*
  Bind listeners to events using handle function:
 
@@ -91,7 +103,10 @@ const clone = (object) => {
     ...
  })
  */
-export const handle = (eventId, handler) => attach('DEFAULT', eventId, handler, generateId());
+export const handle = (eventId, handler) => {
+  addNewAction(generateActionId(), 'DEFAULT', eventId, handler);
+  buildActionMap();
+}
 
 /*
   WHen you want to kill an event, meaning that you don't want any handler to listen for it any more, call unhandle function:
@@ -100,27 +115,27 @@ export const handle = (eventId, handler) => attach('DEFAULT', eventId, handler, 
 
  */
 
-export const unhandle = (eventId) => removeActions(getActionsByEvent(eventId));
+export const unhandle = (eventId) => {
+  removeActionsByListenerAndEvent('DEFAULT', eventId);
+  buildActionMap();
+}
 
 /*
-  Register a component to MetaStore with connect function. This is similar to handle but it should be used to register such components as listeners that have a limited lifetime
-  such as React components. You can unregister later listeners that have been added with connect function.
+  Register a component to MetaStore with connect function. This is similar to handle but it should be used to register such components
+  as listeners that have a limited lifetime such as React components. You can unregister later listeners that have been added with connect function.
 
-  If you connect React components that have only one living instance at time, you can pass the React component itself as parameter (this).
-  But if you connect React comppnents that have many simultaneously living instances, instead pass a unique identifier has parameter.
-
-  When connection a React component, preferrably call connect function already in the component's constructor.
+  When connection a React component, preferably call connect function already in the component's constructor.
   Example of connecting single instance React component:
 
   connect(this, CAR_INFO_CHANGE, (newCarInfo) => this.setState({carInfo: newCarInfo});
 
-  This works when there is only one instance of the listener component. Since it currently uses component's class name as ID (component.constructor.name)
-  it's only suitable to be used by components that have only one instance at a time. If you have many instances of the same component,
-  such as list elements, pass unique id as parameter, The unique ID must be a String:
-
-  connect(someUniqueId, CAR_INFO_CHANGE, (newCarInfo) => this.setState({carInfo: newCarInfo});
  */
-export const connect = (componentOrId, eventId, handler) => attach(getId(componentOrId), eventId, handler);
+export const connect = (componentOrListenerId, eventId, handler) => {
+  const listenerId = getListenerId(componentOrListenerId);
+  const actionId = createActionId(listenerId, eventId);
+  addNewAction(actionId, listenerId, eventId, handler);
+  buildActionMap();
+}
 
 /*
   If you want to connect a component to listen more than one event from MetaStore, you can use connectAll function instead of repeating many times connect
@@ -131,13 +146,18 @@ export const connect = (componentOrId, eventId, handler) => attach(getId(compone
     CAR_MODEL_SELECTION_CHANGE: (selectedCarModel) => this.setState({selectedCarModel})
    });
 */
-export const connectAll = (componentOrId, handlerMap) => {
-  const listenerId = getId(componentOrId);
-  for (let eventId in handlerMap) {
+
+
+export const connectAll = (componentOrListenerId, handlerMap) => {
+  const listenerId = getListenerId(componentOrListenerId);
+  Object.keys(handlerMap).map((eventId) => {
     let handler = handlerMap[eventId];
-    attach(listenerId, eventId, handler);
-  }
+    const actionId = createActionId(listenerId, eventId);
+    addNewAction(actionId, listenerId, eventId, handler);
+  });
+  buildActionMap();
 };
+
 
 /*
   When you have connected a React component to MetaStore, it is important to disconnect the component from MetaStore upon unmounting it.
@@ -148,13 +168,12 @@ export const connectAll = (componentOrId, handlerMap) => {
 
   disconnect(this);
 
-  Or if you connected the component before using some unique id:
-
-  disconnect(someUniqueId);
-
  */
 
-export const disconnect = (componentOrId) => removeActions(getActionsByListener(getId(componentOrId)));
+export const disconnect = (componentOrId) => {
+  removeActionsByListener(getListenerId(componentOrId));
+  buildActionMap();
+}
 
 /*
   Dispatch metamatic events everywhere in your app. Pass an eventId and a passenger object to the dispatcher. The event id must be a string
@@ -166,24 +185,21 @@ export const disconnect = (componentOrId) => removeActions(getActionsByListener(
 
   dispatch('SOME-EVENT', anyObject);
  */
-export const dispatch = (eventId, passenger) =>  getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
+export const dispatch = (eventId, passenger) => getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
+
 
 /*
   Clear all events and listeners with reset function. Mainly needed only for tests and debugging
  */
 
 export const reset = () => {
-  eventDictionary = {};
-  listenerDictionary = {};
-  idCounter = 0;
+  actionArray = [];
+  actionMap = {};
+  componentIdCounter = 0;
+  actionIdCounter = 0;
 };
 
 /*
   get clone of event dictionary . Mainly needed only for debugging by author
  */
-export const getEventDictionary = () => ({...eventDictionary});
-
-/*
-  get clone of listener dictionary . Mainly needed only for debugging by author
- */
-export const getListenerDictionary = () => ({...listenerDictionary});
+export const getActions = () => [...actionArray];

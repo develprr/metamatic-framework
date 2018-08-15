@@ -1,5 +1,5 @@
 import {assert, describe, it} from 'mocha';
-import {connect, dispatch, handle, reset, getEventDictionary, getListenerDictionary} from '../lib/metamatic';
+import {connect, disconnect, dispatch, handle, unhandle, reset} from '../lib/metamatic';
 
 let responses = [];
 let value;
@@ -29,6 +29,14 @@ describe('metamatic framework', () => {
 
     dispatch('TEST-EVENT-2', 'HELLO ROSS 128b');
 
+  });
+
+  it('should remove handler upon unhandle call', () => {
+    handle('EARTH-CALLING', (value) => {
+      throw new Error('this should not happen after unhandle');
+    })
+    unhandle('EARTH-CALLING');
+    dispatch('EARTH-CALLING', 'Sending out an SOS');
   });
 
   it('should execute all connect-listeners with matching event ID', () => {
@@ -68,16 +76,31 @@ describe('metamatic framework', () => {
 
   it('should handle strings',  () => {
     handle('STRING-EVENT', (value) => {
-      value.toString().should.equal('SOME STRING');
+      value.should.equal('SOME STRING');
     })
     dispatch('STRING-EVENT', 'SOME STRING')
   });
 
-  it('should handle integeers',  () => {
+  it('should handle integers', () => {
     handle('INTEGER-EVENT', (value) => {
       parseInt(value).should.equal(3);
     })
-    dispatch('INTEGER-EVENT', 3)
+    dispatch('INTEGER-EVENT', 3);
+  });
+
+  it('should remove component handlers on disconnect', () => {
+    let someComponent = {};
+    connect(someComponent, 'SOME-EVENT', (value) => {
+      value.should.equal('Sending out an SOS');
+    });
+    dispatch('SOME-EVENT', 'Sending out an SOS');
+
+    //now let's modify the handler to cause an expection
+    connect(someComponent, 'SOME-EVENT', (value) => {
+      throw new Error('This error should not occur after disconnect');
+    });
+    disconnect(someComponent);
+    dispatch('SOME-EVENT', 'Sending out an SOS');
   });
 
 });
