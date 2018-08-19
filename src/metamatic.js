@@ -16,15 +16,11 @@ const createAction = (actionId, listenerId, eventId, handler) => ({
   listenerId: listenerId,
   eventId: eventId,
   handler: handler
-})
-
-const existsAction = (action) => actionArray.some((actionInActions) => equalActions(actionInActions, action));
+});
 
 const equalActions = (action1, action2) => action1.id === action2.id;
 
-const addAction = (action) => {
-  actionArray.push(action);
-};
+const addAction = (action) => actionArray.push(action);
 
 const getComponentId = (component) => {
   if (component._metamaticId) {
@@ -54,9 +50,7 @@ const clone = (object) => {
   }
 };
 
-const removeAction = (action) => {
-  actionArray = actionArray.filter((actionInArray) => actionInArray.id !== action.id);
-};
+const removeAction = (action) => actionArray = actionArray.filter((actionInArray) => actionInArray.id !== action.id);
 
 const replaceAction = (action) => {
   removeAction(action);
@@ -64,22 +58,17 @@ const replaceAction = (action) => {
 }
 
 
-const addNewAction = (actionId, listenerId, eventId, handler) => {
-  const action = createAction(actionId, listenerId, eventId, handler);
-  replaceAction(action);
-};
+const addNewAction = (actionId, listenerId, eventId, handler) => replaceAction(createAction(actionId, listenerId, eventId, handler));
 
 const containsActionListenerAndEvent = (action, listenerId, eventId) => action.listenerId === listenerId && action.eventId === eventId;
 
 const containsActionListener = (action, listenerId) => action.listenerId === listenerId;
 
-const removeActionsByListenerAndEvent = (listenerId, eventId) => {
-  actionArray = actionArray.filter((action) => !containsActionListenerAndEvent(action, listenerId, eventId));
-};
+const removeActionsByListenerAndEvent = (listenerId, eventId) => actionArray = actionArray.filter((action) =>
+    !containsActionListenerAndEvent(action, listenerId, eventId));
 
-const removeActionsByListener = (listenerId) => {
-  actionArray = actionArray.filter((action) => !containsActionListener(action, listenerId));
-};
+
+const removeActionsByListener = (listenerId) => actionArray = actionArray.filter((action) => !containsActionListener(action, listenerId));
 
 const mapAction = (action) => {
     const eventId = action.eventId;
@@ -187,11 +176,9 @@ export const disconnect = (componentOrId) => {
  */
 export const dispatch = (eventId, passenger) => getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
 
-
 /*
   Clear all events and listeners with reset function. Mainly needed only for tests and debugging
  */
-
 export const reset = () => {
   actionArray = [];
   actionMap = {};
