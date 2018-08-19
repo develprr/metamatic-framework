@@ -132,14 +132,14 @@ To call disconnect inside **componentWillUnmount** React life cycle function:
 
 ```js
 componentWillUnmount() {
-    disconnect(someUniqueId);
+    disconnect(this);
 }
 ```
 
 or maybe even more elegantly, using arrow notation: 
 
 ```js
-componentWillUnmount = () => disconnect(someUniqueId);
+componentWillUnmount = () => disconnect(this);
 ```
 
 But when you want to handle Metamatic events inside components that don't need to be unmounted or any static methods and utility functions,
