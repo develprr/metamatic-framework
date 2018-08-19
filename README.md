@@ -22,7 +22,7 @@ Remember that **switch-case** structures are fundamentally only a different synt
 
 ## News
    
-Since version 1.2.8, you can register *any* component by passing **this** to **connect** function. The Metamatic Framework now interenally injects
+Since version 1.2.8, you can register *any* component by passing **this** to **connect** function. The Metamatic Framework now internally injects
 a unique ID to each registered component so the user doesn't need to care about IDs.
 
 ## Writings and Samples
