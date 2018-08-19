@@ -30,7 +30,8 @@ const getComponentId = (component) => {
   return component._metamaticId;
 };
 
-const getListenerId = (component) => component.constructor.name === 'String' ? component : getComponentId(component);
+const getListenerId = (component) =>
+    component.constructor.name === 'String' ? component : getComponentId(component);
 
 const generateComponentId = () => {
   componentIdCounter += 1;
@@ -58,17 +59,19 @@ const replaceAction = (action) => {
 }
 
 
-const addNewAction = (actionId, listenerId, eventId, handler) => replaceAction(createAction(actionId, listenerId, eventId, handler));
+const addNewAction = (actionId, listenerId, eventId, handler) =>
+    replaceAction(createAction(actionId, listenerId, eventId, handler));
 
-const containsActionListenerAndEvent = (action, listenerId, eventId) => action.listenerId === listenerId && action.eventId === eventId;
+const containsActionListenerAndEvent = (action, listenerId, eventId) =>
+    action.listenerId === listenerId && action.eventId === eventId;
 
 const containsActionListener = (action, listenerId) => action.listenerId === listenerId;
 
-const removeActionsByListenerAndEvent = (listenerId, eventId) => actionArray = actionArray.filter((action) =>
-    !containsActionListenerAndEvent(action, listenerId, eventId));
+const removeActionsByListenerAndEvent = (listenerId, eventId) =>
+    actionArray = actionArray.filter((action) => !containsActionListenerAndEvent(action, listenerId, eventId));
 
-
-const removeActionsByListener = (listenerId) => actionArray = actionArray.filter((action) => !containsActionListener(action, listenerId));
+const removeActionsByListener = (listenerId) =>
+    actionArray = actionArray.filter((action) => !containsActionListener(action, listenerId));
 
 const mapAction = (action) => {
     const eventId = action.eventId;
@@ -174,7 +177,8 @@ export const disconnect = (componentOrId) => {
 
   dispatch('SOME-EVENT', anyObject);
  */
-export const dispatch = (eventId, passenger) => getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
+export const dispatch = (eventId, passenger) =>
+    getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
 
 /*
   Clear all events and listeners with reset function. Mainly needed only for tests and debugging
