@@ -69,11 +69,10 @@ handle('SOME-EVENT', (value) => {
  })
 ```
 
-## Dispatcher Is a Teleporter
+## Dispatcher Clones Objects
 
 You may have seen in some other state container frameworks that you must clone the object using a spread operator ( {...someObject} ) always when it is received by the 'reducer' function. In Metamatic, this is not the case. When you dispatch an object with **dispatch** function, the object
-is always being automatically cloned. *Dispatch* behaves like a fax machine. The object that lands to the handler function looks like the original one, smells and tastes like the original one, but it's still only a copy! The reason why the object was cloned on the way is to prevent **spooky action at a distance**, meaning that if cloning was not done and the original copy was passed to the handler instead, it would mean that when the sender component then later modifies the object, the corresponding object reference would also be modified
-accordingly in the state container. That's something we don't want because the very idea of a central state container is that its objects can't be secretly changed from outside.
+is always being automatically cloned. That's something we don't want because the very idea of a central state container is that its objects can't be changed from outside.
 If it was possible to uncontrollably modify them from outside then the state container would not be able to detect a change and broadcast the change event across the application!
 
 ## Registering Components to Listen for MetaStore Container
