@@ -1,5 +1,5 @@
 import {assert, describe, it} from 'mocha';
-import {connect, disconnect, dispatch, handle, unhandle, reset} from '../lib/metamatic';
+import {connect, disconnect, dispatch, handle, unhandle, reset, updateState} from '../lib/metamatic';
 
 let responses = [];
 let value;
@@ -102,5 +102,20 @@ describe('metamatic framework', () => {
     disconnect(someComponent);
     dispatch('SOME-EVENT', 'Sending out an SOS');
   });
+
+  it('updateState should create nested property structure inside state container', () => {
+    const MetaStore = {};
+    updateState(MetaStore, 'MetaStore.user.addressInfo.emailAddress', 'somebody@trappist');
+    MetaStore.user.addressInfo.emailAddress.should.equal('somebody@trappist');
+  })
+
+  it('updateState should dispatch event', () => {
+    const MetaStore = {};
+    const STATE_METASTORE_EMAIL_ADDRESS = 'MetaStore.user.addressInfo.emailAddress';
+    let events = [];
+    handle(STATE_METASTORE_EMAIL_ADDRESS, (address) => events.push((address)));
+    updateState(MetaStore, STATE_METASTORE_EMAIL_ADDRESS, 'somebody@trappist');
+    events.length.should.equal(1);
+  })
 
 });

@@ -180,9 +180,37 @@ export const disconnect = (componentOrId) => {
 export const dispatch = (eventId, passenger) =>
     getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
 
+
+const setNestedValue = (stateContainer, statePath, value) => {
+  const objectNames = statePath.split('.');
+  let containerName = objectNames.shift();
+  let targetProperty = objectNames.pop();
+  let targetObject = stateContainer;
+  objectNames.forEach((objectName) => {
+    if (!targetObject[objectName]) {
+      targetObject[objectName] = {};
+    }
+    targetObject = targetObject[objectName];
+  })
+  targetObject[targetProperty] = value;
+}
+
+/*
+  UpdateState method enables to solve a very common state container scenario with a very handy update method. With update call, you can set a value inside your
+  nested container AND dispatch the changed value to everywhere where it is needed.
+ */
+
+export const updateState = (stateContainer, propertyPath, value) => {
+  const clonedValue = clone(value);
+  setNestedValue(stateContainer, propertyPath, clonedValue);
+  dispatch(propertyPath, value);
+}
+
+
 /*
   Clear all events and listeners with reset function. Mainly needed only for tests and debugging
  */
+
 export const reset = () => {
   actionArray = [];
   actionMap = {};

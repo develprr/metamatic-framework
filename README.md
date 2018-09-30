@@ -3,8 +3,8 @@
 ## Introduction
 
 The Metamatic framework is a simple and easy-to-use predictable state container for JavaScript apps. 
-Metamatic is similar to existing main stream state containers such as 'Redux' 
-but it is simpler by one order of magnitude both in the way it is designed and in the amount of code that is required from you to get what you want.  
+Metamatic is similar to existing main stream state containers such as 'Redux' and 'MobX' and many others but when compared with most state container frameworks,
+it is simpler by one order of magnitude both in the way it is designed and in the amount of code that is required from you to get what you want.  
 
 With Metamatic you can implement a central data management policy in frontend applications fast and painlessly. When you implement your state container using Metamatic, you can get things done faster because 
 you don't need to write endless amounts of repetitive 'spells' to get what you want. It helps you create cleaner and more maintainable code.
@@ -21,8 +21,14 @@ then you don't need to explicitly write clumpy **switch-case** structures to exp
 Remember that **switch-case** structures are fundamentally only a different syntax for **if else if else if else** concoctions. 
 
 ## News
+
+### Version 1.3.4: Use updateState -function to mutate container states and broadcast the changes in one line of code
+
+Since version 1.3.4, you can update a state in the state container and dispatch that state with only one line of code. Write very efficient state-container
+aware code with ridiculously few lines of code!
    
-Since version 1.2.8, you can register *any* component by passing **this** to **connect** function. The Metamatic Framework now internally injects
+### Version 1.2.8: Better way to connect and disconnect objects 
+Since version 1.2.8, you can register *any* component by passing *this* reference to **connect** function. The Metamatic Framework now internally injects
 a unique ID to each registered component so the user doesn't need to care about IDs.
 
 ## Writings and Samples
@@ -72,8 +78,11 @@ handle('SOME-EVENT', (value) => {
 ## Dispatcher Clones Objects
 
 You may have seen in some other state container frameworks that you must clone the object using a spread operator ( {...someObject} ) always when it is received by the 'reducer' function. In Metamatic, this is not the case. When you dispatch an object with **dispatch** function, the object
-is always being automatically cloned. That's something we don't want because the very idea of a central state container is that its objects can't be changed from outside.
-If it was possible to uncontrollably modify them from outside then the state container would not be able to detect a change and broadcast the change event across the application!
+is always being automatically cloned. It is a very useful and important feature that objects are cloned when they are dispatched.  If the objects were not
+cloned when dispatched into the bit space, that cause the listeners to receive a reference to the original object instead of a clone. That would be 
+very bad because modifiying the received object inside a listener component would secretly change the original object in the state container, thus making
+the state container essentially useless. The very idea of a central state container is that 
+its objects can't be changed from outside. If it was possible to uncontrollably modify them from outside then the state container would not be able to detect a change and broadcast the change event across the application!
 
 ## Registering Components to Listen for MetaStore Container
 
@@ -156,7 +165,6 @@ Cancelling handlers can be done via **unhandle** call. Then all listeners of an 
 unhandle('MY-EVENT');
 ```
 
-
 # Implementing the MetaStore Container
 
 There are two major strategies to implement a state container, which are the **Two-Way-Events** strategy and the **One-Way-Events** strategy.
@@ -174,7 +182,7 @@ There are two ways to implement a metamatic state container, the MetaStore.
 Create MetaStore.js file. In that file, type:
 
 ```js
-const metaStore = {};
+const MetaStore = {};
 ```
 
 You can also name it as you wish, I just call it *MetaStore* for convenience!
@@ -189,13 +197,65 @@ broadcast the change:
 ```js
 export const EMAIL_ADDRESS_CHANGE = 'EMAIL_ADDRESS_CHANGE';
 
-export const setEmailAddress = (changedEmailAddress) => {
-  metaStore.emailAddress = changedEmailAddress;
+export const setEmailAddress = (emailAddress) => {
+  MetaStore.emailAddress = emailAddress;
   dispatch(EMAIL_ADDRESS_CHANGE, emailAddress)
 }
 ```
 
 That's all what you need!
+
+### Use updateState Method for Really Efficient State Mutation
+
+The above mentioned scenario where you want to do exactly two things to a state container is very common. Therefore Metamatic provides the **updateState** function 
+to do this on a whim. When you really start coding some serious apps with professional-scale state management strategy, 
+you'll find that a vast majority of things that you want to do with a central state container is:
+
+1. Change a value inside the state container
+2. Broadcast the changed value to all components that need it.
+
+And along the way, you also want to have the target value or object cloned to avoid mess!
+
+The wonderful thing is that you can achieve all this with a one line of code in the Metamatic Framework:
+
+```js
+export const setEmailAddress = (emailAddress) => updateState(MetaStore, 'MetaStore.user.addressInfo.emailAddress', emailAddress);
+```
+
+What *updateState* does is that it clones the value object, in this case the *emailAddress* (no matter whether it's a primitive type or a complex object),
+updates the "emailAddress" property inside *MetaStore* and then dispatches this changed value to all over the app, making all components to be updated
+that use this property.
+
+The first parameter for *updateState* function is the actual store that you created earlier. The second parameter is the property locator.
+It will specifies the target property inside the state container that will be updated. In this case, there is *user* object inside MetaStore, 
+which contains an *addressInfo* object. Inside *addressInfo*, property with name *emailAddress* will be updated. 
+
+If that structure does not exist inside the container, no worries, it will be created by *updateState* on the fly!
+
+After the property was updated inside the containber, it will then be broadcasted to all over the app as a passenger for an event, whose name is, 
+perhaps not surprisingly, exactly the same as the property locator, which is in this example 'MetaStore.user.addressInfo.emailAddress'.
+
+It is highly recommended that you parametrize the property locator, for example as follows: 
+
+```js
+
+export const STATE_EMAIL_ADDRESS = 'MetaStore.user.addressInfo.emailAddress';
+export const setEmailAddress = (emailAddress) => updateState(MetaStore, STATE_EMAIL_ADDRESS, emailAddress);
+
+```
+
+parametrizing the event is very practical because you can then more easily implement a state change listener in receiving React components that will update
+themselves when the state was changed:
+
+```js
+constructor(props) {
+  super(props)
+  this.state = {};
+  connect(this, STATE_EMAIL_ADDRESS, (emailAddress) => this.setState({emailADdress}));
+}
+```
+
+Couldn't be so much more straightforward, don't you think?
 
 ### With Two-Way-Events Strategy...
 
@@ -206,12 +266,12 @@ If you want to add interceptors such as logging to upstream events, *Two-Way-Eve
 export const EMAIL_ADDRESS_UPDATE = 'EMAIL_ADDRESS_UPDATE';
 export const EMAIL_ADDRESS_BROADCAST = 'EMAIL_ADDRESS_BROADCAST';
 
-const metaStore = {}
+const MetaStore = {}
 
 const initMetaStore = () => {
   
     handle(EMAIL_ADDRESS_UPDATE, (changedEmailAddress) => {
-      metaStore.emailAddress = changedEmailAddress;
+      MetaStore.emailAddress = changedEmailAddress;
       dispatch(EMAIL_ADDRESS_BROADCAST, emailAddress);    
     })
 
