@@ -167,16 +167,35 @@ unhandle('MY-EVENT');
 
 # Implementing the MetaStore Container
 
-There are two major strategies to implement a state container, which are the **Two-Way-Events** strategy and the **One-Way-Events** strategy.
-The *Two-Way-Events* strategy means that the central data container (MetaStore) communicates with the rest of the software only through events. 
-In Two-Way-Events strategy, the state container uses events for both sending and receiving data. It listens for events for receiving data and
-dispatches events for sending data. But in *One-Way-Events* strategy instead, events are used only for broadcasting. The State Container does not 
-listen for events to receive data. The data is placed inside the container directly through setter or update method invocations from outside. Please 
-read more about these state container strategies on a [blog article](http://www.oppikone.fi/blog/implementing-metamatic-state-container.html).
+One wonderful thing about the Metamatic framework is that a state container as such is a plain object. Therefore implementing a Metamatic state container 
+could not be easier. Another wonderful thing is that you modify the state container through direct method invocation, through very basic and plain setter methods.
+This makes the code very readable. If any component wants to update a state in the state container, it should be done by
+directly invoking a setter method. This approach is opposite to some major state container frameworks that require you to dispatch
+events from components in order to update the state container. Such practice does not only turn the code unreadable and unmaintainable but is also
+ completely unnecessary and serves no real purpose.
+
+In Metamatic, the flow goes as follows: 
+
+1. States are updated by directly invoking setter (updater) methods of a state container.
+2. State container updater method automatically clones the new value object and updates the state container accordingly.
+3. After setting a new value to the state container, the Metamatic framework broadcasts the changed state to everywhere in the app.
+4. All components that are registered listeners of the dispatched Metamatic event, update their state.
+
+## Important to Remember
+
+Even though updating state container throug direct method invocation,
+
+1. **YOU SHALL NEVER** directly refer to Metamatic state container from outside.
+2. Other components outside the state container shall **NEVER** use getters or direct references to get states from the state container. 
+3. Components shall get events from the Metamatic state container only through **connect**, **connectAll** or **handle** functions provided by the framework.
+
+If you violate any of these three principles you will be involved in using *antipatterns* - and that is dirty business!
+
+Read more about these principles in a [blog article on state container strategies](http://www.oppikone.fi/blog/implementing-metamatic-state-container.html).
 
 ## Create a State Container
 
-Creating a state container is very easy in the Metamatic framework. The state container is essentially only a very simple plain object. You can name it
+In the Metamatic framework, creating a state container is very easy. The state container is essentially only a very simple plain object. You can name it
 as you wish, for instance AppState, AppContainer, MainStore etc. In this example, I'll name the state container as *MetaStore*. To create a MetaStore, create 
 *MetaStore.js* file  Of course the file can have any name you wish. In that file, define the state container object as a plain object:
 
