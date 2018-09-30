@@ -55,7 +55,7 @@ which are to be kept in the scope of the affected component. That's data encapsu
 a related state. In a state container it is now possible to use **observe** function to mark a state for observation. When a state is under observation,
 it will be automatically fired every time when a listener signs up to listen for it. 
 
-### Version 1.3.4: updteState function for easily updating container states and broadcasting changes
+### Version 1.3.4: updateState function for easily updating container states and broadcasting changes
 
 Since version 1.3.4, you can update a state in the state container and dispatch that state with only one line of code. Write very efficient state-container
 aware code with ridiculously few lines of code!
@@ -322,9 +322,9 @@ constructor(props) {
 
 You may want to preconfigure components from the states already in their constructor when they are created. Let's assume that your state container
 holds a list of cars already in a very early phase of the application initialization. Then later you want to create a car selector component that should 
-have the car data available already when it's created - not only when it's changed next time. Why not? It makes sense that if the data is already available
-in some part of the application when a related component is created, why should we NOT preconfigure that component's state with this data already early in
-when the component is being created?
+have the car data available already when it's created - not only when it's changed next time. Why not? It makes sense that we should preconfigure
+a component's state with right data already early on when the component is being created in the first place - given that the data is already available
+in some part of the application by that time, right?
 
 ```js
 
@@ -365,7 +365,7 @@ class CarSelector extends  Component {
   constructor(props) {
     super(props);
     this.state = {};
-    connect(this, STATE_CARS_AVAILABLE = (carsAvailable) => this.setState({carsAvailable}));
+    connect(this, STATE_CARS_AVAILABLE, (carsAvailable) => this.setState({carsAvailable}));
   }
   ...
 }
