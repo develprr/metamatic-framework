@@ -257,7 +257,7 @@ Apache 2.0
 
 ## Author 
 
-Heikki Kupiainen / [metamatic.net](http://www.metamatic.net)
+[Heikki Kupiainen](https://www.linkedin.com/in/heikki-kupiainen-oppikone) / [metamatic.net](http://www.metamatic.net)
 
 ## Background
 
