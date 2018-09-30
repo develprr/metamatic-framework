@@ -3,22 +3,27 @@
 ## Introduction
 
 The Metamatic framework is a simple and easy-to-use predictable state container for JavaScript apps. 
-Metamatic is similar to existing main stream state containers such as 'Redux' and 'MobX' and many others but when compared with most state container frameworks,
-it is simpler by one order of magnitude both in the way it is designed and in the amount of code that is required from you to get what you want.  
+Metamatic is partially similar to existing main stream state containers such as 'Redux' and 'MobX' and many others - but in comparison with most state container frameworks,
+it has essential differences that makes it really simple to use. With Metamatic, you can implement a central data management policy in frontend applications quite
+fast and painlessly. With Metamatic, you can get things done faster because 
+you don't need to write endless amounts of repetitive 'spells' to get what you want. Metamatic helps you create cleaner and more maintainable code.
 
-With Metamatic you can implement a central data management policy in frontend applications fast and painlessly. When you implement your state container using Metamatic, you can get things done faster because 
-you don't need to write endless amounts of repetitive 'spells' to get what you want. It helps you create cleaner and more maintainable code.
+Metamatic has fundamental differences to some well-known frameworks such as 'Redux' is that Metamatic directly binds event handlers to corresponding events already in the very moment
+you define them by calling **handle** or **connect** function. When the handlers are already inherently connected to the events, 
+then you don't need to explicitly write clumpy **switch-case** structures to explain the application what action shall be invoked upon which event.
+
+Remember that **switch-case** structures are fundamentally only a different syntax for **if else if else if else** concoctions. 
 
 You don't need to write endless ugly switch-case structures since Metamatic connects events to their handlers elegantly using hash tables, 
 taking internally advantage of JavaScript's` associative arrays. With this solution, you don't need to manually connect events to their handlers anymore. 
 Metamatic does it automatically, due to its very nature! Yet the silly thing about Metamatic is that its internal implementation is drop-dead simple 
 consisting of only about one hundred lines of code!
 
-One fundamental difference to 'Redux' is that Metamatic directly binds event handlers to corresponding events already in the very moment
-you define them by calling **handle** or **connect** function. When the handlers are already inherently connected to the events, 
-then you don't need to explicitly write clumpy **switch-case** structures to explain the application what action shall be invoked upon which event.
-
-Remember that **switch-case** structures are fundamentally only a different syntax for **if else if else if else** concoctions. 
+One major difference to many difficult state container frameworks is also that you don't really need to "pre-configure" your App to use Metamatic. You don't
+need to wrap your application in obscure "Provider" wrappers and you don't need to "inject stores" and other structures to your classes to enable a state
+container. Any class, component, object or helper function can be connected to Metamatic features at any point of the project without any need to do major 
+refactoring to existing application logic or code structure. You can use Metamatic functions on the fly anywhere your app, any time. 
+If your application already uses some other state container framework, you can still introduce Metamatic into your app without removing or changing anything that already exists.
 
 ## News
 
@@ -185,11 +190,13 @@ In Metamatic, the flow goes as follows:
 
 Even though updating state container throug direct method invocation,
 
-1. **YOU SHALL NEVER** directly refer to Metamatic state container from outside.
+1. **YOU SHALL NEVER** directly refer to Metamatic state container from outside. You can call updater methods from outside but not directly the actual container.
 2. Other components outside the state container shall **NEVER** use getters or direct references to get states from the state container. 
 3. Components shall get events from the Metamatic state container only through **connect**, **connectAll** or **handle** functions provided by the framework.
 
-If you violate any of these three principles you will be involved in using *antipatterns* - and that is dirty business!
+The above mentioned three principles are important to keep in mind because directly referring to Metamatic container states would enable the referrer
+components to manipulate the container states without the container being informed. While it's not the end of the world, it's a serious antipattern and strips off the
+container's control over its states, which in turn can cause data integrity bugs that are difficult to track.
 
 Read more about these principles in a [blog article on state container strategies](http://www.oppikone.fi/blog/implementing-metamatic-state-container.html).
 
@@ -211,31 +218,43 @@ Let's say that you want MetaStore to centrally hold some piece of data, let's sa
 broadcast the change:
 
 ```js
-export const EMAIL_ADDRESS_CHANGE = 'EMAIL_ADDRESS_CHANGE';
 
-export const setEmailAddress = (emailAddress) => {
-  MetaStore.emailAddress = emailAddress;
-  dispatch(EMAIL_ADDRESS_CHANGE, emailAddress)
+export const STATE_EMAIL_ADDRESS = 'MetaStore.user.emailAddress';
+export const setEmailAddress = (emailAddress) => 
+  updateState(MetaStore, STATE_EMAIL_ADDRESS, emailAddress);
+```
+
+And register any React component to listen for email address change:
+
+```js
+constructor(props) {
+  super(props);
+  this.state = {};
+  connect(this, STATE_EMAIL_ADDRESS, (emailAddress) => this.setState({emailADdress}));
 }
 ```
 
-That's all what you need!
+For most cases, this is all what you need! In most cases, you only need to MetaStore to replicate the data, store it, and broadcast the change
+to all parts of the app where that data is being displayed. But if you want to create a custom setter function that does some custom modification to the
+objects other than just storing them, you can also write an entirely customized setter function and then exclusively dispatch whatever you wish:
+
+```js
+export const EMAIL_ADDRESS_CHANGE = 'EMAIL_ADDRESS_CHANGE';
+
+export const setEmailAddress = (emailAddress) => {
+  MetaStore.modifiedEmailAddress = doSomeModifications(emailAddress);
+  dispatch(EMAIL_ADDRESS_CHANGE, modifiedEmailAddress);
+}
+```
 
 ## Use updateState Function for Efficient State Manipulation
 
-The above mentioned scenario where you want to do exactly two things to a state container is very common. Therefore Metamatic provides the **updateState** function 
-to do this on a whim. When you really start coding some serious apps with professional-scale state management strategy, 
-you'll find that a vast majority of things that you want to do with a central state container is:
-
-1. Change a value inside the state container
-2. Broadcast the changed value to all components that need it.
-
-And along the way, you also want to have the target value or object cloned to avoid mess!
-
-The wonderful thing is that you can achieve all this with a one line of code in the Metamatic Framework:
+It's very common that you want MetaStore to only do the basic thing: store and dispatch. Therefore Metamatic provides **updateState** function 
+to do this on a whim. The wonderful thing is that you can achieve the essential store-and-broadcast incidence with one line of code:
 
 ```js
-export const setEmailAddress = (emailAddress) => updateState(MetaStore, 'MetaStore.user.emailAddress', emailAddress);
+export const setEmailAddress = (emailAddress) => 
+  updateState(MetaStore, 'MetaStore.user.emailAddress', emailAddress);
 ```
 
 What *updateState* does is that it clones the value object, in this case the *emailAddress* (no matter whether it's a primitive type or a complex object),
@@ -266,7 +285,7 @@ themselves when the state was changed:
 constructor(props) {
   super(props);
   this.state = {};
-  connect(this, STATE_EMAIL_ADDRESS, (emailAddress) => this.setState({emailADdress}));
+  connect(this, STATE_EMAIL_ADDRESS, (emailAddress) => this.setState({emailAddress}));
 }
 ```
 
