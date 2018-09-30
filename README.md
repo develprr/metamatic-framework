@@ -4,20 +4,27 @@
 
 The Metamatic framework is a simple and easy-to-use predictable state container for JavaScript apps. 
 Metamatic is partially similar to existing main stream state containers such as 'Redux' and 'MobX' and many others - but in comparison with most state container frameworks,
-it has essential differences that makes it really simple to use. With Metamatic, you can implement a central data management policy in frontend applications quite
-fast and painlessly. With Metamatic, you can get things done faster because 
-you don't need to write endless amounts of repetitive 'spells' to get what you want. Metamatic helps you create cleaner and more maintainable code.
+it has essential differences that make it really simple to use. With Metamatic, you can implement a central data management policy in frontend applications quite
+fast and painlessly. With Metamatic, you can get things done faster because  you don't need to write endless amounts of repetitive 'spells' to get what you want. 
+Metamatic helps you create cleaner and more maintainable code.
 
-Metamatic has fundamental differences to some well-known frameworks such as 'Redux' is that Metamatic directly binds event handlers to corresponding events already in the very moment
+
+### Say Goodbye to Child-Like "if-elses"
+
+Metamatic has fundamental differences to some well-known frameworks such as 'Redux'. Metamatic directly binds event handlers to corresponding events already in the very moment
 you define them by calling **handle** or **connect** function. When the handlers are already inherently connected to the events, 
 then you don't need to explicitly write clumpy **switch-case** structures to explain the application what action shall be invoked upon which event.
-
 Remember that **switch-case** structures are fundamentally only a different syntax for **if else if else if else** concoctions. 
+
+
+### Use Hash Tables Like Grown-Ups
 
 You don't need to write endless ugly switch-case structures since Metamatic connects events to their handlers elegantly using hash tables, 
 taking internally advantage of JavaScript's` associative arrays. With this solution, you don't need to manually connect events to their handlers anymore. 
 Metamatic does it automatically, due to its very nature! Yet the silly thing about Metamatic is that its internal implementation is drop-dead simple 
 consisting of only about one hundred lines of code!
+
+### Stop Messing Your App With "Provider" Clutter
 
 One major difference to many difficult state container frameworks is also that you don't really need to "pre-configure" your App to use Metamatic. You don't
 need to wrap your application in obscure "Provider" wrappers and you don't need to "inject stores" and other structures to your classes to enable a state
@@ -25,9 +32,30 @@ container. Any class, component, object or helper function can be connected to M
 refactoring to existing application logic or code structure. You can use Metamatic functions on the fly anywhere your app, any time. 
 If your application already uses some other state container framework, you can still introduce Metamatic into your app without removing or changing anything that already exists.
 
+### Robust State-Based Solution Without Props-Hassle
+
+A major innovation within the Metamatic Framework is that it eliminates the props vs. states dilemma that most state container frameworks seem to have.
+Metamatic does not care about props at all! Props do not exist for Metamatic. For Metamatic, there is only two kinds of states: global states that exists
+in the global Metamatic state container (or containers) and local states that exist in the components. The Metamatic Framework is good at cloning global states
+into local scopes. 
+
+### Take Data Encapsulation Seriously 
+
+Did you ever hear anybody saying that components should have no private states at all? Forget that! Private states mean the same as
+data encapsulation and it's a very important part of serious software development. Only a person who doesn't have a little sister would possibly come up 
+with such a crazy statement. But if you have a little sister, just go ask her if you can open and read her letter box! 
+Well, jokes aside, but also software components need private states. It is to be decided in each component, which states shall be dispatched into the app wide storage and 
+which are to be kept in the scope of the affected component. That's data encapsulation, a very basic principle!
+
 ## News
 
-### Version 1.3.4: updateState function for easily updating container states and broadcasting changes
+### Version 1.4.0: observe function allows to preconfigure listener states in advance.
+
+*connect* and *connectAll* functions now  set the listener's state immediately upon their invocation if the state container already contains 
+a related state. In a state container it is now possible to use **observe** function to mark a state for observation. When a state is under observation,
+it will be automatically fired every time when a listener signs up to listen for it. 
+
+### Version 1.3.4: updteState function for easily updating container states and broadcasting changes
 
 Since version 1.3.4, you can update a state in the state container and dispatch that state with only one line of code. Write very efficient state-container
 aware code with ridiculously few lines of code!
@@ -219,7 +247,7 @@ broadcast the change:
 
 ```js
 
-export const STATE_EMAIL_ADDRESS = 'MetaStore.user.emailAddress';
+export const STATE_EMAIL_ADDRESS = 'MetaStore:user.emailAddress';
 export const setEmailAddress = (emailAddress) => 
   updateState(MetaStore, STATE_EMAIL_ADDRESS, emailAddress);
 ```
@@ -254,7 +282,7 @@ to do this on a whim. The wonderful thing is that you can achieve the essential 
 
 ```js
 export const setEmailAddress = (emailAddress) => 
-  updateState(MetaStore, 'MetaStore.user.emailAddress', emailAddress);
+  updateState(MetaStore, 'MetaStore:user.emailAddress', emailAddress);
 ```
 
 What *updateState* does is that it clones the value object, in this case the *emailAddress* (no matter whether it's a primitive type or a complex object),
@@ -270,15 +298,16 @@ After the property was updated inside the containber, it will then be broadcaste
 perhaps not surprisingly, exactly the same as the property locator, which is in this example 'MetaStore.user.emailAddress'.
 
 It is highly recommended that you parametrize the property locator, for example as follows: 
+ 
 
 ```js
 
-export const STATE_EMAIL_ADDRESS = 'MetaStore.user.emailAddress';
+export const STATE_EMAIL_ADDRESS = 'MetaStore:user.emailAddress';
 export const setEmailAddress = (emailAddress) => updateState(MetaStore, STATE_EMAIL_ADDRESS, emailAddress);
 
 ```
 
-parametrizing the event is very practical because you can then more easily implement a state change listener in receiving React components that will update
+Parametrizing the event is very practical because you can then more easily implement a state change listener in receiving React components that will update
 themselves when the state was changed:
 
 ```js
@@ -289,6 +318,66 @@ constructor(props) {
 }
 ```
 
+## Preconfigure Listener Components With Observe Function
+
+You may want to preconfigure components from the states already in their constructor when they are created. Let's assume that your state container
+holds a list of cars already in a very early phase of the application initialization. Then later you want to create a car selector component that should 
+have the car data available already when it's created - not only when it's changed next time. Why not? It makes sense that if the data is already available
+in some part of the application when a related component is created, why should we NOT preconfigure that component's state with this data already early in
+when the component is being created?
+
+```js
+
+// MetaStore with preconfigured values available:
+import {observe} from 'metastore';
+
+const MetaStore = {
+  currentUser: {
+    carsAvailable: [
+        {
+          value: 'tesla-model-3',
+          label: 'Tesla Model 3'
+        },
+        {
+          value: 'kia-niro-ev',
+          label: '2019 Kia Niro EV'
+        }
+    ]
+  }
+}
+
+// make a data event to point to values in store:
+export const STATE_CARS_AVAILABLE = 'MetaStore:currentUser.carsAvailable';
+
+// make the data observable:
+observe(MetaStore, STATE_CARS_AVAILABLE);
+```
+
+Now, let's make a constructor for the CarSelector component that will receive the available cars preconfigured already upon creation, inside the constructor:
+
+```js
+...
+import {connect} from 'metastore';
+import {STATE_CARS_AVAILABLE} from '../store/MetaStore';
+
+class CarSelector extends  Component {
+                          
+  constructor(props) {
+    super(props);
+    this.state = {};
+    connect(this, STATE_CARS_AVAILABLE = (carsAvailable) => this.setState({carsAvailable}));
+  }
+  ...
+}
+```
+
+What happens here is that since the available cars were defined already earlier in the MetaStore, now when a new CarSelector component instance is created,
+the available cars will be copied into its state from the MetaStore already in the constructor. A very convenient way to preconfigure React object's states
+upon initialization! Of course, in real world, the available cars list won't be hard-coded inside MetaStore. They will rather be loaded over REST API and then
+placed into MetaStore by preferrably using **updateState** function. Either way, **connect** function will clone that car data into CarSelector's state
+immediately when it's available!
+
+ 
 ## License 
 
 Apache 2.0

@@ -8,6 +8,7 @@ let actionArray = [];
 let actionMap = {};
 let componentIdCounter = 0;
 let actionIdCounter = 0;
+let stateContainers = {};
 
 const createActionId = (listenerId, eventId) => listenerId + '-' + eventId;
 
@@ -58,9 +59,7 @@ const replaceAction = (action) => {
   addAction(action);
 }
 
-
-const addNewAction = (actionId, listenerId, eventId, handler) =>
-    replaceAction(createAction(actionId, listenerId, eventId, handler));
+const addNewAction = (actionId, listenerId, eventId, handler) => replaceAction(createAction(actionId, listenerId, eventId, handler));
 
 const containsActionListenerAndEvent = (action, listenerId, eventId) =>
     action.listenerId === listenerId && action.eventId === eventId;
@@ -97,6 +96,7 @@ const getActionsByEvent = (eventId) =>  actionMap[eventId] || [];
  */
 export const handle = (eventId, handler) => {
   addNewAction(generateActionId(), 'DEFAULT', eventId, handler);
+  dispatchContainerData(eventId);
   buildActionMap();
 }
 
@@ -127,7 +127,42 @@ export const connect = (componentOrListenerId, eventId, handler) => {
   const actionId = createActionId(listenerId, eventId);
   addNewAction(actionId, listenerId, eventId, handler);
   buildActionMap();
+  dispatchContainerData(eventId);
+
 }
+
+
+const extractContainerName = (eventId) => (eventId.indexOf(':') > 0) ? eventId.split(':')[0] : null;
+
+const extractPropertyPath = (eventId) => eventId.split(':')[1].split('.');
+
+const extractContainer = (eventId) => {
+  const containerName = extractContainerName(eventId);
+  return containerName ? stateContainers[containerName] : null;
+}
+
+const getContainerData = (container, propertyPath) => {
+    if (propertyPath.length === 0) {
+      return container;
+    }
+    let nextProp = propertyPath.shift();
+    const innerContainer = container[nextProp];
+    return innerContainer ? getContainerData(innerContainer, propertyPath) : container;
+}
+
+const dispatchContainerData = (eventId) => {
+  const container = extractContainer(eventId);
+  if (!container) {
+    return;
+  }
+  const propertyPath = extractPropertyPath(eventId);
+  const data = getContainerData(container, propertyPath);
+  if (!data) {
+    return;
+  }
+  dispatch(eventId, data);
+};
+
 
 /*
   If you want to connect a component to listen more than one event from MetaStore, you can use connectAll function instead of repeating many times connect
@@ -146,6 +181,7 @@ export const connectAll = (componentOrListenerId, handlerMap) => {
     let handler = handlerMap[eventId];
     const actionId = createActionId(listenerId, eventId);
     addNewAction(actionId, listenerId, eventId, handler);
+    dispatchContainerData(eventId);
   });
   buildActionMap();
 };
@@ -181,9 +217,8 @@ export const dispatch = (eventId, passenger) =>
     getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
 
 
-const setNestedValue = (stateContainer, statePath, value) => {
-  const objectNames = statePath.split('.');
-  let containerName = objectNames.shift();
+const setNestedValue = (stateContainer, eventId, value) => {
+  const objectNames = extractPropertyPath(eventId);
   let targetProperty = objectNames.pop();
   let targetObject = stateContainer;
   objectNames.forEach((objectName) => {
@@ -196,15 +231,25 @@ const setNestedValue = (stateContainer, statePath, value) => {
 }
 
 /*
-  UpdateState method enables to solve a very common state container scenario with a very handy update method. With update call, you can set a value inside your
+  UpdateState method enables to solve a very common state container scenario with a very handy updateState method. With update call, you can set a value inside your
   nested container AND dispatch the changed value to everywhere where it is needed.
  */
 
 export const updateState = (stateContainer, propertyPath, value) => {
   const clonedValue = clone(value);
+  observe(stateContainer, propertyPath);
   setNestedValue(stateContainer, propertyPath, clonedValue);
   dispatch(propertyPath, value);
 }
+
+/* With observe function you can set a part of state container 'under observation'. When a component connects to a state container, the predefined
+state of the container is then dispatched right upon connect.
+ */
+
+export const observe = (stateContainer, propertyPath) => {
+  const containerName = extractContainerName(propertyPath);
+  stateContainers[containerName] = stateContainer;
+};
 
 
 /*
@@ -214,8 +259,10 @@ export const updateState = (stateContainer, propertyPath, value) => {
 export const reset = () => {
   actionArray = [];
   actionMap = {};
+  stateContainers = {};
   componentIdCounter = 0;
   actionIdCounter = 0;
+
 };
 
 /*

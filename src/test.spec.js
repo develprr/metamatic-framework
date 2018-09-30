@@ -1,5 +1,5 @@
 import {assert, describe, it} from 'mocha';
-import {connect, disconnect, dispatch, handle, unhandle, reset, updateState} from '../lib/metamatic';
+import {connect, disconnect, dispatch, handle, unhandle, reset, updateState, observe} from '../lib/metamatic';
 
 let responses = [];
 let value;
@@ -105,17 +105,53 @@ describe('metamatic framework', () => {
 
   it('updateState should create nested property structure inside state container', () => {
     const MetaStore = {};
-    updateState(MetaStore, 'MetaStore.user.addressInfo.emailAddress', 'somebody@trappist');
+    updateState(MetaStore, 'MetaStore:user.addressInfo.emailAddress', 'somebody@trappist');
     MetaStore.user.addressInfo.emailAddress.should.equal('somebody@trappist');
   })
 
   it('updateState should dispatch event', () => {
     const MetaStore = {};
-    const STATE_METASTORE_EMAIL_ADDRESS = 'MetaStore.user.addressInfo.emailAddress';
+    const STATE_METASTORE_EMAIL_ADDRESS = 'MetaStore:user.addressInfo.emailAddress';
     let events = [];
     handle(STATE_METASTORE_EMAIL_ADDRESS, (address) => events.push((address)));
     updateState(MetaStore, STATE_METASTORE_EMAIL_ADDRESS, 'somebody@trappist');
     events.length.should.equal(1);
+  })
+
+
+
+  it('observe: should dispatch states event to listener already at connect', () => {
+    const STATE_METASTORE_EMAIL_ADDRESS = 'MetaStore:user.addressInfo.emailAddress';
+    const MetaStore = {
+      user: {
+        addressInfo: {
+          emailAddress: 'somebody@trappist'
+        }
+      }
+    };
+    let events = [];
+    let listener = {};
+
+    observe(MetaStore, STATE_METASTORE_EMAIL_ADDRESS);
+
+    connect(listener, STATE_METASTORE_EMAIL_ADDRESS, (address) => {
+      events.push(address)
+    });
+    events.length.should.equal(1);
+
+  })
+
+  it('updateState should dispatch states event to listener already at connect', () => {
+    const STATE_METASTORE_EMAIL_ADDRESS = 'MetaStore:user.addressInfo.emailAddress';
+    const MetaStore = {};
+    let events = [];
+    let listener = {};
+    updateState(MetaStore, STATE_METASTORE_EMAIL_ADDRESS, 'somebody@trappist');
+    connect(listener, STATE_METASTORE_EMAIL_ADDRESS, (address) => {
+      events.push(address)
+    });
+    events.length.should.equal(1);
+
   })
 
 });
