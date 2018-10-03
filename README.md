@@ -258,7 +258,7 @@ And register any React component to listen for email address change:
 constructor(props) {
   super(props);
   this.state = {};
-  connect(this, STATE_EMAIL_ADDRESS, (emailAddress) => this.setState({emailADdress}));
+  connect(this, STATE_EMAIL_ADDRESS, (emailAddress) => this.setState({emailAddress}));
 }
 ```
 
@@ -293,9 +293,18 @@ It specifies the target property inside the state container that will be updated
 having a property *emailAddress* to be updated. 
 
 If that structure does not exist inside the container, no worries, it will be created by *updateState* on the fly!
+After the state update described in the example above, *MetaStore* would contain a structure as follows: 
 
-After the property was updated inside the containber, it will then be broadcasted to all over the app as a passenger for an event, whose name is, 
-perhaps not surprisingly, exactly the same as the property locator, which is in this example 'MetaStore.user.emailAddress'.
+```js
+MetaStore = {
+  user: {
+    emailAddress: 'somebody@somewhere.com'
+  }
+}
+```
+
+After the property was updated inside the container, it will then be broadcasted to all over the app as a passenger for an event, whose name is, 
+perhaps not surprisingly, exactly the same as the property locator, which is in this example 'MetaStore:user.emailAddress'.
 
 It is highly recommended that you parametrize the property locator, for example as follows: 
  
