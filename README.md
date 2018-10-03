@@ -338,7 +338,7 @@ in some part of the application by that time, right?
 ```js
 
 // MetaStore with preconfigured values available:
-import {observe} from 'metastore';
+import {observe} from 'metamatic';
 
 const MetaStore = {
   currentUser: {
@@ -366,7 +366,7 @@ Now, let's make a constructor for the CarSelector component that will receive th
 
 ```js
 ...
-import {connect} from 'metastore';
+import {connect} from 'metamatic';
 import {STATE_CARS_AVAILABLE} from '../store/MetaStore';
 
 class CarSelector extends  Component {
