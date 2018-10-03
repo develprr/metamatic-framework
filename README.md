@@ -29,7 +29,7 @@ consisting of only about one hundred lines of code!
 One major difference to many difficult state container frameworks is also that you don't really need to "pre-configure" your App to use Metamatic. You don't
 need to wrap your application in obscure "Provider" wrappers and you don't need to "inject stores" and other structures to your classes to enable a state
 container. Any class, component, object or helper function can be connected to Metamatic features at any point of the project without any need to do major 
-refactoring to existing application logic or code structure. You can use Metamatic functions on the fly anywhere your app, any time. 
+refactoring to existing application logic or code structure. You can use Metamatic functions on the fly anywhere inside your app, any time. 
 If your application already uses some other state container framework, you can still introduce Metamatic into your app without removing or changing anything that already exists.
 
 ### Robust State-Based Solution Without Props-Hassle
@@ -43,7 +43,7 @@ into local scopes.
 
 Did you ever hear anybody saying that components should have no private states at all? Forget that! Private states mean the same as
 data encapsulation and it's a very important part of serious software development. Only a person who doesn't have a little sister would possibly come up 
-with such a crazy statement. But if you have a little sister, just go ask her if you can open and read her letter box! 
+with such a crazy statement. But if you have a little sister, just go ask her if you can open and read her diary! 
 Well, jokes aside, but also software components need private states. It is to be decided in each component, which states shall be dispatched into the app wide storage and 
 which are to be kept in the scope of the affected component. That's data encapsulation, a very basic principle!
 
@@ -138,8 +138,8 @@ use connectAll:
 
 ```js
 connectAll(this, {
-  LOGIN_STATE_CHANGE: (loggedIn) => this.setState({loggedIn}),
-  CAR_MODEL_SELECTION_CHANGE: (selectedCarModel) => this.setState({selectedCarModel})
+  [LOGIN_STATE_CHANGE]: (loggedIn) => this.setState({loggedIn}),
+  [CAR_MODEL_SELECTION_CHANGE]: (selectedCarModel) => this.setState({selectedCarModel})
 });
 ```
 
@@ -150,8 +150,8 @@ constructor(props) {
     super(props);
     this.state = {loggedIn: true};
     connectAll(this, {
-      LOGIN_STATE_CHANGE: (loggedIn) => this.setState({loggedIn}),
-      CAR_MODEL_SELECTION_CHANGE: (selectedCarModel) 
+      [LOGIN_STATE_CHANGE]: (loggedIn) => this.setState({loggedIn}),
+      [CAR_MODEL_SELECTION_CHANGE]: (selectedCarModel) 
         => this.setState({selectedCarModel})
     });
   }
@@ -262,7 +262,7 @@ constructor(props) {
 }
 ```
 
-For most cases, this is all what you need! In most cases, you only need to MetaStore to replicate the data, store it, and broadcast the change
+For most cases, this is all what you need! In most cases, you only need MetaStore to replicate the data, store it, and broadcast the change
 to all parts of the app where that data is being displayed. But if you want to create a custom setter function that does some custom modification to the
 objects other than just storing them, you can also write an entirely customized setter function and then exclusively dispatch whatever you wish:
 
