@@ -39,14 +39,6 @@ Metamatic does not care about props at all! Props do not exist for Metamatic. Fo
 in the global Metamatic state container (or containers) and local states that exist in the components. The Metamatic Framework is good at cloning global states
 into local scopes. 
 
-### Take Data Encapsulation Seriously 
-
-Did you ever hear anybody saying that components should have no private states at all? Forget that! Private states mean the same as
-data encapsulation and it's a very important part of serious software development. Only a person who doesn't have a little sister would possibly come up 
-with such a crazy statement. But if you have a little sister, just go ask her if you can open and read her diary! 
-Well, jokes aside, but also software components need private states. It is to be decided in each component, which states shall be dispatched into the app wide storage and 
-which are to be kept in the scope of the affected component. That's data encapsulation, a very basic principle!
-
 ## News
 
 ### Version 1.4.0: observe function allows to preconfigure listener states in advance.
@@ -62,7 +54,7 @@ aware code with ridiculously few lines of code!
    
 ### Version 1.2.8: Better way to connect and disconnect objects 
 Since version 1.2.8, you can register *any* component by passing *this* reference to **connect** function. The Metamatic Framework now internally injects
-a unique ID to each registered component so the user doesn't need to care about IDs.
+a unique ID to each registered component so the user doesn't need tore about IDs.
 
 ## Writings and Samples
 
