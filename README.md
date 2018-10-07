@@ -203,12 +203,12 @@ unhandle('MY-EVENT');
 
 # Using Metamatic's Embedded Data Container
 
-When you code with Metamatic the chances are that you don't need to define any data container at all but rather let over this headache over to 
+When you code with Metamatic the chances are that you don't need to define any data container at all but rather let this headache over to 
 the Metamatic framework. Metamatic knows how to keep containers in pure immutable state and guards their data purity like a lion. When you use Metamatic's 
 **update** and **store** functions then Metamatic will take care of the boring job of managing the actual data container. Then you only need to update states
 and connect your components to states that they need.
 
-Consider that you want to configure an appwide state, for example an *activeUser* object that shall keep the active user's important data safe in one place
+Consider that you want to configure an app-wide state, for example an *activeUser* object that shall keep the active user's important data safe in one place
 in the app. That is fantastically easy using **store** function. First, you have to define the name of your app state. Let's do it:
 
 ```js
@@ -236,7 +236,7 @@ Now Metamatic has stored the the active user's data. Oh and yes, of course you c
  ```
  
  When you want this data to be available for some component, yes, in deed React or Vue or Angular or whatever kind of JavaScript component, just bind that component
- to the Metamatic data container throuch connect function. Here is a ReactJS example, connecting a component to a Metamatic state is actually just one line of code:
+ to the Metamatic data container through *connect* function. Here is a ReactJS example, connecting a component to a Metamatic state is actually just one line of code:
  
  
 ```js
@@ -245,19 +245,20 @@ import {connect} from 'metamatic';
 
 class UserInfo extends Component {
   
-  componentDidMount = () => connect(this, STATE_ACTIVE_USER, (state) => this.setState(state));
+  componentDidMount = () => 
+    connect(this, STATE_ACTIVE_USER, (state) => this.setState(state));
 
 }
 
 ```
 
-If the state was initially set using *store* function before an event was connected to it, it still works because Metamatic connects listeners to states
+If the state was initially set using *store* function before a listener was connected to it, it still works because Metamatic connects listeners to states
 retrospectively, which means you can set a state earlier somewhere and once a component is later on connected to that state, it is then cloned into the listener
 component at the time when the component is mounted. But don't connect a component to Metamatic inside a constructor because *connect* may immediately 
-try to clone a state into container. And that must not be done in the constructor yet because at the time a constructor function is executed component is not yet
-mounted and it is a wrong thing to do to set state on a component that isn't yet mounted!
+try to clone a container's state into component's state. And that shall not be done in the constructor yet because at the time a constructor function is executed component is not yet
+mounted and in ReactJS, it is a wrong thing to do to set state on a component that isn't yet mounted!
 
-Needless to say, when the state is updated later on, it will then automatically update all connected components. For updating states, you can use both **update**
+Needless to say, when a Metamatic state is updated later on, the framework will then automatically update all connected components. For updating states, you can use both **update**
 and **store** functions. The difference between these two functions is that that *store* completely overrides the existing state and *update* only updates it:
 
  ```js
@@ -269,16 +270,16 @@ update(STATE_ACTIVE_USER, {
  ``` 
 
 In this example, *update* function just leaves the original *username* attribute in the state intact, defines a new attribute *phone* and overrides *emailAddress*.
-If you used *store* here inside of *update*, username would have been deleted from the state because it was not set in the update object. You can also
-use *update* function when you define a state first time, the difference is just that *update* merges new data state with the existing one whereas *store*
+But if you used *store* here instead of *update*, username would have been deleted from the state because it was not set in the update object. You can also
+use *update* function when you define a state first time, the difference is just that *update* merges a new data state with the existing one whereas *store*
 totally replaces the old data state with the new one. Therefore *store* is useful if you want to entirely remove some attributes from a state.
 
 
 # Implementing Your Own MetaStore Container
 
-Albeit Most likely *store* and *update* functions are all what you need for state container management, there may still want to be situations that user might
-want to do some old-school state container coding and define state containers by themselves. The good news is that Metamatic supports even that kind of approach
-as well.
+Albeit *store* and *update* functions are most likely all what you need for state container management, there may still be situations that user wants
+to do some old-school state container coding and define state containers by themselves. The good news is that Metamatic supports even that as well.
+And even then, it still beats most established state container frameworks in the elegance it is done!
 
 One wonderful thing about the Metamatic framework is that a state container as such is a plain object. Therefore implementing a Metamatic state container 
 could not be easier. Another wonderful thing is that you modify the state container through direct method invocation, through very basic and plain setter methods.
