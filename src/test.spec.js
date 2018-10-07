@@ -1,5 +1,5 @@
 import {assert, describe, it} from 'mocha';
-import {connect, disconnect, dispatch, handle, unhandle, reset, updateStore, observeStore} from '../lib/metamatic';
+import {connect, disconnect, dispatch, handle, unhandle, reset, updateStore, observeStore, store, getStore, update} from '../lib/metamatic';
 
 let responses = [];
 let value;
@@ -10,6 +10,7 @@ describe('metamatic framework', () => {
     responses = [];
     reset();
   });
+
 
   it('should handle dispatch functions that have matching event ID', () => {
 
@@ -116,9 +117,7 @@ describe('metamatic framework', () => {
     handle(STATE_METASTORE_EMAIL_ADDRESS, (address) => events.push((address)));
     updateStore(MetaStore, STATE_METASTORE_EMAIL_ADDRESS, 'somebody@trappist');
     events.length.should.equal(1);
-  })
-
-
+  });
 
   it('observeStore: should dispatch states event to listener already at connect', () => {
     const STATE_METASTORE_EMAIL_ADDRESS = 'MetaStore:user.addressInfo.emailAddress';
@@ -139,7 +138,7 @@ describe('metamatic framework', () => {
     });
     events.length.should.equal(1);
 
-  })
+  });
 
   it('updateStore should dispatch states event to listener already at connect', () => {
     const STATE_METASTORE_EMAIL_ADDRESS = 'MetaStore:user.addressInfo.emailAddress';
@@ -152,6 +151,122 @@ describe('metamatic framework', () => {
     });
     events.length.should.equal(1);
 
+  });
+
+
+  it('store function should set flat value inside embedded store', () => {
+    const STATE_EMAIL_ADDRESS = 'STATE_EMAIL_ADDRESS';
+    store(STATE_EMAIL_ADDRESS, 'somebody@trappist');
+    getStore()[STATE_EMAIL_ADDRESS].should.equal('somebody@trappist');
   })
+
+  it('store function should be able to store states with many values', () => {
+    const STATE_USER_INFO = 'STATE_USER_INFO';
+    let dataState = {
+      username: 'somebody',
+      emailAddress: 'somebody@trappist'
+    };
+    store(STATE_USER_INFO, dataState);
+    getStore()[STATE_USER_INFO].emailAddress.should.equal('somebody@trappist');
+    getStore()[STATE_USER_INFO].username.should.equal('somebody');
+  });
+
+  it('store function clones objects so modifying original state should not change the data inside the store', () => {
+    const STATE_USER_INFO = 'STATE_USER_INFO';
+    let dataState = {
+      emailAddress: 'somebody@trappist'
+    };
+    store(STATE_USER_INFO, dataState);
+    dataState.emailAddress = 'afterwards_changed@emailaddress';
+    getStore()[STATE_USER_INFO].emailAddress.should.equal('somebody@trappist');
+  });
+
+  it('store function completely overrides the previous state in the container and thereby also existing values', () => {
+    const STATE_USER_INFO = 'STATE_USER_INFO';
+    let dataState = {
+      username: 'somebody',
+      emailAddress: 'somebody@trappist'
+    };
+    store(STATE_USER_INFO, dataState);
+
+    let newStateWithoutUsername = {
+      emailAddress: 'somebody@else'
+    };
+
+    store(STATE_USER_INFO, newStateWithoutUsername);
+
+    'somebody'.should.not.equal( getStore()[STATE_USER_INFO].username);
+  });
+
+  it('connect function retrospectively receives data state earlier set by store function', () => {
+    const STATE_USER_INFO = 'STATE_USER_INFO';
+    let dataState = {
+      username: 'somebody',
+      emailAddress: 'somebody@trappist'
+    };
+    store(STATE_USER_INFO, dataState);
+    const listener = {};
+    connect(listener, STATE_USER_INFO, (userInfo) => responses.push(userInfo));
+    responses.length.should.equal(1);
+    responses[0].username.should.equal('somebody');
+  });
+
+  it('handle function retrospectively receives data state earlier set by store function', () => {
+    const STATE_USER_INFO = 'STATE_USER_INFO';
+    let dataState = {
+      username: 'somebody',
+      emailAddress: 'somebody@trappist'
+    };
+    store(STATE_USER_INFO, dataState);
+    handle(STATE_USER_INFO, (userInfo) => responses.push(userInfo));
+    responses.length.should.equal(1);
+    responses[0].username.should.equal('somebody');
+  });
+
+
+  it('connect function retrospectively receives data state earlier set by update function', () => {
+    const STATE_USER_INFO = 'STATE_USER_INFO';
+    let dataState = {
+      username: 'somebody',
+      emailAddress: 'somebody@trappist'
+    };
+    update(STATE_USER_INFO, dataState);
+    const listener = {};
+    connect(listener, STATE_USER_INFO, (userInfo) => responses.push(userInfo));
+    responses.length.should.equal(1);
+    responses[0].username.should.equal('somebody');
+  });
+
+  it('handle function retrospectively receives data state earlier set by update function', () => {
+    const STATE_USER_INFO = 'STATE_USER_INFO';
+    let dataState = {
+      username: 'somebody',
+      emailAddress: 'somebody@trappist'
+    };
+    update(STATE_USER_INFO, dataState);
+    handle(STATE_USER_INFO, (userInfo) => responses.push(userInfo));
+    responses.length.should.equal(1);
+    responses[0].username.should.equal('somebody');
+  });
+
+  it('update function does not erase old unaffected values inside existing state', () => {
+    const STATE_USER_INFO = 'STATE_USER_INFO';
+    let dataState = {
+      username: 'somebody',
+      emailAddress: 'somebody@trappist'
+    };
+    store(STATE_USER_INFO, dataState);
+
+    let newState = {
+      emailAddress: 'somebody@else'
+    };
+
+    update(STATE_USER_INFO, newState);
+
+    handle(STATE_USER_INFO, (userInfo) => responses.push(userInfo));
+    responses.length.should.equal(1);
+    responses[0].username.should.equal('somebody');
+    responses[0].emailAddress.should.equal('somebody@else');
+  });
 
 });

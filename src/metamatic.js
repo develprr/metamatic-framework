@@ -9,6 +9,7 @@ let actionMap = {};
 let componentIdCounter = 0;
 let actionIdCounter = 0;
 let dataStores = {};
+let defaultStore = {};
 
 const createActionId = (listenerId, eventId) => listenerId + '-' + eventId;
 
@@ -96,8 +97,8 @@ const getActionsByEvent = (eventId) =>  actionMap[eventId] || [];
  */
 export const handle = (eventId, handler) => {
   addNewAction(generateActionId(), 'DEFAULT', eventId, handler);
-  dispatchContainerData(eventId);
   buildActionMap();
+  dispatchContainerData(eventId);
 }
 
 /*
@@ -128,17 +129,15 @@ export const connect = (componentOrListenerId, eventId, handler) => {
   addNewAction(actionId, listenerId, eventId, handler);
   buildActionMap();
   dispatchContainerData(eventId);
-
 }
 
+const extractContainerName = (eventId) => eventId.includes(':') ? eventId.split(':')[0] : null;
 
-const extractContainerName = (eventId) => (eventId.indexOf(':') > 0) ? eventId.split(':')[0] : null;
-
-const extractPropertyPath = (eventId) => eventId.split(':')[1].split('.');
+const extractPropertyPath = (eventId) => eventId.includes(':') ? eventId.split(':')[1].split('.') : eventId.split('.');
 
 const extractContainer = (eventId) => {
   const containerName = extractContainerName(eventId);
-  return containerName ? dataStores[containerName] : null;
+  return containerName ? dataStores[containerName] : defaultStore;
 }
 
 const getContainerData = (container, propertyPath) => {
@@ -147,7 +146,7 @@ const getContainerData = (container, propertyPath) => {
     }
     let nextProp = propertyPath.shift();
     const innerContainer = container[nextProp];
-    return innerContainer ? getContainerData(innerContainer, propertyPath) : container;
+    return innerContainer ? getContainerData(innerContainer, propertyPath) : null;
 }
 
 const dispatchContainerData = (eventId) => {
@@ -251,6 +250,18 @@ export const observeStore = (externalStore, propertyPath) => {
   dataStores[containerName] = externalStore;
 };
 
+export const update = (eventName, state) => {
+  defaultStore[eventName] = defaultStore[eventName] || {};
+  defaultStore[eventName] = Object.assign(defaultStore[eventName], clone(state));
+  dispatch(eventName, defaultStore[eventName]);
+};
+
+
+export const store = (eventName, state) => {
+  defaultStore[eventName] = clone(state);
+  dispatch(eventName, defaultStore[eventName]);
+};
+
 
 /*
   Clear all events and listeners with reset function. Mainly needed only for tests and debugging
@@ -266,6 +277,12 @@ export const reset = () => {
 };
 
 /*
-  get clone of event dictionary . Mainly needed only for debugging by author
+  get clone of event dictionary. Mainly needed only for debugging
  */
 export const getActions = () => [...actionArray];
+
+
+/*
+ get clone of getStore. Mainly needed only for debugging
+ */
+export const getStore = () => clone(defaultStore);
