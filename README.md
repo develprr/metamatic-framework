@@ -16,10 +16,10 @@ Remember that **switch-case** structures are fundamentally only a different synt
 
 ### Abstract Away State Container Management
 
-Metamatic takes your coding to an entirely new abstraction level. With Metamatic, you can implement your JavaScript (ES6, TypeScript etc.) based apps without defining
+Metamatic takes your coding to an entirely new abstraction level. With Metamatic, you can implement your apps without defining
 any state containers by yourself at all. This is a strikingly paradigm-shifting approach that makes Metamatic differ from those old school
-state container frameworks that expect you to always implement containers by yourself. In Metamatic, you can concentrate solely on updating states and just defining  
-which states you want to keep as component's private states and which ones will be dispatched onto the app-wide highway to be dynamically available 
+state container frameworks that expect you to always implement containers by yourself. In Metamatic, you can concentrate solely on updating states 
+and just defining which states you want to keep as component's private states and which ones will be dispatched onto the app-wide highway to be dynamically available 
 for all other components that need them.
 
 ### Use Hash Tables Like Grown-Ups
@@ -27,12 +27,12 @@ for all other components that need them.
 You don't need to write endless ugly switch-case structures since Metamatic connects events to their handlers elegantly using hash tables, 
 taking internally advantage of JavaScript's` associative arrays. With this solution, you don't need to manually connect events to their handlers anymore. 
 Metamatic does it automatically, due to its very nature! Yet the silly thing about Metamatic is that its internal implementation is drop-dead simple 
-consisting of only about one hundred lines of code!
+consisting of only about two hundred lines of code!
 
 ### Stop Messing Your App With "Provider" Clutter
 
 One major difference to many difficult state container frameworks is also that you don't really need to "pre-configure" your App to use Metamatic. You don't
-need to wrap your application in obscure "Provider" wrappers and you don't need to "inject stores" and other structures to your classes to enable a state
+need to wrap your application inside obscure "Provider" wrappers and you don't need to "inject stores" and other structures to your classes to enable a state
 container. Any class, component, object or helper function can be connected to Metamatic features at any point of the project without any need to do major 
 refactoring to existing application logic or code structure. You can use Metamatic functions on the fly anywhere inside your app, any time. 
 If your application already uses some other state container framework, you can still introduce Metamatic into your app without removing or changing anything that already exists.
@@ -51,18 +51,17 @@ makes it easier to design components that are more independent and also reusable
 
 ## News
 
-### Version 1.4.6 New update and store functions abstract away data containers
+### Version 1.4.6 Abstract away data containers with update and store functions 
 
-Metamatic version 1.4.6 introduces the groundbreaking new data store methods **update** and **store**  functions. With these functions, you can forget data stores alltogether
-and concentrate on states only. A paradigm shift in deed! Also old *updateState* function has been renamed to **updateStore** and *observe* has been renamed to *observeStore*
+Metamatic proudly introduces the groundbreaking data store functions **update** and **store**. With these functions, you can forget data stores alltogether
+and concentrate on states only. A paradigm shift in deed! Also old *updateState* function has been renamed to **updateStore** and *observe* has been renamed to **observeStore**.
 
 ### 1.4.0 observeStore function allows to preconfigure listener states in advance
 
-*connect* and *connectAll* functions now  set the listener's state retrospectively from the state container if such was  
-a related state. In a state container it is now possible to use ~~observe~~ **observeStore**  function to mark a state inside store for observation. 
-When a state is under observation,it will be automatically fired every time when a listener signs up to listen for it. 
+*connect* and *connectAll* functions now  set the listener's state retrospectively from the state container if such was defined. In a state container it is now possible to use ~~observe~~ **observeStore**  function to mark a state inside store for observation. 
+When a state is under observation, it will be automatically fired every time when a listener signs up to listen for it. 
 
-### Version 1.3.4: updateStore ˇ function for easily updating container states and broadcasting changes
+### Version 1.3.4: updateStore function for easily updating container states and broadcasting changes
 
 Since version 1.3.4, you can update a state in the state container and dispatch that state with only one line of code. Write very efficient state-container
 aware code with ridiculously few lines of code!
@@ -404,16 +403,13 @@ Parametrizing the event is very practical because you can then more easily imple
 themselves when the state was changed:
 
 ```js
-constructor(props) {
-  super(props);
-  this.state = {};
-  connect(this, STATE_EMAIL_ADDRESS, (emailAddress) => this.setState({emailAddress}));
+componentDidMount = () => connect(this, STATE_EMAIL_ADDRESS, (emailAddress) => this.setState({emailAddress}));
 }
 ```
 
-## Preconfigure Listener Components With Observe Function
+## Preconfigure Listener Components With observeStore Function
 
-You may want to preconfigure components from the states already in their constructor when they are created. Let's assume that your state container
+You may want components to receive their states or part of their states from outside already upon mounting. Let's assume that your state container
 holds a list of cars already in a very early phase of the application initialization. Then later you want to create a car selector component that should 
 have the car data available already when it's created - not only when it's changed next time. Why not? It makes sense that we should preconfigure
 a component's state with right data already early on when the component is being created in the first place - given that the data is already available
@@ -446,7 +442,7 @@ export const STATE_CARS_AVAILABLE = 'MetaStore:currentUser.carsAvailable';
 observeStore(MetaStore, STATE_CARS_AVAILABLE);
 ```
 
-Now, let's make a constructor for the CarSelector component that will receive the available cars preconfigured already when the component is being mounted:
+Now, let's make CarSelector receive the available cars preconfigured already when the component is being mounted:
 
 ```js
 ...
