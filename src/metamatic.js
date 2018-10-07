@@ -235,10 +235,10 @@ const setNestedValue = (stateContainer, eventId, value) => {
   nested container AND dispatch the changed value to everywhere where it is needed.
  */
 
-export const updateState = (stateContainer, propertyPath, value) => {
+export const updateStore = (externalStore, propertyPath, value) => {
   const clonedValue = clone(value);
-  observe(stateContainer, propertyPath);
-  setNestedValue(stateContainer, propertyPath, clonedValue);
+  observeStore(externalStore, propertyPath);
+  setNestedValue(externalStore, propertyPath, clonedValue);
   dispatch(propertyPath, value);
 }
 
@@ -246,9 +246,9 @@ export const updateState = (stateContainer, propertyPath, value) => {
 state of the container is then dispatched right upon connect.
  */
 
-export const observe = (stateContainer, propertyPath) => {
+export const observeStore = (externalStore, propertyPath) => {
   const containerName = extractContainerName(propertyPath);
-  stateContainers[containerName] = stateContainer;
+  stateContainers[containerName] = externalStore;
 };
 
 
