@@ -51,12 +51,12 @@ makes it easier to design components that are more independent and also reusable
 
 ## News
 
-### Version 1.4.6 Abstract away data containers with update and store functions 
+### Version 1.4.6: Abstract away data containers with update and store functions 
 
 Metamatic proudly introduces the groundbreaking data store functions **update** and **store**. With these functions, you can forget data stores alltogether
 and concentrate on states only. A paradigm shift in deed! Also old *updateState* function has been renamed to **updateStore** and *observe* has been renamed to **observeStore**.
 
-### 1.4.0 observeStore function allows to preconfigure listener states in advance
+### Version 1.4.0: observeStore function allows to preconfigure listener states in advance
 
 *connect* and *connectAll* functions now  set the listener's state retrospectively from the state container if such was defined. In a state container it is now possible to use ~~observe~~ **observeStore**  function to mark a state inside store for observation. 
 When a state is under observation, it will be automatically fired every time when a listener signs up to listen for it. 
@@ -67,6 +67,7 @@ Since version 1.3.4, you can update a state in the state container and dispatch 
 aware code with ridiculously few lines of code!
    
 ### Version 1.2.8: Better way to connect and disconnect objects 
+
 Since version 1.2.8, you can register *any* component by passing *this* reference to **connect** function. The Metamatic Framework now internally injects
 a unique ID to each registered component so the user doesn't need tore about IDs.
 
