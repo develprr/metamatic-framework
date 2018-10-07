@@ -14,7 +14,7 @@ Metamatic has fundamental differences to some well-known frameworks such as 'Red
 you define them by calling **handle** or **connect** function. When the handlers are already inherently connected to the event, you don't need to explicitly write clumpy **switch-case** structures to explain the application what action shall be invoked upon which event.
 Remember that **switch-case** structures are fundamentally only a different syntax for **if else if else if else** concoctions. 
 
-### Abstract Away State Container Manangement
+### Abstract Away State Container Management
 
 Metamatic takes your coding to an entirely new abstraction level. With Metamatic, you can implement your JavaScript (ES6, TypeScript etc.) based apps without defining
 any state containers by yourself at all. This is a strikingly paradigm-shifting approach that makes Metamatic differ from those old school
