@@ -1,6 +1,6 @@
 {
   "name": "metamatic",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Metamatic is a framework for central application data management and event driven coding.",
   "main": "index.j",
   "scripts": {

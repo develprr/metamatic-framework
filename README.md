@@ -8,12 +8,6 @@ it has essential differences that make it really simple to use. With Metamatic, 
 fast and painlessly. With Metamatic, you can get things done faster because  you don't need to write endless amounts of repetitive 'spells' to get what you want. 
 Metamatic helps you create cleaner and more maintainable code.
 
-### Say Goodbye to Child-Like "if-elses"
-
-Metamatic has fundamental differences to some well-known frameworks such as 'Redux'. Metamatic directly binds event handlers to corresponding events already in the very moment
-you define them by calling **handle** or **connect** function. When the handlers are already inherently connected to the event, you don't need to explicitly write clumpy **switch-case** structures to explain the application what action shall be invoked upon which event.
-Remember that **switch-case** structures are fundamentally only a different syntax for **if else if else if else** concoctions. 
-
 ### Abstract Away State Container Management
 
 Metamatic takes your coding to an entirely new abstraction level. With Metamatic, you can implement your apps without defining
@@ -21,6 +15,12 @@ any state containers by yourself at all. This is a strikingly paradigm-shifting 
 state container frameworks that expect you to always implement containers by yourself. In Metamatic, you can concentrate solely on updating states 
 and just defining which states you want to keep as component's private states and which ones will be dispatched onto the app-wide highway to be dynamically available 
 for all other components that need them.
+
+### Say Goodbye to Child-Like "if-elses"
+
+Metamatic has fundamental differences to some well-known frameworks such as 'Redux'. Metamatic directly binds event handlers to corresponding events already in the very moment
+you define them by calling **handle** or **connect** function. When the handlers are already inherently connected to the event, you don't need to explicitly write clumpy **switch-case** structures to explain the application what action shall be invoked upon which event.
+Remember that **switch-case** structures are fundamentally only a different syntax for **if else if else if else** concoctions. 
 
 ### Use Hash Tables Like Grown-Ups
 
