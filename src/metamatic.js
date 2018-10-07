@@ -8,7 +8,7 @@ let actionArray = [];
 let actionMap = {};
 let componentIdCounter = 0;
 let actionIdCounter = 0;
-let stateContainers = {};
+let dataStores = {};
 
 const createActionId = (listenerId, eventId) => listenerId + '-' + eventId;
 
@@ -138,7 +138,7 @@ const extractPropertyPath = (eventId) => eventId.split(':')[1].split('.');
 
 const extractContainer = (eventId) => {
   const containerName = extractContainerName(eventId);
-  return containerName ? stateContainers[containerName] : null;
+  return containerName ? dataStores[containerName] : null;
 }
 
 const getContainerData = (container, propertyPath) => {
@@ -235,11 +235,11 @@ const setNestedValue = (stateContainer, eventId, value) => {
   nested container AND dispatch the changed value to everywhere where it is needed.
  */
 
-export const updateStore = (externalStore, propertyPath, value) => {
-  const clonedValue = clone(value);
+export const updateStore = (externalStore, propertyPath, state) => {
+  const clonedState = clone(state);
   observeStore(externalStore, propertyPath);
-  setNestedValue(externalStore, propertyPath, clonedValue);
-  dispatch(propertyPath, value);
+  setNestedValue(externalStore, propertyPath, clonedState);
+  dispatch(propertyPath, clonedState);
 }
 
 /* With observe function you can set a part of state container 'under observation'. When a component connects to a state container, the predefined
@@ -248,7 +248,7 @@ state of the container is then dispatched right upon connect.
 
 export const observeStore = (externalStore, propertyPath) => {
   const containerName = extractContainerName(propertyPath);
-  stateContainers[containerName] = externalStore;
+  dataStores[containerName] = externalStore;
 };
 
 
@@ -259,7 +259,7 @@ export const observeStore = (externalStore, propertyPath) => {
 export const reset = () => {
   actionArray = [];
   actionMap = {};
-  stateContainers = {};
+  dataStores = {};
   componentIdCounter = 0;
   actionIdCounter = 0;
 
