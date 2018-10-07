@@ -128,7 +128,7 @@ its objects can't be changed from outside. If it was possible to uncontrollably 
 To register a component as listener to MetaStore use **connect** function. It is meant to register components that have a limited lifetime
 such as React components. You can unregister later listeners that have been added with connect function.
 
-When connecting a React component, preferably call connect function already in the component's constructor.
+When connecting a React component, preferably call connect function already when the component is mounted.
 Example of connecting single instance React component:
 
 ```js
@@ -149,18 +149,15 @@ connectAll(this, {
 });
 ```
 
-Inside a React component's constructor that would look like:
+Inside a React component, the connect call should be plased inside componentDidMount life cycle phase:
 
 ```js
-constructor(props) {
-    super(props);
-    this.state = {loggedIn: true};
-    connectAll(this, {
-      [LOGIN_STATE_CHANGE]: (loggedIn) => this.setState({loggedIn}),
-      [CAR_MODEL_SELECTION_CHANGE]: (selectedCarModel) 
-        => this.setState({selectedCarModel})
-    });
-  }
+componentDidMount = () =>  connectAll(this, {
+  [LOGIN_STATE_CHANGE]: (loggedIn) => this.setState({loggedIn}),
+  [CAR_MODEL_SELECTION_CHANGE]: (selectedCarModel) 
+    => this.setState({selectedCarModel})
+});
+ 
 ```
 
 When you have connected a React component to MetaStore, it is important to **disconnect** the component from MetaStore upon unmounting it.
@@ -338,11 +335,7 @@ export const setEmailAddress = (emailAddress) =>
 And register any React component to listen for email address change:
 
 ```js
-constructor(props) {
-  super(props);
-  this.state = {};
-  connect(this, STATE_EMAIL_ADDRESS, (emailAddress) => this.setState({emailAddress}));
-}
+componentDidMount = () => connect(this, STATE_EMAIL_ADDRESS, (emailAddress) => this.setState({emailAddress}));
 ```
 
 For most cases, this is all what you need! In most cases, you only need MetaStore to replicate the data, store it, and broadcast the change
@@ -457,7 +450,7 @@ class CarSelector extends  Component {
 ```
 
 What happens here is that since the available cars were defined already earlier in the MetaStore, now when a new CarSelector component instance is created,
-the available cars will be copied into its state from the MetaStore already in the constructor. A very convenient way to preconfigure React object's states
+the available cars will be copied into its state from the MetaStore already upon mounting. A very convenient way to preconfigure React object's states
 upon initialization! Of course, in real world, the available cars list won't be hard-coded inside MetaStore. They will rather be loaded over REST API and then
 placed into MetaStore by preferrably using **updateStore** function. Either way, **connect** function will clone that car data into CarSelector's state
 immediately when it's available!
