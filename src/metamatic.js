@@ -53,6 +53,8 @@ const clone = (object) => {
   }
 };
 
+const secureClone = (item) => item ? clone(item) : null;
+
 const removeAction = (action) => actionArray = actionArray.filter((actionInArray) => actionInArray.id !== action.id);
 
 const replaceAction = (action) => {
@@ -256,11 +258,15 @@ export const update = (eventName, state) => {
   dispatch(eventName, defaultStore[eventName]);
 };
 
-
 export const store = (eventName, state) => {
   defaultStore[eventName] = clone(state);
   dispatch(eventName, defaultStore[eventName]);
 };
+
+export const obtain = (eventName, property) => {
+  const state = defaultStore[eventName] || {};
+  return secureClone(property ? state[property] : state);
+}
 
 
 /*

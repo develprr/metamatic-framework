@@ -51,6 +51,11 @@ makes it easier to design components that are more independent and also reusable
 
 ## News
 
+### Version 1.5.5: Obtain safely a clone of any Metamatic state with *obtain* function
+
+Metamatic now provides **obtain** function for safely retrieving any states from the Metamatic state container. This method provides an additional pathway
+for implementing supernova-bright logic inside your web app.
+
 ### Version 1.4.6: Abstract away data containers with update and store functions 
 
 Metamatic proudly introduces the groundbreaking data store functions **update** and **store**. With these functions, you can forget data stores alltogether
