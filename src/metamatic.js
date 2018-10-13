@@ -268,6 +268,7 @@ export const obtain = (eventName, property) => {
   return secureClone(property ? state[property] : state);
 }
 
+export const clear = (eventName) => store(eventName, {});
 
 /*
   Clear all events and listeners with reset function. Mainly needed only for tests and debugging

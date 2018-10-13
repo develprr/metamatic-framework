@@ -1,5 +1,5 @@
 import {assert, describe, it} from 'mocha';
-import {connect, disconnect, dispatch, handle, unhandle, reset, updateStore, observeStore, store, getStore, update, obtain} from '../lib/metamatic';
+import {connect, disconnect, dispatch, handle, unhandle, reset, updateStore, observeStore, store, getStore, update, obtain, clear} from '../lib/metamatic';
 
 let responses = [];
 let value;
@@ -290,6 +290,20 @@ describe('metamatic framework', () => {
     };
     store(STATE_USER_INFO, dataState);
 
+    const storedObject = obtain(STATE_USER_INFO);
+    dataState.username = 'changedUsernameInOriginalDataState';
+    dataState.username.should.not.equal(storedObject.username);
+
+  });
+
+  it('clear function should override previously set state with an empty obkect', () => {
+    const STATE_USER_INFO = 'STATE_USER_INFO';
+    let dataState = {
+      username: 'somebody',
+      emailAddress: 'somebody@trappist'
+    };
+    store(STATE_USER_INFO, dataState);
+    clear(STATE_USER_INFO);
     const storedObject = obtain(STATE_USER_INFO);
     dataState.username = 'changedUsernameInOriginalDataState';
     dataState.username.should.not.equal(storedObject.username);

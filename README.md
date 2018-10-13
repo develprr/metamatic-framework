@@ -51,6 +51,10 @@ makes it easier to design components that are more independent and also reusable
 
 ## News
 
+### Version 1.5.7: Clear any Metamatic state with *clear* function
+
+Metamatic now provides a practical **clear** function that allows clearing any state with leaner code than previously calling *store* with an empty parameter object.
+
 ### Version 1.5.5: Obtain safely a clone of any Metamatic state with *obtain* function
 
 Metamatic now provides **obtain** function for safely retrieving any states from the Metamatic state container. This method provides an additional pathway
