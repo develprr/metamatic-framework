@@ -341,13 +341,20 @@ But if you used *store* here instead of *update*, username would have been delet
 use *update* function when you define a state first time, the difference is just that *update* merges a new data state with the existing one whereas *store*
 totally replaces the old data state with the new one. Therefore *store* is useful if you want to entirely remove some attributes from a state.
 
+## Additional Reading
 
-# Implementing Your Own MetaStore Container
+### Enjoy Metamatic Dispatcher as Standalone Feature
+
+Even though Metamatic abstracts away the pain of thinking about broadcasting or radiating events, you can still enjoy Metamatic's event-dispatcher
+mechanism as a standalone feature. Read more about the topic in a [blog article](https://develprr.github.io/metamatic-blog/metamatic/2018/10/15/metamatic-dispatcher-as-standalone-feature.html)!
+
+### Implementing Your Own MetaStore Container
 
 Albeit *store* and *update* functions are most likely all what you need for state container management, there may still be situations that user wants
 to do some old-school state container coding and define state containers by themselves. The good news is that Metamatic supports even that as well.
 And even then, it still beats most established state container frameworks in the elegance how it is done! While implementing custom Metamatic state containers 
 is a rather rare use, you can still read about the topic on the new [Metamatic Blog](https://develprr.github.io/metamatic-blog/metamatic/2018/10/10/implementing-custom-state-containers.html)!
+
 
 ## License 
 
