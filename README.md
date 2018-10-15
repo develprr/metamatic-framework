@@ -12,7 +12,7 @@ without any specific frameworks.
 The Metamatic framework solves a fundamental problem in frontend software design: When any data is changed anywhere in the application, 
 this change must be reliably radiated to all parts of the software that uses the changed data. For example, your frontend app has many components that display
 user's email address. Then the email address is changed for some reason, perhaps by user who updates their account profile details. Or maybe it's updated
-when the frontend client reloads user data from the server. In any case, the problem is the same. The changed data must be updated everywhere where it is needed.
+when the frontend client reloads user data from the server. In any case, the problem is the same. The data must be updated everywhere where it is needed.
 Metamatic provides an elegant next-generation solution to the problem. Metamatic provides a managed state container that keeps a master copy of your data
 safely and immutably in a central data storage. When you update any data that you have placed in the Metamatic data storage, Metamatic then automatically
 takes care that all changes made to that data are reliably broadcasted to everywhere inside your app.
@@ -87,7 +87,7 @@ aware code with ridiculously few lines of code!
 ### Version 1.2.8: Better way to connect and disconnect objects 
 
 Since version 1.2.8, you can register *any* component by passing *this* reference to **connect** function. The Metamatic Framework now internally injects
-a unique ID to each registered component so the user doesn't need tore about IDs.
+a unique ID to each registered component so the user doesn't need to know about IDs.
 
 ## Writings and Samples
 
@@ -122,9 +122,7 @@ A good practice is to create a separate file for each Metamatic state for your a
 create file **UserInfoState.js**. In UserInfoState.js, define the state as and exported constant so that it can be referred from other components:
 
 ```js
-
 export const STATE_USER_INFO = 'STATE_USER_INFO';
-
 ```
 
 Creating a function to update user's email address inside UserInfo state:
@@ -133,11 +131,12 @@ Creating a function to update user's email address inside UserInfo state:
 ```js
 import { update } from 'metamatic';
 
-export const updateEmailAddress = (emailAddress) => update(STATE_USER_INFO, { emailAddress });
+export const updateEmailAddress = (emailAddress) => 
+  update(STATE_USER_INFO, { emailAddress });
 
 ```
 
-Now you have defined a Metamatic UserInfo state and a function to update user's email inside that state. Every time **updateEmailAddress* function is called 
+Now you have defined a Metamatic UserInfo state and a function to update user's email inside that state. Every time *updateEmailAddress* function is called 
 by any component, it updates the UserInfo state in the automatically managed embedded Metamatic state container and a copy of the changed object is also 
 broadcasted to all components that need that data!
 
@@ -341,13 +340,20 @@ But if you used *store* here instead of *update*, username would have been delet
 use *update* function when you define a state first time, the difference is just that *update* merges a new data state with the existing one whereas *store*
 totally replaces the old data state with the new one. Therefore *store* is useful if you want to entirely remove some attributes from a state.
 
+## Additional Reading
 
-# Implementing Your Own MetaStore Container
+### Enjoy Metamatic Dispatcher as Standalone Feature
+
+Even though Metamatic abstracts away the pain of thinking about broadcasting or radiating events, you can still enjoy Metamatic's event-dispatcher
+mechanism as a standalone feature. Read more about the topic in a [blog article](https://develprr.github.io/metamatic-blog/metamatic/2018/10/15/metamatic-dispatcher-as-standalone-feature.html)!
+
+### Implementing Your Own MetaStore Container
 
 Albeit *store* and *update* functions are most likely all what you need for state container management, there may still be situations that user wants
 to do some old-school state container coding and define state containers by themselves. The good news is that Metamatic supports even that as well.
 And even then, it still beats most established state container frameworks in the elegance how it is done! While implementing custom Metamatic state containers 
 is a rather rare use, you can still read about the topic on the new [Metamatic Blog](https://develprr.github.io/metamatic-blog/metamatic/2018/10/10/implementing-custom-state-containers.html)!
+
 
 ## License 
 
