@@ -7,10 +7,10 @@ Metamatic is a powerful and simple-to-use state container architecture. Metamati
 inside your browser-based UI software. It can be used together with any modern JavaScript UI framework such as Vue, React, Angular and even basic JavaScript apps
 without any specific frameworks.
 
-### Metamatic Concept
+### The Metamatic Concept
 
 The Metamatic framework solves a fundamental problem in frontend software design: When any data is changed anywhere in the application, 
-this change must be reliably radiated to all parts of the software that uses the changed data. For example, your frontend app has many components that display
+this change must be reliably radiated to all parts of the software that uses that data. For example, your frontend app has many components that display
 user's email address. Then the email address is changed for some reason, perhaps by user who updates their account profile details. Or maybe it's updated
 when the frontend client reloads user data from the server. In any case, the problem is the same. The data must be updated everywhere where it is needed.
 Metamatic provides an elegant next-generation solution to the problem. Metamatic provides a managed state container that keeps a master copy of your data
