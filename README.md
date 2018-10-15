@@ -149,7 +149,7 @@ updateEmailAddress(someChangedEmailaddess);
 
 ```
 
-Now when you want a sign up any component anywhere inside your app as a listener for changes in UserInfo state, use connect if your listener is an instance of a class:
+Now when you want to sign up any component anywhere inside your app as a listener for changes in UserInfo state, use connect if your listener is an instance of a class:
 
 ```js
 import { connect } from 'metamatic';
@@ -170,7 +170,7 @@ export class SomeReactComponent extends Component {
     this.state = {};
   }
   
-  componentDidMount = connect(this, STATE_USER_INFO, (state) => this.setState(state));
+  componentDidMount = () => connect(this, STATE_USER_INFO, (state) => this.setState(state));
   
 }
 
@@ -181,7 +181,7 @@ merge your component's current state with the incoming state, then just use basi
 
 
 ```js
-componentDidMount = connect(this, STATE_USER_INFO, (state) => this.setState({ ...this.state, ...state }));
+componentDidMount = () => connect(this, STATE_USER_INFO, (state) => this.setState({ ...this.state, ...state }));
 ```
 
 To examine a complete example of using the Metamatic Framework inside a React app, check the source of code a 
