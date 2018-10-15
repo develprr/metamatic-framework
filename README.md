@@ -3,18 +3,28 @@
 ## Introduction
 
 The Metamatic framework is a simple and easy-to-use predictable state container for JavaScript apps. 
-Metamatic is partially similar to existing main stream state containers such as 'Redux' and 'MobX' and many others - but in comparison with most state container frameworks,
-it has essential differences that make it really simple to use. With Metamatic, you can implement a central data management policy in frontend applications quite
-fast and painlessly. With Metamatic, you can get things done faster because  you don't need to write endless amounts of repetitive 'spells' to get what you want. 
-Metamatic helps you create cleaner and more maintainable code.
+Metamatic is a powerful and simple-to-use state container architecture. Metamatic provides a robust toolset for data communication between components
+inside your browser-based UI software. It can be used together with any modern JavaScript UI framework such as Vue, React, Angular and even basic JavaScript apps
+without any specific frameworks.
+
+### Metamatic Concept
+
+The Metamatic framework solves a fundamental problem in frontend software design: When any data is changed anywhere in the application, 
+this change must be reliably radiated to all parts of the software that uses the changed data. For example, your frontend app has many components that display
+user's email address. Then the email address is changed for some reason, perhaps by user who updates their account profile details. Or maybe it's updated
+when the frontend client reloads user data from the server. In any case, the problem is the same. The changed data must be updated everywhere where it is needed.
+Metamatic provides an elegant next-generation solution to the problem. Metamatic provides a managed state container that keeps a master copy of your data
+safely and immutably in a central data storage. When you update any data that you have placed in the Metamatic data storage, Metamatic then automatically
+takes care that all changes made to that data are reliably broadcasted to everywhere inside your app.
 
 ### Abstract Away State Container Management
 
-Metamatic takes your coding to an entirely new abstraction level. With Metamatic, you can implement your apps without defining
-any state containers by yourself at all. This is a strikingly paradigm-shifting approach that makes Metamatic differ from those old school
-state container frameworks that expect you to always implement containers by yourself. In Metamatic, you can concentrate solely on updating states 
-and just defining which states you want to keep as component's private states and which ones will be dispatched onto the app-wide highway to be dynamically available 
-for all other components that need them.
+Compared with traditional, well known state container frameworks, Metamatic takes your coding to an entirely new abstraction level.
+With Metamatic, you can implement your apps without defining any state containers by yourself at all. This is a strikingly paradigm-shifting approach that 
+makes Metamatic differ from those old school state container frameworks that expect you to always implement containers by yourself. 
+
+In Metamatic, you can concentrate solely on updating states and just defining which states you want to keep as component's private states and 
+which ones will be dispatched onto the app-wide highway to be dynamically available for all other components that need them.
 
 ### Say Goodbye to Child-Like "if-elses"
 
@@ -47,7 +57,6 @@ on your application-spesific containers. Such practice makes it impossible to pu
 projects. It also turns any UI app into a monolithic solution whose components are directly bound to app's global states through linkage over props. Metamatic
 is quite a different solution because it does not mess with props, but rather discreetly clones global states to components' local states. This practice
 makes it easier to design components that are more independent and also reusable not only inside one app but also in other apps.
-
 
 ## News
 
@@ -102,48 +111,94 @@ npm install metamatic
 
 # Usage
 
+## Forget Containers, Define States
 
-## Dispatching and Handling Events
+In Metamatic, you don't define stores and containers. Instead you define states. In Metamatic, an event and a state practically mean exactly the same thing.
+In Metamatic, you define central Metamatic states, "Meta States".  When you update a Metamatic state, this action will automatically cause a similar 
+application-wide event that broadcasts the changed state to everywhere in your app where this state is needed. Think about a stone that you drop inside a bucket
+full of water. The water splashes into every direction from the bucket. 
 
-When you want to **dispatch** an event somewhere in your app:
-
-```js
-import { dispatch } from 'metamatic';
-
-dispatch('MY-EVENT', someObject);
-```
-
-Define a listener for your event using **handle** function:
+A good practice is to create a separate file for each Metamatic state for your app. For instance, when you have a state to handle user info, 
+create file **UserInfoState.js**. In UserInfoState.js, define the state as and exported constant so that it can be referred from other components:
 
 ```js
-import { handle } from 'metamatic';
 
-handle('SOME-EVENT', (value) => {
-    console.log(value);
-    ...
- })
+export const STATE_USER_INFO = 'STATE_USER_INFO';
+
 ```
 
-## Dispatcher Clones Objects
+Creating a function to update user's email address inside UserInfo state:
 
-You may have seen in some other state container frameworks that you must clone the object using a spread operator ( {...someObject} ) always when it is received by the 'reducer' function. In Metamatic, this is not the case. When you dispatch an object with **dispatch** function, the object
-is always being automatically cloned. It is a very useful and important feature that objects are cloned when they are dispatched.  If the objects were not
-cloned when dispatched into the bit space, that cause the listeners to receive a reference to the original object instead of a clone. That would be 
-very bad because modifiying the received object inside a listener component would secretly change the original object in the state container, thus making
-the state container essentially useless. The very idea of a central state container is that 
-its objects can't be changed from outside. If it was possible to uncontrollably modify them from outside then the state container would not be able to detect a change and broadcast the change event across the application!
 
-## Registering Components to Listen for MetaStore Container
+```js
+import { update } from 'metamatic';
 
-To register a component as listener to MetaStore use **connect** function. It is meant to register components that have a limited lifetime
+export const updateEmailAddress = (emailAddress) => update(STATE_USER_INFO, { emailAddress });
+
+```
+
+Now you have defined a Metamatic UserInfo state and a function to update user's email inside that state. Every time **updateEmailAddress* function is called 
+by any component, it updates the UserInfo state in the automatically managed embedded Metamatic state container and a copy of the changed object is also 
+broadcasted to all components that need that data!
+
+When any component wants to update user info, simply import the *updateUserInfo* function from your Metamatic state and call it. For instance
+
+```js
+import { updateEmailAddress } from 'path/to/your/UserInfoState.js';
+
+updateEmailAddress(someChangedEmailaddess);
+
+```
+
+Now when you want a sign up any component anywhere inside your app as a listener for changes in UserInfo state, use connect if your listener is an instance of a class:
+
+```js
+import { connect } from 'metamatic';
+import STATE_USER_INFO from  'path/to/your/UserInfoState.js';
+
+connect(this, STATE_USER_INFO, (state) => doSomethingWithReceivedState(state));
+
+```
+
+If it is a ReactJS component that you want to listen the Metamatic state:
+
+```js
+
+export class SomeReactComponent extends Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  
+  componentDidMount = connect(this, STATE_USER_INFO, (state) => this.setState(state));
+  
+}
+
+```
+
+Or if you don't want to completely replace your component's state with the user info state coming from Metamatic container but rather
+merge your component's current state with the incoming state, then just use basic spread-operator for merging:
+
+
+```js
+componentDidMount = connect(this, STATE_USER_INFO, (state) => this.setState({ ...this.state, ...state }));
+```
+
+To examine a complete example of using the Metamatic Framework inside a React app, check the source of code a 
+[Metamatic example application](https://github.com/develprr/metamatic-car-app) on Github!
+
+## More About Registering Components to Listen for MetaStore Container
+
+To register a component as listener to Metamatic states use **connect** function. It is meant to register components that have a limited lifetime
 such as React components. You can unregister later listeners that have been added with connect function.
 
 When connecting a React component, preferably call connect function already when the component is mounted.
 Example of connecting single instance React component:
 
 ```js
-connect(this, CAR_INFO_BROADCAST, (newCarInfo) => 
-  this.setState({carInfo: newCarInfo});
+connect(this, STATE_CAR_INFO, (newCarInfo) => 
+  this.setState({price: newCarInfo.price});
 ```
   
 When you pass **this** to connect function, the Metamatic Framework registers your component as a listener for a given type of events (CAR_INFO_BROADCAST in
@@ -154,18 +209,20 @@ use connectAll:
 
 ```js
 connectAll(this, {
-  [LOGIN_STATE_CHANGE]: (loggedIn) => this.setState({loggedIn}),
-  [CAR_MODEL_SELECTION_CHANGE]: (selectedCarModel) => this.setState({selectedCarModel})
+  [STATE_ACCESS]: (state) => this.setState({ ...this.state, ...{ loggedIn: state.loggedIn }),
+  [STATE_CAR_MODEL]: (state) => this.setState({ ...this.state, ...state } )
 });
 ```
+
+The connector above would, when receiving a Metamatic ACCESS state, just take *loggedIn* property from the incoming state and merge it with component's
+current state and when revceing a CAR_MODEL state, completely merge all properties from that state with compoent's current local state.
 
 Inside a React component, the connect call should be placed inside componentDidMount life cycle phase:
 
 ```js
 componentDidMount = () =>  connectAll(this, {
-  [LOGIN_STATE_CHANGE]: (loggedIn) => this.setState({loggedIn}),
-  [CAR_MODEL_SELECTION_CHANGE]: (selectedCarModel) 
-    => this.setState({selectedCarModel})
+  [STATE_ACCESS]: (state) => this.setState({ ...this.state, ...{ loggedIn: state.loggedIn }),
+  [STATE_CAR_MODEL]: (state) => this.setState({ ...this.state, ...state } )
 });
  
 ```
