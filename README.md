@@ -65,7 +65,7 @@ makes it easier to design components that are more independent and also reusable
 Support for external nested containers has been at least temporarily removed since there are no obvious use cases for such scenarios. 
 A critical bug that was present in version 1.6.2 has been fixed.
 
-### Verstion 1.6.2: Support for localStorage and sessionStorage based persistency strategies added
+### Version 1.6.2: Support for localStorage and sessionStorage based persistency strategies added
 
 Metamatic now supports *localStorage* and *sessionStorage* based container persistency strategies. That is particularly useful when creating an app
 that must remember its states even after browser page reload. By default, Metamatic now uses localStorage as default persistency strategy. You can change
@@ -182,7 +182,6 @@ export class SomeReactComponent extends Component {
   }
   
   componentDidMount = () => connect(this, STATE_USER_INFO, (state) => this.setState(state));
-  
 }
 
 ```
