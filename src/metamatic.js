@@ -12,10 +12,7 @@ let actionArray = [];
 let actionMap = {};
 let componentIdCounter = 0;
 let actionIdCounter = 0;
-let dataStores = {};
 let defaultStore = {};
-
-const existsObject= (object) => !(typeof object === 'undefined' || object === null);
 
 const getPrimaryStorage = () => typeof localStorage !== 'undefined' ? localStorage : {
   setItem: (key, value) => saveObjectToMemoryStorage(key, value),
@@ -63,7 +60,7 @@ const loadObjectFromLocalStorage = (key) => jsonToObject(localStorage.getItem(ke
 
 const loadObjectFromSessionStorage = (key) => jsonToObject(localStorage.getItem(key));
 
-const loadObjectFromMemoryStorage = (key) => secureClone(defaultStore[key]) || {};
+const loadObjectFromMemoryStorage = (key) => secureClone(defaultStore[key]);
 
 const getLoadObjectFunction = () => ({
   [LOCAL_STORAGE]: loadObjectFromLocalStorage,
@@ -79,8 +76,6 @@ const createAction = (actionId, listenerId, eventId, handler) => ({
   eventId: eventId,
   handler: handler
 });
-
-const equalActions = (action1, action2) => action1.id === action2.id;
 
 const addAction = (action) => actionArray.push(action);
 
@@ -193,15 +188,6 @@ export const connect = (componentOrListenerId, eventId, handler) => {
   dispatchContainerData(eventId);
 }
 
-const extractContainerName = (eventId) => eventId.includes(':') ? eventId.split(':')[0] : null;
-
-const extractPropertyPath = (eventId) => eventId.includes(':') ? eventId.split(':')[1].split('.') : eventId.split('.');
-
-const extractContainer = (eventId) => {
-  const containerName = extractContainerName(eventId);
-  return containerName ? dataStores[containerName] : defaultStore;
-}
-
 const getContainerData = (container, propertyPath) => {
   if (propertyPath.length === 0) {
     return container;
@@ -212,12 +198,7 @@ const getContainerData = (container, propertyPath) => {
 }
 
 const dispatchContainerData = (eventId) => {
-  const container = extractContainer(eventId);
-  if (!container) {
-    return;
-  }
-  const propertyPath = extractPropertyPath(eventId);
-  const data = getContainerData(container, propertyPath);
+  const data = loadObject(eventId);
   if (!data) {
     return;
   }
@@ -236,7 +217,7 @@ const dispatchContainerData = (eventId) => {
 
 export const connectAll = (componentOrListenerId, handlerMap) => {
   const listenerId = getListenerId(componentOrListenerId);
-  Object.keys(handlerMap).map((eventId) => {
+  Object.keys(handlerMap).forEach((eventId) => {
     let handler = handlerMap[eventId];
     const actionId = createActionId(listenerId, eventId);
     addNewAction(actionId, listenerId, eventId, handler);
@@ -274,40 +255,6 @@ export const disconnect = (componentOrId) => {
 export const dispatch = (eventId, passenger) =>
     getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
 
-const setNestedValue = (stateContainer, eventId, value) => {
-  const objectNames = extractPropertyPath(eventId);
-  let targetProperty = objectNames.pop();
-  let targetObject = stateContainer;
-  objectNames.forEach((objectName) => {
-    if (!targetObject[objectName]) {
-      targetObject[objectName] = {};
-    }
-    targetObject = targetObject[objectName];
-  })
-  targetObject[targetProperty] = value;
-}
-
-/*
-  UpdateState method enables to solve a very common state container scenario with a very handy updateState method. With update call, you can set a value inside your
-  nested container AND dispatch the changed value to everywhere where it is needed.
- */
-
-export const updateStore = (externalStore, propertyPath, state) => {
-  const clonedState = clone(state);
-  observeStore(externalStore, propertyPath);
-  setNestedValue(externalStore, propertyPath, clonedState);
-  dispatch(propertyPath, clonedState);
-}
-
-/* With observe function you can set a part of state container 'under observation'. When a component connects to a state container, the predefined
-state of the container is then dispatched right upon connect.
- */
-
-export const observeStore = (externalStore, propertyPath) => {
-  const containerName = extractContainerName(propertyPath);
-  dataStores[containerName] = externalStore;
-};
-
 export const update = (eventName, state) => {
   const object = loadObject(eventName);
   const mergedObject = Object.assign(object, clone(state));
@@ -335,7 +282,6 @@ export const clear = (eventName) => store(eventName, {});
 export const reset = () => {
   actionArray = [];
   actionMap = {};
-  dataStores = {};
   componentIdCounter = 0;
   actionIdCounter = 0;
 };

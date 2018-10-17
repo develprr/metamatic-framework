@@ -1,5 +1,5 @@
 import {assert, describe, it} from 'mocha';
-import {connect, disconnect, dispatch, handle, unhandle, reset, updateStore, observeStore, store, getStore, update, obtain, clear, useMemoryStorage} from '../lib/metamatic';
+import {connect, disconnect, dispatch, handle, unhandle, reset, store, getStore, update, obtain, clear, useMemoryStorage} from '../lib/metamatic';
 
 let responses = [];
 let value;
@@ -11,7 +11,6 @@ describe('metamatic framework', () => {
     reset();
     useMemoryStorage();
   });
-
 
   it('should handle dispatch functions that have matching event ID', () => {
 
@@ -104,56 +103,6 @@ describe('metamatic framework', () => {
     disconnect(someComponent);
     dispatch('SOME-EVENT', 'Sending out an SOS');
   });
-
-  it('updateStore should create nested property structure inside state container', () => {
-    const MetaStore = {};
-    updateStore(MetaStore, 'MetaStore:user.addressInfo.emailAddress', 'somebody@trappist');
-    MetaStore.user.addressInfo.emailAddress.should.equal('somebody@trappist');
-  })
-
-  it('updateState should dispatch event', () => {
-    const MetaStore = {};
-    const STATE_METASTORE_EMAIL_ADDRESS = 'MetaStore:user.addressInfo.emailAddress';
-    let events = [];
-    handle(STATE_METASTORE_EMAIL_ADDRESS, (address) => events.push((address)));
-    updateStore(MetaStore, STATE_METASTORE_EMAIL_ADDRESS, 'somebody@trappist');
-    events.length.should.equal(1);
-  });
-
-  it('observeStore: should dispatch states event to listener already at connect', () => {
-    const STATE_METASTORE_EMAIL_ADDRESS = 'MetaStore:user.addressInfo.emailAddress';
-    const MetaStore = {
-      user: {
-        addressInfo: {
-          emailAddress: 'somebody@trappist'
-        }
-      }
-    };
-    let events = [];
-    let listener = {};
-
-    observeStore(MetaStore, STATE_METASTORE_EMAIL_ADDRESS);
-
-    connect(listener, STATE_METASTORE_EMAIL_ADDRESS, (address) => {
-      events.push(address)
-    });
-    events.length.should.equal(1);
-
-  });
-
-  it('updateStore should dispatch states event to listener already at connect', () => {
-    const STATE_METASTORE_EMAIL_ADDRESS = 'MetaStore:user.addressInfo.emailAddress';
-    const MetaStore = {};
-    let events = [];
-    let listener = {};
-    updateStore(MetaStore, STATE_METASTORE_EMAIL_ADDRESS, 'somebody@trappist');
-    connect(listener, STATE_METASTORE_EMAIL_ADDRESS, (address) => {
-      events.push(address)
-    });
-    events.length.should.equal(1);
-
-  });
-
 
   it('store function should set flat value inside embedded store', () => {
     const STATE_EMAIL_ADDRESS = 'STATE_EMAIL_ADDRESS';
@@ -263,10 +212,8 @@ describe('metamatic framework', () => {
     };
 
     const updatedState = update(STATE_USER_INFO, newState);
-    console.log('updatedState', updatedState);
 
     handle(STATE_USER_INFO, (userInfo) => {
-      console.log('retrospective handle receives', userInfo)
       responses.push(userInfo)
     });
     responses.length.should.equal(1);
