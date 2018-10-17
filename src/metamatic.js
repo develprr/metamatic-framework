@@ -4,12 +4,72 @@
   License: Apache 2.0
  */
 
+const LOCAL_STORAGE = 'LOCAL_STORAGE';
+const SESSION_STORAGE = 'SESSION_STORAGE';
+const MEMORY_STORAGE = 'MEMORY_STORAGE';
+
 let actionArray = [];
 let actionMap = {};
 let componentIdCounter = 0;
 let actionIdCounter = 0;
 let dataStores = {};
 let defaultStore = {};
+
+const existsObject= (object) => !(typeof object === 'undefined' || object === null);
+
+const getPrimaryStorage = () => typeof localStorage !== 'undefined' ? localStorage : {
+  setItem: (key, value) => saveObjectToMemoryStorage(key, value),
+  getItem: key => loadObjectFromMemoryStorage(key)
+};
+
+const setStorageType = (storageType) => getPrimaryStorage().setItem('_METAMATIC_STORAGE_TYPE', storageType);
+
+const getStorageType = () => getPrimaryStorage().getItem('_METAMATIC_STORAGE_TYPE') || LOCAL_STORAGE;
+
+export const useLocalStorage = () => setStorageType(LOCAL_STORAGE);
+
+export const useSessionStorage = () => setStorageType(SESSION_STORAGE);
+
+export const useMemoryStorage = () => setStorageType(MEMORY_STORAGE);
+
+const saveObject = (keyword, obj) => getSaveObjectFunction()(keyword, obj);
+
+const loadObject = (keyword) => getLoadObjectFunction()(keyword);
+
+const saveObjectToLocalStorage = (key, obj) => localStorage.setItem(key, JSON.stringify(obj));
+
+const saveObjectToSessionStorage = (key, obj) => sessionStorage.setItem(key, JSON.stringify(obj));
+
+const saveObjectToMemoryStorage = (key, obj) => defaultStore[key] = clone(obj);
+
+const getSaveObjectFunction = () => ({
+  [LOCAL_STORAGE]: saveObjectToLocalStorage,
+  [SESSION_STORAGE]: saveObjectToSessionStorage,
+  [MEMORY_STORAGE]: saveObjectToMemoryStorage
+}[getStorageType()]);
+
+
+const jsonToObject = (json) => {
+  if (json) {
+    try {
+      return JSON.parse(json);
+    } catch (e) {
+      return null;
+    }
+  }
+}
+
+const loadObjectFromLocalStorage = (key) => jsonToObject(localStorage.getItem(key));
+
+const loadObjectFromSessionStorage = (key) => jsonToObject(localStorage.getItem(key));
+
+const loadObjectFromMemoryStorage = (key) => secureClone(defaultStore[key]) || {};
+
+const getLoadObjectFunction = () => ({
+  [LOCAL_STORAGE]: loadObjectFromLocalStorage,
+  [SESSION_STORAGE]: loadObjectFromSessionStorage,
+  [MEMORY_STORAGE]: loadObjectFromMemoryStorage
+})[getStorageType()];
 
 const createActionId = (listenerId, eventId) => listenerId + '-' + eventId;
 
@@ -76,10 +136,10 @@ const removeActionsByListener = (listenerId) =>
     actionArray = actionArray.filter((action) => !containsActionListener(action, listenerId));
 
 const mapAction = (action) => {
-    const eventId = action.eventId;
-    const eventArray = getActionsByEvent(eventId);
-    eventArray.push(action);
-    actionMap[eventId] = eventArray;
+  const eventId = action.eventId;
+  const eventArray = getActionsByEvent(eventId);
+  eventArray.push(action);
+  actionMap[eventId] = eventArray;
 }
 
 const buildActionMap = () => {
@@ -87,7 +147,7 @@ const buildActionMap = () => {
   actionArray.map(mapAction);
 }
 
-const getActionsByEvent = (eventId) =>  actionMap[eventId] || [];
+const getActionsByEvent = (eventId) => actionMap[eventId] || [];
 
 /*
  Bind listeners to events using handle function:
@@ -143,12 +203,12 @@ const extractContainer = (eventId) => {
 }
 
 const getContainerData = (container, propertyPath) => {
-    if (propertyPath.length === 0) {
-      return container;
-    }
-    let nextProp = propertyPath.shift();
-    const innerContainer = container[nextProp];
-    return innerContainer ? getContainerData(innerContainer, propertyPath) : null;
+  if (propertyPath.length === 0) {
+    return container;
+  }
+  let nextProp = propertyPath.shift();
+  const innerContainer = container[nextProp];
+  return innerContainer ? getContainerData(innerContainer, propertyPath) : null;
 }
 
 const dispatchContainerData = (eventId) => {
@@ -164,7 +224,6 @@ const dispatchContainerData = (eventId) => {
   dispatch(eventId, data);
 };
 
-
 /*
   If you want to connect a component to listen more than one event from MetaStore, you can use connectAll function instead of repeating many times connect
   call:
@@ -174,7 +233,6 @@ const dispatchContainerData = (eventId) => {
     CAR_MODEL_SELECTION_CHANGE: (selectedCarModel) => this.setState({selectedCarModel})
    });
 */
-
 
 export const connectAll = (componentOrListenerId, handlerMap) => {
   const listenerId = getListenerId(componentOrListenerId);
@@ -186,7 +244,6 @@ export const connectAll = (componentOrListenerId, handlerMap) => {
   });
   buildActionMap();
 };
-
 
 /*
   When you have connected a React component to MetaStore, it is important to disconnect the component from MetaStore upon unmounting it.
@@ -216,7 +273,6 @@ export const disconnect = (componentOrId) => {
  */
 export const dispatch = (eventId, passenger) =>
     getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
-
 
 const setNestedValue = (stateContainer, eventId, value) => {
   const objectNames = extractPropertyPath(eventId);
@@ -253,18 +309,20 @@ export const observeStore = (externalStore, propertyPath) => {
 };
 
 export const update = (eventName, state) => {
-  defaultStore[eventName] = defaultStore[eventName] || {};
-  defaultStore[eventName] = Object.assign(defaultStore[eventName], clone(state));
-  dispatch(eventName, defaultStore[eventName]);
+  const object = loadObject(eventName);
+  const mergedObject = Object.assign(object, clone(state));
+  saveObject(eventName, mergedObject);
+  dispatch(eventName, mergedObject);
+  return mergedObject;
 };
 
 export const store = (eventName, state) => {
-  defaultStore[eventName] = clone(state);
-  dispatch(eventName, defaultStore[eventName]);
+  saveObject(eventName, state);
+  dispatch(eventName, state);
 };
 
-export const obtain = (eventName, property) => {
-  const state = defaultStore[eventName] || {};
+export const obtain = (stateName, property) => {
+  const state = loadObject(stateName);
   return secureClone(property ? state[property] : state);
 }
 
@@ -280,14 +338,12 @@ export const reset = () => {
   dataStores = {};
   componentIdCounter = 0;
   actionIdCounter = 0;
-
 };
 
 /*
   get clone of event dictionary. Mainly needed only for debugging
  */
 export const getActions = () => [...actionArray];
-
 
 /*
  get clone of getStore. Mainly needed only for debugging

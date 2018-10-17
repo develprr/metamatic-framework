@@ -1,5 +1,5 @@
 import {assert, describe, it} from 'mocha';
-import {connect, disconnect, dispatch, handle, unhandle, reset, updateStore, observeStore, store, getStore, update, obtain, clear} from '../lib/metamatic';
+import {connect, disconnect, dispatch, handle, unhandle, reset, updateStore, observeStore, store, getStore, update, obtain, clear, useMemoryStorage} from '../lib/metamatic';
 
 let responses = [];
 let value;
@@ -9,6 +9,7 @@ describe('metamatic framework', () => {
   beforeEach(() => {
     responses = [];
     reset();
+    useMemoryStorage();
   });
 
 
@@ -261,9 +262,13 @@ describe('metamatic framework', () => {
       emailAddress: 'somebody@else'
     };
 
-    update(STATE_USER_INFO, newState);
+    const updatedState = update(STATE_USER_INFO, newState);
+    console.log('updatedState', updatedState);
 
-    handle(STATE_USER_INFO, (userInfo) => responses.push(userInfo));
+    handle(STATE_USER_INFO, (userInfo) => {
+      console.log('retrospective handle receives', userInfo)
+      responses.push(userInfo)
+    });
     responses.length.should.equal(1);
     responses[0].username.should.equal('somebody');
     responses[0].emailAddress.should.equal('somebody@else');
