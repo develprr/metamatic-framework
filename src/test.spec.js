@@ -1,5 +1,5 @@
 import {assert, describe, it} from 'mocha';
-import {connect, disconnect, dispatch, handle, unhandle, reset, store, getStore, update, obtain, clear, useMemoryStorage} from '../lib/metamatic';
+import {connect, disconnect, dispatch, handle, unhandle, reset, setState, getStore, updateState, getState, clearState, useMemoryStorage} from '../lib/metamatic';
 
 let responses = [];
 let value;
@@ -104,19 +104,19 @@ describe('metamatic framework', () => {
     dispatch('SOME-EVENT', 'Sending out an SOS');
   });
 
-  it('store function should set flat value inside embedded store', () => {
+  it('setState function should set flat value inside embedded store', () => {
     const STATE_EMAIL_ADDRESS = 'STATE_EMAIL_ADDRESS';
-    store(STATE_EMAIL_ADDRESS, 'somebody@trappist');
+    setState(STATE_EMAIL_ADDRESS, 'somebody@trappist');
     getStore()[STATE_EMAIL_ADDRESS].should.equal('somebody@trappist');
   })
 
-  it('store function should be able to store states with many values', () => {
+  it('setState function should be able to store states with many values', () => {
     const STATE_USER_INFO = 'STATE_USER_INFO';
     let dataState = {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    store(STATE_USER_INFO, dataState);
+    setState(STATE_USER_INFO, dataState);
     getStore()[STATE_USER_INFO].emailAddress.should.equal('somebody@trappist');
     getStore()[STATE_USER_INFO].username.should.equal('somebody');
   });
@@ -126,7 +126,7 @@ describe('metamatic framework', () => {
     let dataState = {
       emailAddress: 'somebody@trappist'
     };
-    store(STATE_USER_INFO, dataState);
+    setState(STATE_USER_INFO, dataState);
     dataState.emailAddress = 'afterwards_changed@emailaddress';
     getStore()[STATE_USER_INFO].emailAddress.should.equal('somebody@trappist');
   });
@@ -137,13 +137,13 @@ describe('metamatic framework', () => {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    store(STATE_USER_INFO, dataState);
+    setState(STATE_USER_INFO, dataState);
 
     let newStateWithoutUsername = {
       emailAddress: 'somebody@else'
     };
 
-    store(STATE_USER_INFO, newStateWithoutUsername);
+    setState(STATE_USER_INFO, newStateWithoutUsername);
 
     'somebody'.should.not.equal( getStore()[STATE_USER_INFO].username);
   });
@@ -154,7 +154,7 @@ describe('metamatic framework', () => {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    store(STATE_USER_INFO, dataState);
+    setState(STATE_USER_INFO, dataState);
     const listener = {};
     connect(listener, STATE_USER_INFO, (userInfo) => responses.push(userInfo));
     responses.length.should.equal(1);
@@ -167,7 +167,7 @@ describe('metamatic framework', () => {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    store(STATE_USER_INFO, dataState);
+    updateState(STATE_USER_INFO, dataState);
     handle(STATE_USER_INFO, (userInfo) => responses.push(userInfo));
     responses.length.should.equal(1);
     responses[0].username.should.equal('somebody');
@@ -180,7 +180,7 @@ describe('metamatic framework', () => {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    update(STATE_USER_INFO, dataState);
+    updateState(STATE_USER_INFO, dataState);
     const listener = {};
     connect(listener, STATE_USER_INFO, (userInfo) => responses.push(userInfo));
     responses.length.should.equal(1);
@@ -193,7 +193,7 @@ describe('metamatic framework', () => {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    update(STATE_USER_INFO, dataState);
+    updateState(STATE_USER_INFO, dataState);
     handle(STATE_USER_INFO, (userInfo) => responses.push(userInfo));
     responses.length.should.equal(1);
     responses[0].username.should.equal('somebody');
@@ -205,13 +205,13 @@ describe('metamatic framework', () => {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    store(STATE_USER_INFO, dataState);
+    setState(STATE_USER_INFO, dataState);
 
     let newState = {
       emailAddress: 'somebody@else'
     };
 
-    const updatedState = update(STATE_USER_INFO, newState);
+    const updatedState = updateState(STATE_USER_INFO, newState);
 
     handle(STATE_USER_INFO, (userInfo) => {
       responses.push(userInfo)
@@ -227,36 +227,36 @@ describe('metamatic framework', () => {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    store(STATE_USER_INFO, dataState);
+    setState(STATE_USER_INFO, dataState);
 
-    const storedObject = obtain(STATE_USER_INFO);
+    const storedObject = getState(STATE_USER_INFO);
     dataState.username.should.equal(storedObject.username);
 
   });
 
-  it('obtain function returns a clone, not the original object', () => {
+  it('getState function returns a clone, not the original object', () => {
     const STATE_USER_INFO = 'STATE_USER_INFO';
     let dataState = {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    store(STATE_USER_INFO, dataState);
+    setState(STATE_USER_INFO, dataState);
 
-    const storedObject = obtain(STATE_USER_INFO);
+    const storedObject = getState(STATE_USER_INFO);
     dataState.username = 'changedUsernameInOriginalDataState';
     dataState.username.should.not.equal(storedObject.username);
 
   });
 
-  it('clear function should override previously set state with an empty obkect', () => {
+  it('clearState function should override previously set state with an empty obkect', () => {
     const STATE_USER_INFO = 'STATE_USER_INFO';
     let dataState = {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    store(STATE_USER_INFO, dataState);
-    clear(STATE_USER_INFO);
-    const storedObject = obtain(STATE_USER_INFO);
+    setState(STATE_USER_INFO, dataState);
+    clearState(STATE_USER_INFO);
+    const storedObject = getState(STATE_USER_INFO);
     dataState.username = 'changedUsernameInOriginalDataState';
     dataState.username.should.not.equal(storedObject.username);
 

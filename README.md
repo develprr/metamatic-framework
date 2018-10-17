@@ -60,45 +60,12 @@ makes it easier to design components that are more independent and also reusable
 
 ## News
 
-### Version 1.6.3: Support for external nested storages removed
+### Version 1.6.5 Functions renamed for more clarity
 
-Support for external nested containers has been at least temporarily removed since there are no obvious use cases for such scenarios. 
-A critical bug that was present in version 1.6.2 has been fixed.
+To improve code readability, *update* function has been renamed to **updateState**, *obtain* function to **getState**,  *store* function to **setState** and *clear*
+function to **clearState**. Version 1.6.5 won't be backwards compatible with earlier versions. 
 
-### Version 1.6.2: Support for localStorage and sessionStorage based persistency strategies added
-
-Metamatic now supports *localStorage* and *sessionStorage* based container persistency strategies. That is particularly useful when creating an app
-that must remember its states even after browser page reload. By default, Metamatic now uses localStorage as default persistency strategy. You can change
-the persistency type by calling Metamatic's configuration functions **useLocalStorage**, **useSessionStorage** and **useMemoryStorage**.
-
-### Version 1.5.7: Clear any Metamatic state with "clear" function
-
-Metamatic now provides a practical **clear** function that allows clearing any state with leaner code than previously calling *store* with an empty parameter object.
-
-### Version 1.5.5: Obtain safely a clone of any Metamatic state with "obtain" function
-
-Metamatic now provides **obtain** function for safely retrieving any states from the Metamatic state container. This method provides an additional pathway
-for implementing supernova-bright logic inside your web app.
-
-### Version 1.4.6: Abstract away data containers with update and store functions 
-
-Metamatic proudly introduces the groundbreaking data store functions **update** and **store**. With these functions, you can forget data stores alltogether
-and concentrate on states only. A paradigm shift in deed! Also old *updateState* function has been renamed to **updateStore** and *observe* has been renamed to **observeStore**.
-
-### Version 1.4.0: "observeStore" function allows to preconfigure listener states in advance
-
-*connect* and *connectAll* functions now  set the listener's state retrospectively from the state container if such was defined. In a state container it is now possible to use ~~observe~~ **observeStore**  function to mark a state inside store for observation. 
-When a state is under observation, it will be automatically fired every time when a listener signs up to listen for it. 
-
-### Version 1.3.4: "updateStore" function for easily updating container states and broadcasting changes
-
-Since version 1.3.4, you can update a state in the state container and dispatch that state with only one line of code. Write very efficient state-container
-aware code with ridiculously few lines of code!
-   
-### Version 1.2.8: Better way to connect and disconnect objects 
-
-Since version 1.2.8, you can register *any* component by passing *this* reference to **connect** function. The Metamatic Framework now internally injects
-a unique ID to each registered component so the user doesn't need to know about IDs.
+View more news on Metamatic's [news page](https://develprr.github.io/metamatic-blog/news/)!
 
 ## Writings and Samples
 
@@ -140,10 +107,10 @@ Creating a function to update user's email address inside UserInfo state:
 
 
 ```js
-import { update } from 'metamatic';
+import { updateState } from 'metamatic';
 
 export const updateEmailAddress = (emailAddress) => 
-  update(STATE_USER_INFO, { emailAddress });
+  updateState(STATE_USER_INFO, { emailAddress });
 
 ```
 
@@ -281,22 +248,22 @@ unhandle('MY-EVENT');
 
 When you code with Metamatic the chances are that you don't need to define any data container at all but rather let this headache over to 
 the Metamatic framework. Metamatic knows how to keep containers in pure immutable state and guards their data purity like a lion. When you use Metamatic's 
-**update** and **store** functions then Metamatic will take care of the boring job of managing the actual data container. Then you only need to update states
+**updateState** and **setState** functions then Metamatic will take care of the boring job of managing the actual data container. Then you only need to update states
 and connect your components to states that they need.
 
 Consider that you want to configure an app-wide state, for example an *activeUser* object that shall keep the active user's important data safe in one place
-in the app. That is fantastically easy using **store** function. First, you have to define the name of your app state. Let's do it:
+in the app. That is fantastically easy using **setState** function. First, you have to define the name of your app state. Let's do it:
 
 ```js
 export const STATE_ACTIVE_USER = 'STATE_ACTIVE_USER';
 ```
 
-Then, *store* the state inside the Metamatic's embedded state container:
+Then, *setState* the state inside the Metamatic's embedded state container:
 
 ```js
-import {store} from 'metamatic';
+import {setState} from 'metamatic';
  
-store(STATE_ACTIVE_USER, {
+setState(STATE_ACTIVE_USER, {
   username: 'someusername',
   emailAddress: 'some.email@someaddress.com'
 });
@@ -307,7 +274,7 @@ Now Metamatic has stored the the active user's data. Oh and yes, of course you c
  
  ```js
  
- store(STATE_ACTIVE_USER, jsonDataFromServer);
+ setState(STATE_ACTIVE_USER, jsonDataFromServer);
  
  ```
  
@@ -328,27 +295,28 @@ class UserInfo extends Component {
 
 ```
 
-If the state was initially set using *store* function before a listener was connected to it, it still works because Metamatic connects listeners to states
+If the state was initially set using *setState* function before a listener was connected to it, it still works because Metamatic connects listeners to states
 retrospectively, which means you can set a state earlier somewhere and once a component is later on connected to that state, it is then cloned into the listener
 component at the time when the component is mounted. But don't connect a component to Metamatic inside a constructor because *connect* may immediately 
 try to clone a container's state into component's state. And that shall not be done in the constructor yet because at the time a constructor function is executed component is not yet
 mounted and in ReactJS, it is a wrong thing to do to set state on a component that isn't yet mounted!
 
-Needless to say, when a Metamatic state is updated later on, the framework will then automatically update all connected components. For updating states, you can use both **update**
-and **store** functions. The difference between these two functions is that that *store* completely overrides the existing state and *update* only updates it:
+Needless to say, when a Metamatic state is updated later on, the framework will then automatically update all connected components. For updating states, 
+you can use both **updateState** and **setState** functions. The difference between these two functions is that that *setState* completely overrides 
+the existing state and *update* only updates it:
 
  ```js
-update(STATE_ACTIVE_USER, {
+updateState(STATE_ACTIVE_USER, {
   emailAddress: 'new-email-address@somedomain.com',
   phone: '1234567'
 });
 
  ``` 
 
-In this example, *update* function just leaves the original *username* attribute in the state intact, defines a new attribute *phone* and overrides *emailAddress*.
-But if you used *store* here instead of *update*, username would have been deleted from the state because it was not set in the update object. You can also
-use *update* function when you define a state first time, the difference is just that *update* merges a new data state with the existing one whereas *store*
-totally replaces the old data state with the new one. Therefore *store* is useful if you want to entirely remove some attributes from a state.
+In this example, *updateState* function just leaves the original *username* attribute in the state intact, defines a new attribute *phone* and overrides *emailAddress*.
+But if you used *setState* here instead of *updateState*, username would have been deleted from the state because it was not set in the update object. You can also
+use *updatetate* function when you define a state first time, the difference is just that *update* merges a new data state with the existing one whereas *setState*
+totally replaces the old data state with the new one. Therefore *setState* is useful if you want to entirely remove some attributes from a state.
 
 ## Additional Reading
 
@@ -359,7 +327,7 @@ mechanism as a standalone feature. Read more about the topic in a [blog article]
 
 ### Implementing Your Own MetaStore Container
 
-Albeit *store* and *update* functions are most likely all what you need for state container management, there may still be situations that user wants
+Albeit *setState* and *updateState* functions are most likely all what you need for state container management, there may still be situations that user wants
 to do some old-school state container coding and define state containers by themselves. The good news is that Metamatic supports even that as well.
 And even then, it still beats most established state container frameworks in the elegance how it is done! While implementing custom Metamatic state containers 
 is a rather rare use, you can still read about the topic on the new [Metamatic Blog](https://develprr.github.io/metamatic-blog/metamatic/2018/10/10/implementing-custom-state-containers.html)!

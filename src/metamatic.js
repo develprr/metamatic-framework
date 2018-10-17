@@ -152,7 +152,9 @@ const getActionsByEvent = (eventId) => actionMap[eventId] || [];
     ...
  })
  */
-export const handle = (eventId, handler) => {
+export const handle = (eventId, handler) => handleEvent(eventId, handler);
+
+export const handleEvent = (eventId, handler) => {
   addNewAction(generateActionId(), 'DEFAULT', eventId, handler);
   buildActionMap();
   dispatchContainerData(eventId);
@@ -255,7 +257,7 @@ export const disconnect = (componentOrId) => {
 export const dispatch = (eventId, passenger) =>
     getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
 
-export const update = (eventName, state) => {
+export const updateState = (eventName, state) => {
   const object = loadObject(eventName);
   const mergedObject = Object.assign(object, clone(state));
   saveObject(eventName, mergedObject);
@@ -263,17 +265,17 @@ export const update = (eventName, state) => {
   return mergedObject;
 };
 
-export const store = (eventName, state) => {
-  saveObject(eventName, state);
-  dispatch(eventName, state);
+export const setState = (stateName, state) => {
+  saveObject(stateName, state);
+  dispatch(stateName, state);
 };
 
-export const obtain = (stateName, property) => {
+export const getState = (stateName, property) => {
   const state = loadObject(stateName);
   return secureClone(property ? state[property] : state);
 }
 
-export const clear = (eventName) => store(eventName, {});
+export const clearState = (stateName) => setState(stateName, {});
 
 /*
   Clear all events and listeners with reset function. Mainly needed only for tests and debugging
