@@ -258,7 +258,7 @@ in the app. That is fantastically easy using **setState** function. First, you h
 export const STATE_ACTIVE_USER = 'STATE_ACTIVE_USER';
 ```
 
-Then, *setState* the state inside the Metamatic's embedded state container:
+Then, use *setState* to set the state inside the Metamatic's embedded state container:
 
 ```js
 import {setState} from 'metamatic';
