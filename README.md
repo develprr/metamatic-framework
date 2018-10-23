@@ -60,16 +60,11 @@ makes it easier to design components that are more independent and also reusable
 
 ## News
 
-### Version 1.6.5 Functions renamed for more clarity
-
-To improve code readability, *update* function has been renamed to **updateState**, *obtain* function to **getState**,  *store* function to **setState** and *clear*
-function to **clearState**. Version 1.6.5 won't be backwards compatible with earlier versions. 
-
-View more news on Metamatic's [news page](https://develprr.github.io/metamatic-blog/news/)!
+View news on Metamatic's [news page](https://develprr.github.io/metamatic-blog/news/)!
 
 ## Writings and Samples
 
-Please read more about using Metamatic on [Metamatic blog](http://www.oppikone.fi/blog/introducing-metamate-framework.html)
+Please read more about using Metamatic on [Metamatic blog](https://develprr.github.io/metamatic-blog)
 or check out a [sample Metamatic Car App](https://github.com/develprr/metamatic-car-app) to see Metamatic in action, a reference implementation
 on using Metamatic. 
 
