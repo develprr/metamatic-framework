@@ -58,7 +58,7 @@ const jsonToObject = (json) => {
 
 const loadObjectFromLocalStorage = (key) => jsonToObject(localStorage.getItem(key));
 
-const loadObjectFromSessionStorage = (key) => jsonToObject(localStorage.getItem(key));
+const loadObjectFromSessionStorage = (key) => jsonToObject(sessionStorage.getItem(key));
 
 const loadObjectFromMemoryStorage = (key) => secureClone(defaultStore[key]);
 
