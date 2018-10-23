@@ -258,7 +258,7 @@ export const dispatch = (eventId, passenger) =>
     getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
 
 export const updateState = (eventName, state) => {
-  const object = loadObject(eventName);
+  const object = loadObject(eventName) || {};
   const mergedObject = Object.assign(object, clone(state));
   saveObject(eventName, mergedObject);
   dispatch(eventName, mergedObject);
