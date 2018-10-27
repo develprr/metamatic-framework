@@ -268,7 +268,17 @@ export const updateState = (eventName, state) => {
 export const setState = (stateName, state) => {
   saveObject(stateName, state);
   dispatch(stateName, state);
+  return secureClone(state);
 };
+
+/*
+use initState to set initial values to states so they won't be overriden by browser refresh
+*/
+export const initState = (stateName, state) => {
+  const  emergingState = getState(stateName) || {};
+  Object.keys(state).forEach(key => !emergingState.hasOwnProperty(key) ? emergingState[key] = state[key] : null);
+  return setState(stateName, emergingState);
+}
 
 export const getState = (stateName, property) => {
   const state = loadObject(stateName);

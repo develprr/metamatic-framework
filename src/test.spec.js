@@ -1,5 +1,7 @@
 import {assert, describe, it} from 'mocha';
-import {connect, disconnect, dispatch, handle, unhandle, reset, setState, getStore, updateState, getState, clearState, useMemoryStorage} from '../lib/metamatic';
+import {connect, disconnect, dispatch, handle, unhandle, reset, setState,
+  getStore, updateState, getState, clearState, useMemoryStorage, initState
+} from '../lib/metamatic';
 
 let responses = [];
 let value;
@@ -259,6 +261,36 @@ describe('metamatic framework', () => {
     const storedObject = getState(STATE_USER_INFO);
     dataState.username = 'changedUsernameInOriginalDataState';
     dataState.username.should.not.equal(storedObject.username);
-
   });
+
+  it('initState function should set values similarly to setState if the values are not defined before', () => {
+    const STATE_USER_INFO = 'STATE_USER_INFO';
+    initState(STATE_USER_INFO, {
+      loggedIn: false
+    });
+
+    const state = getState(STATE_USER_INFO);
+
+    state.loggedIn.should.equal(false);
+
+  })
+
+  it('initState function should set only values in a state that were not defined before and not change already existing values', () => {
+    const STATE_USER_INFO = 'STATE_USER_INFO';
+    initState(STATE_USER_INFO, {
+      loggedIn: false
+    });
+
+    setState(STATE_USER_INFO, {
+      loggedIn: true
+    });
+
+    initState(STATE_USER_INFO, {
+      loggedIn: false
+    });
+
+    const state = getState(STATE_USER_INFO);
+
+    state.loggedIn.should.equal(true);
+  })
 });
