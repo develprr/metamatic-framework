@@ -265,11 +265,17 @@ export const updateState = (eventName, state) => {
   return mergedObject;
 };
 
+/* update multiple states in one function call */
+export const updateStates = (stateMap) => Object.keys(stateMap).forEach(stateName => updateState(stateName, stateMap[stateName]));
+
 export const setState = (stateName, state) => {
   saveObject(stateName, state);
   dispatch(stateName, state);
   return secureClone(state);
 };
+
+/* set multiple states in one function call */
+export const setStates = (stateMap) => Object.keys(stateMap).forEach(stateName => setState(stateName, stateMap[stateName]));
 
 /*
 use initState to set initial values to states so they won't be overriden by browser refresh
@@ -280,12 +286,20 @@ export const initState = (stateName, state) => {
   return setState(stateName, emergingState);
 }
 
+/* initialize multiple states in one function call */
+
+export const initStates = (stateMap) => Object.keys(stateMap).forEach(stateName => initState(stateName, stateMap[stateName]));
+
 export const getState = (stateName, property) => {
   const state = loadObject(stateName);
   return secureClone(property ? state[property] : state);
 }
 
 export const clearState = (stateName) => setState(stateName, {});
+
+/* clear multiple states in one function call */
+
+export const clearStates = (stateMap) => Object.keys(stateMap).forEach(stateName => clearState(stateName, stateMap[stateName]));
 
 /*
   Clear all events and listeners with reset function. Mainly needed only for tests and debugging

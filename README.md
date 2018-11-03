@@ -60,7 +60,40 @@ makes it easier to design components that are more independent and also reusable
 
 ## News
 
-### Version 1.7.0 Use initState function to initialize states
+### Version 1.7.4:  Initialize, update, set and clear multiple states in one function call
+
+Metamatic now provides practical batch-functions for manipulating multiple states in one call.
+The new functions are **initStates**, **setStates**, **updateStates** and **clearStates**. 
+For instance, when you want to update two states in one call, you can simply call:
+
+```js
+import { updateStates } from 'metamatic';
+import {STATE_USER_INFO, SALES_ITEM} from 'path/to/your/constants.js';
+
+updateStates({
+  [STATE_USER_INFO]: {
+    username: 'Some new userName'
+  },
+  [SALES_ITEM]: {
+    price: 13.21
+  }
+});
+
+```
+
+This is results in less typing and cleaner code than repeating the same call for all states:
+```js
+updateState(STATE_USER_INFO,  {
+  username: 'Some new userName'
+});
+
+updateState(SALES_ITEM,  {
+  price: 13.21
+});
+
+```
+
+### Version 1.7.0: Use initState function to initialize states
 
 Metamatic version 1.7.0 introduces **initState** function that enables your app to robustly remember all its states even if the browser page is reloaded / refreshed!
 Set initial values safely to Metamatic states using *initState* function that only sets those values that don't already exist in the state.
