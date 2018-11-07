@@ -106,6 +106,7 @@ describe('metamatic framework', () => {
     dispatch('SOME-EVENT', 'Sending out an SOS');
   });
 
+
   it('setState function should set flat value inside embedded store', () => {
     const STATE_EMAIL_ADDRESS = 'STATE_EMAIL_ADDRESS';
     setState(STATE_EMAIL_ADDRESS, 'somebody@trappist');
@@ -293,4 +294,5 @@ describe('metamatic framework', () => {
 
     state.loggedIn.should.equal(true);
   })
+
 });

@@ -157,7 +157,7 @@ export const handle = (eventId, handler) => handleEvent(eventId, handler);
 export const handleEvent = (eventId, handler) => {
   addNewAction(generateActionId(), 'DEFAULT', eventId, handler);
   buildActionMap();
-  dispatchContainerData(eventId);
+  invokeHandler(handler, eventId);
 }
 
 /*
@@ -187,8 +187,17 @@ export const connect = (componentOrListenerId, eventId, handler) => {
   const actionId = createActionId(listenerId, eventId);
   addNewAction(actionId, listenerId, eventId, handler);
   buildActionMap();
-  dispatchContainerData(eventId);
+  invokeHandler(handler, eventId);
 }
+
+const invokeHandler = (handler, eventId) => {
+  const data = loadObject(eventId);
+  if (!data) {
+    return;
+  }
+  handler(data);
+}
+
 
 const getContainerData = (container, propertyPath) => {
   if (propertyPath.length === 0) {
@@ -223,7 +232,7 @@ export const connectAll = (componentOrListenerId, handlerMap) => {
     let handler = handlerMap[eventId];
     const actionId = createActionId(listenerId, eventId);
     addNewAction(actionId, listenerId, eventId, handler);
-    dispatchContainerData(eventId);
+    invokeHandler(handler, eventId);
   });
   buildActionMap();
 };
@@ -244,6 +253,13 @@ export const disconnect = (componentOrId) => {
   buildActionMap();
 }
 
+
+const extractObserver = (eventName) => {
+  const parts = eventName.split(':');
+  if (parts.length === 1) {
+    return eventName;
+  }
+}
 /*
   Dispatch metamatic events everywhere in your app. Pass an eventId and a passenger object to the dispatcher. The event id must be a string
   and the passenger object to be passed alongside the event can be any kind of object or primary type:
@@ -258,6 +274,7 @@ export const dispatch = (eventId, passenger) =>
     getActionsByEvent(eventId).map((action) => action.handler(clone(passenger)));
 
 export const updateState = (eventName, state) => {
+  eventName = extractObserver(eventName);
   const object = loadObject(eventName) || {};
   const mergedObject = Object.assign(object, clone(state));
   saveObject(eventName, mergedObject);
@@ -294,6 +311,8 @@ export const getState = (stateName, property) => {
   const state = loadObject(stateName);
   return secureClone(property ? state[property] : state);
 }
+
+
 
 export const clearState = (stateName) => setState(stateName, {});
 
