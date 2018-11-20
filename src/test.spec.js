@@ -1,222 +1,188 @@
 import {assert, describe, it} from 'mocha';
-import {connect, disconnect, dispatch, handle, unhandle, reset, setState,
-  getStore, updateState, getState, clearState, useMemoryStorage, initState
-} from '../lib/metamatic';
+import {broadcastEvent, handleEvent, useMemoryStorage, resetMetamatic, getStore, initStore,
+  setStore, clearStore, updateStore, connectToStore, disconnectFromStores} from '../lib/metamatic';
 
 let responses = [];
 let value;
+let listenerComponent = {};
 
 describe('metamatic framework', () => {
 
   beforeEach(() => {
     responses = [];
-    reset();
+    resetMetamatic();
     useMemoryStorage();
   });
 
-  it('should handle dispatch functions that have matching event ID', () => {
+  it('should handle events that have matching event ID', () => {
 
-    handle('TEST-EVENT-1', (value) => {
+    handleEvent('TEST-EVENT-1', (value) => {
       value.should.equal('HELLO EARTH');
     });
 
-    dispatch('TEST-EVENT-1', 'HELLO EARTH');
-
-  });
-
-  it('should register handler with unique ID', () => {
-
-    connect('ID-0', 'TEST-EVENT-2', (value) => {
-      value.should.equal('HELLO ROSS 128b');
-    });
-
-    dispatch('TEST-EVENT-2', 'HELLO ROSS 128b');
-
-  });
-
-  it('should remove handler upon unhandle call', () => {
-    handle('EARTH-CALLING', (value) => {
-      throw new Error('this should not happen after unhandle');
-    })
-    unhandle('EARTH-CALLING');
-    dispatch('EARTH-CALLING', 'Sending out an SOS');
-  });
-
-  it('should execute all connect-listeners with matching event ID', () => {
-
-    connect('PROXIMA-CENTAURI-B', 'EARTH-CALLING', (value) => {
-      value = 'Proxima Centauri b received call: ' + value;
-      responses.push(value);
-    });
-
-    connect('TRAPPIST-1-E', 'EARTH-CALLING', (value) => {
-      value = 'Trappist 1 e received call: ' + value;
-      responses.push(value);
-    });
-
-    dispatch('EARTH-CALLING', 'Sending out an SOS');
-
-    responses.length.should.equal(2);
-    responses[0].should.equal('Proxima Centauri b received call: Sending out an SOS');
-    responses[1].should.equal('Trappist 1 e received call: Sending out an SOS');
+    broadcastEvent('TEST-EVENT-1', 'HELLO EARTH');
   });
 
   it('should execute all handle-listeners with matching event ID', () => {
 
-     handle('EARTH-CALLING', (value) => {
+     handleEvent('EARTH-CALLING', (value) => {
        value = 'Trappist 1 e received message: ' + value;
        responses.push(value);
      });
 
-     handle('EARTH-CALLING', (value) => {
+    handleEvent('EARTH-CALLING', (value) => {
        value = 'Trappist 1 e replies to message: ' + value;
        responses.push(value);
      })
 
-     dispatch('EARTH-CALLING', 'Sending out an SOS');
+     broadcastEvent('EARTH-CALLING', 'Sending out an SOS');
      responses.length.should.equal(2);
    });
 
   it('should handle strings',  () => {
-    handle('STRING-EVENT', (value) => {
+    handleEvent('STRING-EVENT', (value) => {
       value.should.equal('SOME STRING');
     })
-    dispatch('STRING-EVENT', 'SOME STRING')
+    broadcastEvent('STRING-EVENT', 'SOME STRING')
   });
 
   it('should handle integers', () => {
-    handle('INTEGER-EVENT', (value) => {
+    handleEvent('INTEGER-EVENT', (value) => {
       parseInt(value).should.equal(3);
     })
-    dispatch('INTEGER-EVENT', 3);
+    broadcastEvent('INTEGER-EVENT', 3);
   });
 
   it('should remove component handlers on disconnect', () => {
     let someComponent = {};
-    connect(someComponent, 'SOME-EVENT', (value) => {
+    connectToStore(someComponent, 'SOME_SIMPLE_STORE', (value) => {
       value.should.equal('Sending out an SOS');
     });
-    dispatch('SOME-EVENT', 'Sending out an SOS');
+    setStore('SOME_SIMPLE_STORE', 'Sending out an SOS');
 
     //now let's modify the handler to cause an expection
-    connect(someComponent, 'SOME-EVENT', (value) => {
-      throw new Error('This error should not occur after disconnect');
-    });
-    disconnect(someComponent);
-    dispatch('SOME-EVENT', 'Sending out an SOS');
+    disconnectFromStores(someComponent);
+    broadcastEvent('SOME-EVENT', 'Sending out an SOS');
   });
 
 
-  it('setState function should set flat value inside embedded store', () => {
-    const STATE_EMAIL_ADDRESS = 'STATE_EMAIL_ADDRESS';
-    setState(STATE_EMAIL_ADDRESS, 'somebody@trappist');
-    getStore()[STATE_EMAIL_ADDRESS].should.equal('somebody@trappist');
+  it('setStore function should be able to save also primary values, such as strings, as stores, not only json objects', () => {
+    const STORE_EMAIL_ADDESS = 'STORE_EMAIL_ADDESS';
+    setStore(STORE_EMAIL_ADDESS, 'somebody@trappist');
+    getStore(STORE_EMAIL_ADDESS).should.equal('somebody@trappist');
   })
 
-  it('setState function should be able to store states with many values', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
-    let dataState = {
+
+
+  it('setStore function should be able to persist stores with many states', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    let dataStore = {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    setState(STATE_USER_INFO, dataState);
-    getStore()[STATE_USER_INFO].emailAddress.should.equal('somebody@trappist');
-    getStore()[STATE_USER_INFO].username.should.equal('somebody');
+    setStore(STORE_USER_INFO, dataStore);
+    getStore(STORE_USER_INFO).emailAddress.should.equal('somebody@trappist');
+    getStore(STORE_USER_INFO).username.should.equal('somebody');
   });
 
-  it('store function clones objects so modifying original state should not change the data inside the store', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
+  it('setStore function clones objects so modifying original state should not change the data inside the store', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
     let dataState = {
       emailAddress: 'somebody@trappist'
     };
-    setState(STATE_USER_INFO, dataState);
+    setStore(STORE_USER_INFO, dataState);
     dataState.emailAddress = 'afterwards_changed@emailaddress';
-    getStore()[STATE_USER_INFO].emailAddress.should.equal('somebody@trappist');
+    getStore(STORE_USER_INFO).emailAddress.should.equal('somebody@trappist');
   });
 
-  it('store function completely overrides the previous state in the container and thereby also existing values', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
-    let dataState = {
+
+  it('setStore function completely overrides the previous state in the container and thereby also existing values', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    let dataStore = {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    setState(STATE_USER_INFO, dataState);
+    setStore(STORE_USER_INFO, dataStore);
 
     let newStateWithoutUsername = {
       emailAddress: 'somebody@else'
     };
 
-    setState(STATE_USER_INFO, newStateWithoutUsername);
+    setStore(STORE_USER_INFO, newStateWithoutUsername);
 
-    'somebody'.should.not.equal( getStore()[STATE_USER_INFO].username);
+    'somebody'.should.not.equal( getStore(STORE_USER_INFO).username);
   });
 
-  it('connect function retrospectively receives data state earlier set by store function', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
-    let dataState = {
+
+  it('connectToStore function retrospectively receives data state earlier set by store function', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    let dataStore = {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    setState(STATE_USER_INFO, dataState);
+    setStore(STORE_USER_INFO, dataStore);
     const listener = {};
-    connect(listener, STATE_USER_INFO, (userInfo) => responses.push(userInfo));
-    responses.length.should.equal(1);
-    responses[0].username.should.equal('somebody');
-  });
-
-  it('handle function retrospectively receives data state earlier set by store function', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
-    let dataState = {
-      username: 'somebody',
-      emailAddress: 'somebody@trappist'
-    };
-    updateState(STATE_USER_INFO, dataState);
-    handle(STATE_USER_INFO, (userInfo) => responses.push(userInfo));
+    connectToStore(listener, STORE_USER_INFO, (userInfo) => responses.push(userInfo));
     responses.length.should.equal(1);
     responses[0].username.should.equal('somebody');
   });
 
 
-  it('connect function retrospectively receives data state earlier set by update function', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
+  it('handleEvent function retrospectively receives data state earlier set by store function', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
     let dataState = {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    updateState(STATE_USER_INFO, dataState);
+    updateStore(STORE_USER_INFO, dataState);
+    handleEvent(STORE_USER_INFO, (userInfo) => responses.push(userInfo));
+    responses.length.should.equal(1);
+    responses[0].username.should.equal('somebody');
+  });
+
+
+  it('connectToStore function retrospectively receives data store earlier set by update function', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    let dataStore = {
+      username: 'somebody',
+      emailAddress: 'somebody@trappist'
+    };
+    updateStore(STORE_USER_INFO, dataStore);
     const listener = {};
-    connect(listener, STATE_USER_INFO, (userInfo) => responses.push(userInfo));
+    connectToStore(listener, STORE_USER_INFO, (userInfo) => responses.push(userInfo));
     responses.length.should.equal(1);
     responses[0].username.should.equal('somebody');
   });
 
-  it('handle function retrospectively receives data state earlier set by update function', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
-    let dataState = {
+
+
+  it('handleEvent function retrospectively receives data state earlier set by update function', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    let dataStore = {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    updateState(STATE_USER_INFO, dataState);
-    handle(STATE_USER_INFO, (userInfo) => responses.push(userInfo));
+    updateStore(STORE_USER_INFO, dataStore);
+    handleEvent(STORE_USER_INFO, (userInfo) => responses.push(userInfo));
     responses.length.should.equal(1);
     responses[0].username.should.equal('somebody');
   });
 
-  it('update function does not erase old unaffected values inside existing state', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
-    let dataState = {
+  it('update function does not erase old unaffected values inside existing store', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    let dataStore = {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    setState(STATE_USER_INFO, dataState);
+    setStore(STORE_USER_INFO, dataStore);
 
-    let newState = {
+    let storeUpdate = {
       emailAddress: 'somebody@else'
     };
 
-    const updatedState = updateState(STATE_USER_INFO, newState);
+    const updatedStore = updateStore(STORE_USER_INFO, storeUpdate);
 
-    handle(STATE_USER_INFO, (userInfo) => {
+    handleEvent(STORE_USER_INFO, (userInfo) => {
       responses.push(userInfo)
     });
     responses.length.should.equal(1);
@@ -224,75 +190,76 @@ describe('metamatic framework', () => {
     responses[0].emailAddress.should.equal('somebody@else');
   });
 
-  it('obtain function without parameter returns a state previously stored in metamatic state container', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
-    let dataState = {
+  it('getStore function without parameter returns a store previously stored in metamatic state manager', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    let dataStore = {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    setState(STATE_USER_INFO, dataState);
+    setStore(STORE_USER_INFO, dataStore);
 
-    const storedObject = getState(STATE_USER_INFO);
-    dataState.username.should.equal(storedObject.username);
+    const storedObject = getStore(STORE_USER_INFO);
+    dataStore.username.should.equal(storedObject.username);
+  });
+
+  it('getStore function returns a clone, not the original object', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    let dataStore = {
+      username: 'somebody',
+      emailAddress: 'somebody@trappist'
+    };
+    setStore(STORE_USER_INFO, dataStore);
+
+    const storedObject = getStore(STORE_USER_INFO);
+    dataStore.username = 'changedUsernameInOriginalDataState';
+    dataStore.username.should.not.equal(storedObject.username);
 
   });
 
-  it('getState function returns a clone, not the original object', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
+  it('clearStore function should override previously set store with an empty object', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
     let dataState = {
       username: 'somebody',
       emailAddress: 'somebody@trappist'
     };
-    setState(STATE_USER_INFO, dataState);
-
-    const storedObject = getState(STATE_USER_INFO);
+    setStore(STORE_USER_INFO, dataState);
+    clearStore(STORE_USER_INFO);
+    const storedObject = getStore(STORE_USER_INFO);
     dataState.username = 'changedUsernameInOriginalDataState';
     dataState.username.should.not.equal(storedObject.username);
-
   });
 
-  it('clearState function should override previously set state with an empty obkect', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
-    let dataState = {
-      username: 'somebody',
-      emailAddress: 'somebody@trappist'
-    };
-    setState(STATE_USER_INFO, dataState);
-    clearState(STATE_USER_INFO);
-    const storedObject = getState(STATE_USER_INFO);
-    dataState.username = 'changedUsernameInOriginalDataState';
-    dataState.username.should.not.equal(storedObject.username);
-  });
 
-  it('initState function should set values similarly to setState if the values are not defined before', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
-    initState(STATE_USER_INFO, {
+  it('initStore function should set values similarly to setStore if the values are not defined before', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    initStore(STORE_USER_INFO, {
       loggedIn: false
     });
 
-    const state = getState(STATE_USER_INFO);
+    const state = getStore(STORE_USER_INFO);
 
     state.loggedIn.should.equal(false);
 
   })
 
-  it('initState function should set only values in a state that were not defined before and not change already existing values', () => {
-    const STATE_USER_INFO = 'STATE_USER_INFO';
-    initState(STATE_USER_INFO, {
+  it('initStore function should set only values in a store that were not defined before and not change already existing values', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    initStore(STORE_USER_INFO, {
       loggedIn: false
     });
 
-    setState(STATE_USER_INFO, {
+    setStore(STORE_USER_INFO, {
       loggedIn: true
     });
 
-    initState(STATE_USER_INFO, {
+    initStore(STORE_USER_INFO, {
       loggedIn: false
     });
 
-    const state = getState(STATE_USER_INFO);
+    const store = getStore(STORE_USER_INFO);
 
-    state.loggedIn.should.equal(true);
+    store.loggedIn.should.equal(true);
   })
+
 
 });
