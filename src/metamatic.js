@@ -81,7 +81,7 @@ const getContainerData = (container, pathArray) => {
   }
   let nextProp = pathArray.shift();
   const innerContainer = container[nextProp];
-  return innerContainer ? getContainerData(innerContainer, pathArray) : container;
+  return innerContainer ? getContainerData(innerContainer, pathArray) : null;
 };
 
 // conversion
