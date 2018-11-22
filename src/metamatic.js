@@ -271,8 +271,9 @@ const invokeHandler = (processorPath) => {
   if (equalContainers(originalValue, itemValue)) {
     return;
   }
-  return processor(getContentOrCloneContainer(itemValue));
+  processor(getContentOrCloneContainer(itemValue));
   stateValueMap[processorPath] = itemValue;
+  return itemValue;
 };
 
 const invokeStateProcessorsInStore = (storeName) => {
