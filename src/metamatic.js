@@ -115,7 +115,6 @@ const objectToPathmap = (object, evolvingPath, pathmap) => {
       return objectToPathmap(value, newPathGeneration, pathmap);
     }
     if (isArray(value)) {
-      console.log('VALUE IS ARRAY:', value);
       return arrayToPathmap(value, newPathGeneration, pathmap);
     }
   })
