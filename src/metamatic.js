@@ -1,3 +1,9 @@
+/*
+The Metamatic Framework
+Author: Heikki Kupiainen / Metamatic.net
+License: Apache 2.0
+*/
+
 let stateValueMap = {};
 let stateProcessorMap = {};
 
@@ -42,16 +48,6 @@ const getSaveStoreFunction = () => ({
   [MEMORY_STORAGE]: saveStoreToMemoryStorage
 }[getStorageType()]);
 
-const jsonToObject = (json) => {
-  if (json) {
-    try {
-      return JSON.parse(json);
-    } catch (e) {
-      return null;
-    }
-  }
-}
-
 const loadStoreFromLocalStorage = (storeName) => jsonToObject(localStorage.getItem(storeName));
 
 const loadStoreFromSessionStorage = (storeName) => jsonToObject(sessionStorage.getItem(storeName));
@@ -86,6 +82,48 @@ const getContainerData = (container, pathArray) => {
 
 // conversion
 
+const jsonToObject = (json) => {
+  if (json) {
+    try {
+      return JSON.parse(json);
+    } catch (e) {
+      return null;
+    }
+  }
+}
+
+const arrayToPathmap = (array, evolvingPath, pathmap) => {
+  array.forEach((arrayItem, index) => {
+    const newPathGeneration = evolvingPath +  '[' + index + ']';
+    objectToPathmap(arrayItem, newPathGeneration, pathmap);
+  })
+}
+
+const objectToPathmap = (object, evolvingPath, pathmap) => {
+  pathmap = pathmap || {};
+  evolvingPath = evolvingPath || '';
+  const keys = Object.keys(object);
+  keys.forEach(key => {
+    const value = object[key];
+    const separator = evolvingPath.length > 0 ? '.' : '';
+    const newPathGeneration = evolvingPath + separator + key;
+    if (!isContainer(value)) {
+      pathmap[newPathGeneration] = value;
+      return pathmap
+    }
+    if (isObject(value)) {
+      return objectToPathmap(value, newPathGeneration, pathmap);
+    }
+    if (isArray(value)) {
+      console.log('VALUE IS ARRAY:', value);
+      return arrayToPathmap(value, newPathGeneration, pathmap);
+    }
+  })
+  return pathmap;
+}
+
+export const flattenObject = (object) => objectToPathmap(object, '', {});
+
 export const instantiateContainer = (containerJson) => {
   if (!containerJson) {
     return null;
@@ -110,6 +148,10 @@ const equalContainers = (container1, container2) => JSON.stringify(container1) =
 export const safelyDuplicateContainer = (container) => container ? duplicateContainer(container) : null;
 
 export const existsItem = (variable) => !(typeof variable === 'undefined' || variable === null);
+
+const isObject = (item) => item && (typeof item === 'object');
+
+const isArray = (item) => item && item instanceof Array;
 
 const isContainer = (item) => item && (typeof item === 'object' || item instanceof Array);
 
@@ -150,16 +192,33 @@ const initMapStore = (storeName, newStore) => {
   return safelyDuplicateContainer(targetItem);
 };
 
-export const initStore = (storeName, newStore) => Array.isArray(newStore) ? initListStore(storeName, newStore) :
-    initMapStore(storeName, newStore);
+export const initStore = (storeName, newStore) => Array.isArray(newStore) ? initListStore(storeName, newStore) : initMapStore(storeName, newStore);
 
 export const initStores = (storesMap) => Object.keys(storesMap).map(storeName => initStore(storeName, storesMap[storeName]));
 
 export const containsState = (storeName, property) => (loadStore(storeName) || {})[property];
 
-export const getStore = (storeName, property) => {
+export const getStore = (storeName) => {
   const store = loadStore(storeName);
-  return store ? store['_content'] || safelyDuplicateContainer(property ? store[property] : store) : {};
+  return store['_content'] || store;
+}
+
+export const getState = (storeName, stateName) => getNestedState(storeName, stateName);
+
+export const setState = (storeName, statePath, state) => {
+  const store = getStore(storeName) || {};
+  const objectNames = statePath.split('.');
+  let targetProperty = objectNames.pop();
+  let targetObject = store;
+  objectNames.forEach((objectName) => {
+    if (!targetObject[objectName]) {
+      targetObject[objectName] = {};
+    }
+    targetObject = targetObject[objectName];
+  })
+  targetObject[targetProperty] = state;
+  setStore(storeName, store);
+  return state;
 }
 
 const enforceListenerId = (listener) => {
@@ -288,3 +347,5 @@ export const resetMetamatic = () => {
   storeListenerMap = {};
   listenerId = 0;
 }
+
+

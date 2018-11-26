@@ -42,7 +42,9 @@ If your application already uses some other state container framework, you can s
 ### Robust State-Based Solution Without Props-Hassle
 
 A major innovation within the Metamatic Framework is that it eliminates the props vs. states dilemma that most state container frameworks seem to have. 
-In Metamatic, the root states are called **stores**. Stores can have nested properties, which are all understood as nested **states**.
+In Metamatic framework, your components are not directly connected to states inside global stores. Instead, Metamatic effectively copies global states
+into component's local states. This gives you more freedom to decide which states you want to keep as component's local states and which ones you want to connect
+to Metamatic global states. In Metamatic, the root states are called **stores**. Stores can have nested properties, which are all understood as nested **states**.
 You can connect any component to listen to entire stores as well as just one nested state deep inside a store.
 
 ## News
@@ -135,9 +137,33 @@ initStore(STORE_USER_DATA, {
        key: 'toyota',
        label: 'Toyota'
     }
-  ]
+  ],
+  address: {
+    streetAddress: 'Some street 1'
+  }
 });
 ```
+
+### Retrieving data from stores
+
+When you want to retrieve an entire store from the Metamatic state manager, just simply use **getStore** function:
+
+```js
+import {getStore} from 'metamatic';
+
+const userStore = getStore(STORE_USER_DATA);
+
+```
+
+But you may just need one particular state inside a store. For retrieving a nested state inside a store, use **getState** function:
+
+```js
+import {getState} from 'metamatic';
+
+const streetAddress = getState(STORE_USER_DATA, 'address.streetAddress');
+
+```
+
 
 ### Updating Stores
 
@@ -168,7 +194,13 @@ import {updateStores} from 'metamatic';
 
 updateStores({
    [STORE_USER_INFO]: {
-     streetAddress: 'Jon Doe Street 3'
+     address:  {
+      streetAddress: 'Jon Doe Street 3',
+      city: {
+        zipCode: '00100',
+        name: 'Helsinki'
+      }  
+     }
    },
    [STORE_CAR_OPTIONS]: {
      options: [
@@ -184,6 +216,16 @@ updateStores({
      ]
    }
  })
+```
+
+You might want to update just a single state inside a store. For that, use **setState** function:
+
+```js
+
+import {setState} from 'metamatic';
+
+setState(STORE_USER_INFO, 'address.city.name', 'San Francisco');
+
 ```
 
 ## Rewriting and Clearing Stores

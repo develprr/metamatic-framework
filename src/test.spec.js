@@ -1,6 +1,20 @@
 import {assert, describe, it} from 'mocha';
-import {broadcastEvent, handleEvent, useMemoryStorage, resetMetamatic, getStore, initStore,
-  setStore, clearStore, updateStore, connectToStore, disconnectFromStores} from '../lib/metamatic';
+import {
+  broadcastEvent,
+  clearStore,
+  connectToStore,
+  disconnectFromStores,
+  flattenObject,
+  getStore,
+  handleEvent,
+  initStore,
+  resetMetamatic,
+  setStore,
+  updateStore,
+  useMemoryStorage,
+  getState,
+  setState
+} from '../lib/metamatic';
 
 let responses = [];
 let value;
@@ -65,14 +79,11 @@ describe('metamatic framework', () => {
     broadcastEvent('SOME-EVENT', 'Sending out an SOS');
   });
 
-
   it('setStore function should be able to save also primary values, such as strings, as stores, not only json objects', () => {
     const STORE_EMAIL_ADDESS = 'STORE_EMAIL_ADDESS';
     setStore(STORE_EMAIL_ADDESS, 'somebody@trappist');
     getStore(STORE_EMAIL_ADDESS).should.equal('somebody@trappist');
   })
-
-
 
   it('setStore function should be able to persist stores with many states', () => {
     const STORE_USER_INFO = 'STORE_USER_INFO';
@@ -95,12 +106,12 @@ describe('metamatic framework', () => {
     getStore(STORE_USER_INFO).emailAddress.should.equal('somebody@trappist');
   });
 
-
   it('setStore function completely overrides the previous state in the container and thereby also existing values', () => {
     const STORE_USER_INFO = 'STORE_USER_INFO';
     let dataStore = {
       username: 'somebody',
-      emailAddress: 'somebody@trappist'
+      emailAddress: 'somebody@trappist',
+
     };
     setStore(STORE_USER_INFO, dataStore);
 
@@ -112,7 +123,6 @@ describe('metamatic framework', () => {
 
     'somebody'.should.not.equal( getStore(STORE_USER_INFO).username);
   });
-
 
   it('connectToStore function retrospectively receives data state earlier set by store function', () => {
     const STORE_USER_INFO = 'STORE_USER_INFO';
@@ -127,7 +137,6 @@ describe('metamatic framework', () => {
     responses[0].username.should.equal('somebody');
   });
 
-
   it('handleEvent function retrospectively receives data state earlier set by store function', () => {
     const STORE_USER_INFO = 'STORE_USER_INFO';
     let dataState = {
@@ -139,7 +148,6 @@ describe('metamatic framework', () => {
     responses.length.should.equal(1);
     responses[0].username.should.equal('somebody');
   });
-
 
   it('connectToStore function retrospectively receives data store earlier set by update function', () => {
     const STORE_USER_INFO = 'STORE_USER_INFO';
@@ -153,8 +161,6 @@ describe('metamatic framework', () => {
     responses.length.should.equal(1);
     responses[0].username.should.equal('somebody');
   });
-
-
 
   it('handleEvent function retrospectively receives data state earlier set by update function', () => {
     const STORE_USER_INFO = 'STORE_USER_INFO';
@@ -229,7 +235,6 @@ describe('metamatic framework', () => {
     dataState.username.should.not.equal(storedObject.username);
   });
 
-
   it('initStore function should set values similarly to setStore if the values are not defined before', () => {
     const STORE_USER_INFO = 'STORE_USER_INFO';
     initStore(STORE_USER_INFO, {
@@ -240,7 +245,7 @@ describe('metamatic framework', () => {
 
     state.loggedIn.should.equal(false);
 
-  })
+  });
 
   it('initStore function should set only values in a store that were not defined before and not change already existing values', () => {
     const STORE_USER_INFO = 'STORE_USER_INFO';
@@ -261,5 +266,59 @@ describe('metamatic framework', () => {
     store.loggedIn.should.equal(true);
   })
 
+  it('flattenObject should convert deeply nested object to flat map', () => {
+    const deepObject = {
+      user: {
+        username: 'jondoe',
+        kids: ['tim', 'kim', 'jim'],
+        address: {
+          streetAddress: 'Somestreet 1'
+        }
+      }
+    }
+    const flatObject = flattenObject(deepObject);
+    flatObject['user.kids.1'].should.equal('kim');
+    flatObject['user.kids.2'].should.equal('jim');
+    flatObject['user.address.streetAddress'].should.equal('Somestreet 1');
+  });
+
+  it('getState should retrieve nested state inside store', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    const deepObject = {
+      user: {
+        username: 'jondoe',
+        kids: ['tim', 'kim', 'jim'],
+        address: {
+          streetAddress: 'Somestreet 1'
+        }
+      }
+    }
+    initStore(STORE_USER_INFO, deepObject);
+    let nestedState = getState(STORE_USER_INFO, 'user.address.streetAddress');
+    nestedState.should.equal('Somestreet 1');
+    nestedState = getState(STORE_USER_INFO, 'user.address');
+    nestedState['streetAddress'].should.equal('Somestreet 1');
+    nestedState = getState(STORE_USER_INFO, 'user.nonExistentState.path');
+  });
+
+
+  it('setState should update nested state inside store', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    const deepObject = {
+      user: {
+        username: 'jondoe',
+        kids: ['tim', 'kim', 'jim'],
+        address: {
+          streetAddress: 'Somestreet 1'
+        }
+      }
+    }
+    initStore(STORE_USER_INFO, deepObject);
+    setState(STORE_USER_INFO, 'user.address.streetAddress', 'Otherstreet 2');
+    let nestedState = getState(STORE_USER_INFO, 'user.username');
+    nestedState.should.equal('jondoe');
+    nestedState = getState(STORE_USER_INFO, 'user.address.streetAddress');
+    nestedState.should.equal('Otherstreet 2');
+  });
 
 });
