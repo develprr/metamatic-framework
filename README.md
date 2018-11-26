@@ -175,14 +175,14 @@ Those values that are not defined in updater object will remain untouched in the
 import {updateStore} from 'metamatic';
 
 updateStore(STORE_USER_INFO, {
-  streetAddress: 'Some new userName'
+  username: 'Some new userName'
 });
 ```
-The example above will overwrite or set 'streetAddress' state but lets username remain as is. updateStore returns the new combined object:
+The example above will overwrite or set 'username' state but lets streetAddress remain as is. updateStore returns the new combined object:
 
 ```js
 const mergedObject = updateStore(STORE_USER_INFO, {
-  streetAddress: 'Some new userName'
+  username: 'Some new userName'
 });
 ```
 
