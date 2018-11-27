@@ -1,6 +1,6 @@
 {
   "name": "metamatic",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Metamatic is a next generation persistent state manager for JavaScript applications.",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,7 @@
   "author": "Heikki Kupiainen / Metamatic",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/develprr/synchronous-dispatcher/issues"
+    "url": "https://github.com/develprr/metamatic-framework/issues"
   },
   "devDependencies": {
     "babel": "5.8.23",

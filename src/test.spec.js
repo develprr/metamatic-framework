@@ -4,16 +4,15 @@ import {
   clearStore,
   connectToStore,
   disconnectFromStores,
-  flattenObject,
+  getState,
   getStore,
   handleEvent,
   initStore,
   resetMetamatic,
+  setState,
   setStore,
   updateStore,
-  useMemoryStorage,
-  getState,
-  setState
+  useMemoryStorage
 } from '../lib/metamatic';
 
 let responses = [];
@@ -264,43 +263,7 @@ describe('metamatic framework', () => {
     const store = getStore(STORE_USER_INFO);
 
     store.loggedIn.should.equal(true);
-  })
-
-  it('flattenObject should convert deeply nested object to flat map', () => {
-    const deepObject = {
-      user: {
-        username: 'jondoe',
-        kids: ['tim', 'kim', 'jim'],
-        address: {
-          streetAddress: 'Somestreet 1'
-        }
-      }
-    }
-    const flatObject = flattenObject(deepObject);
-    flatObject['user.kids.1'].should.equal('kim');
-    flatObject['user.kids.2'].should.equal('jim');
-    flatObject['user.address.streetAddress'].should.equal('Somestreet 1');
   });
-
-  it('getState should retrieve nested state inside store', () => {
-    const STORE_USER_INFO = 'STORE_USER_INFO';
-    const deepObject = {
-      user: {
-        username: 'jondoe',
-        kids: ['tim', 'kim', 'jim'],
-        address: {
-          streetAddress: 'Somestreet 1'
-        }
-      }
-    }
-    initStore(STORE_USER_INFO, deepObject);
-    let nestedState = getState(STORE_USER_INFO, 'user.address.streetAddress');
-    nestedState.should.equal('Somestreet 1');
-    nestedState = getState(STORE_USER_INFO, 'user.address');
-    nestedState['streetAddress'].should.equal('Somestreet 1');
-    nestedState = getState(STORE_USER_INFO, 'user.nonExistentState.path');
-  });
-
 
   it('setState should update nested state inside store', () => {
     const STORE_USER_INFO = 'STORE_USER_INFO';
