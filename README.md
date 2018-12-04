@@ -361,7 +361,7 @@ Consider that you connect a React component to a store such as:
 
 ```js
 componentDidMount = () => connectToStore(this, STORE_USER_INFO, {
-  'userData': (incomingState) => this.setState({...this.state, incomingState})
+  'userData': (incomingState) => this.setState({...this.state, ...incomingState})
 })
 ```
 
