@@ -236,6 +236,7 @@ describe('metamatic framework', () => {
 
   it('initStore function should set values similarly to setStore if the values are not defined before', () => {
     const STORE_USER_INFO = 'STORE_USER_INFO';
+
     initStore(STORE_USER_INFO, {
       loggedIn: false
     });
@@ -280,8 +281,23 @@ describe('metamatic framework', () => {
     setState(STORE_USER_INFO, 'user.address.streetAddress', 'Otherstreet 2');
     let nestedState = getState(STORE_USER_INFO, 'user.username');
     nestedState.should.equal('jondoe');
-    nestedState = getState(STORE_USER_INFO, 'user.address.streetAddress');
+    nestedState =  getState(STORE_USER_INFO, 'user.address.streetAddress');
     nestedState.should.equal('Otherstreet 2');
   });
 
+  it('connectToStore function should cause a corresponding CONNECT event', ()=> {
+    const SOME_STORE = 'SOME_STORE';
+    const CONNECT_SOME_STORE = 'CONNECT/SOME_STORE';
+    const listener = { name: 'someListener' };
+    const receivedEvents = [];
+    handleEvent(CONNECT_SOME_STORE, (listener) => {
+      receivedEvents.push(listener)
+    })
+
+    connectToStore(listener,  SOME_STORE, (store) => {
+        //connecting to store
+    });
+
+    receivedEvents.length.should.equal(1);
+  })
 });

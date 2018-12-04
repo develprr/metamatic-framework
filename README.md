@@ -352,6 +352,51 @@ import {broadcastEvent} from 'metamatic';
 broadcastEvent('SOME-EVENT', {something: 'here'});
 ```
 
+## The System Event CONNECT 
+
+A very useful thing to know about Metamatic is that every time a component is connected to a store or state, Metamatic automatically fires
+a system event to inform anybody who listens that a component has been connected to a store or a state.
+
+Consider that you connect a React component to a store such as:
+
+```js
+componentDidMount = () => connectToStore(this, STORE_USER_INFO, {
+  'userData': (incomingState) => this.setState({...this.state, incomingState})
+})
+```
+
+Meaning, you want to connect your component to a Metamatic store with name *STORE_USER_INFO*, and when *userData* state inside
+that store is updated, that state will be dispatched to this component, which then merges the incoming user data state with this component's private state
+- and re-renders the component, because setState causes the component to refresh. 
+
+Now, what will happen if the user data is not available in the store? Absolutely nothing! But that is possibly a situation that you don't want.
+Therefore it is possible to make a store to listen for component connecting events and program them to act upon them.
+
+When the component was connected to STORE_USER_INFO, Metamatic hiddenly fired a CONNECT system event, which has syntax *CONNECT/YOUR_STORE_NAME* - 
+that would be in this example "CONNECT/STORE_USER_INFO".
+
+This is very helpful because you can add a piece of code to the user info store to handle such connect event:
+
+```js
+const CONNECT_USER_INFO = 'CONNECT/' + STORE_USER_INFO;
+
+handleEvent(CONNECT_USER_INFO, (listener) => optionallyLoadUserData());  //you can have empty params () if you don't need the listener - actually you should not need it.
+```
+
+The handler above is invoked every time when a component is connected to USER_INFO store.
+
+The implementation for optionallyLoadUserData would check if the store already contains the user data and if not, then load it:
+
+```js
+import {containsState, updateStore} from 'metamatic';
+const optionallfyLoadUserData = () => !containsState(STORE_USER_INFO, 'userData') && loadUserData(response => updateStore(STORE_USER_INFO, {
+   'userData': response.data
+})); 
+```
+
+The code example checks if the metamatic STORE_USER_INFO contains state *userData*. If not, it invokes *loadUserData* function that actually 
+loads the data from server - and finally updates the store, setting userData state that was received. *updateState* will cause the listener component 
+actually to receive the user data in question. Function *loadUserData* can be implemented using any available Ajax library.
 
 ## License 
 

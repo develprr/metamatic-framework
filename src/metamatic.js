@@ -205,6 +205,12 @@ export const connectToStore = (listener, storeName, processorFunction) => {
   if (store) {
     processorFunction(getContentOrCloneContainer(store));
   }
+
+  if (storeName.indexOf('CONNECT/') !== 0) {
+    const connectorName = 'CONNECT/' + storeName;
+    broadcastEvent(connectorName, listener);
+  }
+
 }
 
 // use handleEvent to connect anonymous listeners that don't need to be unmounted thus disconnected
@@ -274,6 +280,10 @@ export const connectToState = (listener, storeName, stateName, processor) => {
   stateProcessorMap[processorPath] = processor;
   if (currentValue) {
     processor(currentValue);
+  }
+  if (storeName.indexOf('CONNECT/') !== 0) {
+    const connectorName = 'CONNECT/' + storeName + ':' + stateName;
+    broadcastEvent(connectorName, listener);
   }
 };
 
