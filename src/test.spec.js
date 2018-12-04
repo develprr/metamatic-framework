@@ -300,4 +300,43 @@ describe('metamatic framework', () => {
 
     receivedEvents.length.should.equal(1);
   })
+
+  it('connectToStore function should cause a corresponding CONNECT event', ()=> {
+    const SOME_STORE = 'SOME_STORE';
+    const CONNECT_SOME_STORE = 'CONNECT/SOME_STORE';
+    const listener = { name: 'someListener' };
+    const receivedEvents = [];
+    handleEvent(CONNECT_SOME_STORE, (listener) => {
+      receivedEvents.push(listener)
+    })
+
+    connectToStore(listener,  SOME_STORE, (store) => {
+      //connecting to store
+    });
+
+    receivedEvents.length.should.equal(1);
+  })
+
+ /* it('invoking store to load missing data for connected component', ()=> {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    const CONNECT_USER_INFO = 'CONNECT_USER_INFO';
+    const listenerComponent = {
+      setState: (state) => this.state = state
+    };
+    connectToStore(listenerComponent, STORE_USER_INFO, (store) => listenerComponent.setState(store.userData));
+
+    handleEvent(CONNECT_USER_INFO,  )
+    const CONNECT_SOME_STORE = 'CONNECT/SOME_STORE';
+    const listener = { name: 'someListener' };
+    const receivedEvents = [];
+    handleEvent(CONNECT_SOME_STORE, (listener) => {
+      receivedEvents.push(listener)
+    })
+
+    connectToStore(listener,  SOME_STORE, (store) => {
+      //connecting to store
+    });
+
+    receivedEvents.length.should.equal(1);
+  })*/
 });

@@ -8,7 +8,7 @@ let stateValueMap = {};
 let stateProcessorMap = {};
 
 let storeListenerMap = {};
-let listenerId = 0;
+let metamaticId = 0;
 
 // storage manager
 const LOCAL_STORAGE = 'LOCAL_STORAGE';
@@ -185,22 +185,20 @@ export const setState = (storeName, statePath, state) => {
   return state;
 }
 
-const enforceListenerId = (listener) => {
-  if (!listener._listenerId) {
-    listenerId += 1;
-    listener._listenerId = listenerId.toString();
-  }
-  return listener._listenerId;
-}
+const ensureMetamaticId = (component) => component._metamaticId || (component => {
+  metamaticId += 1;
+  component._metamaticId = metamaticId.toString();
+  return component._metamaticId;
+})(component);
 
 export const connectToStores = (component, processorByStoreNameMap) =>
     Object.keys(processorByStoreNameMap).map(storeName => connectToStore(component, storeName, processorByStoreNameMap[storeName]));
 
 // a simple function to couple a listener with matching event
 export const connectToStore = (listener, storeName, processorFunction) => {
-  const listenerId = enforceListenerId(listener);
+  const metamaticId = ensureMetamaticId(listener);
   storeListenerMap[storeName] = storeListenerMap[storeName] || {};
-  storeListenerMap[storeName][listenerId.toString()] = processorFunction;
+  storeListenerMap[storeName][metamaticId.toString()] = processorFunction;
   const store = loadStore(storeName);
   if (store) {
     processorFunction(getContentOrCloneContainer(store));
@@ -229,9 +227,9 @@ export const disconnectFromStores = (listenerComponent) => {
 const removeListenerFromStores = (listener) => Object.keys(storeListenerMap).forEach(eventName => removeListenerFromStore(eventName, listener));
 
 const removeListenerFromStates = (listener) => {
-  const listenerId = listener._listenerId;
+  const metamaticId = listener._metamaticId;
   Object.keys(stateProcessorMap).forEach(key => {
-    if (key.split(':')[0] === listenerId) {
+    if (key.split(':')[0] === metamaticId) {
       delete stateProcessorMap[key];
       delete stateValueMap[key];
     }
@@ -239,12 +237,12 @@ const removeListenerFromStates = (listener) => {
 }
 
 const removeListenerFromStore = (storeName, listener) => {
-  const listenerId = listener._listenerId;
-  const listenerMap = storeListenerMap[listenerId];
+  const metamaticId = listener._metamaticId;
+  const listenerMap = storeListenerMap[metamaticId];
   if (!listenerMap) {
     return;
   }
-  delete listenerMap[listenerId.toString()];
+  delete listenerMap[metamaticId.toString()];
 }
 
 export const setStore = (storeName, newStore) => {
@@ -273,9 +271,9 @@ export const connectToStates = (listener, storeName, stateProcessorMap) => Objec
 });
 
 export const connectToState = (listener, storeName, stateName, processor) => {
-  const listenerId = enforceListenerId(listener);
+  const metamaticId = ensureMetamaticId(listener);
   const currentValue = getNestedState(storeName, stateName);
-  const processorPath = listenerId + ':' + storeName + ':' + stateName;
+  const processorPath = metamaticId + ':' + storeName + ':' + stateName;
   stateValueMap[processorPath] = currentValue;
   stateProcessorMap[processorPath] = processor;
   if (currentValue) {
@@ -319,7 +317,7 @@ export const resetMetamatic = () => {
   stateValueMap = {};
   stateProcessorMap = {};
   storeListenerMap = {};
-  listenerId = 0;
+  metamaticId = 0;
 }
 
 

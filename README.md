@@ -360,14 +360,13 @@ a system event to inform anybody who listens that a component has been connected
 Consider that you connect a React component to a store such as:
 
 ```js
-componentDidMount = () => connectToStore(this, STORE_USER_INFO, {
-  'userData': (incomingState) => this.setState({...this.state, ...incomingState})
-})
+componentDidMount = () => connectToStore(this, 
+  STORE_USER_INFO, (incomingStore) => this.setState({...this.state, incomingStore.userData})
+);
 ```
 
-Meaning, you want to connect your component to a Metamatic store with name *STORE_USER_INFO*, and when *userData* state inside
-that store is updated, that state will be dispatched to this component, which then merges the incoming user data state with this component's private state
-- and re-renders the component, because setState causes the component to refresh. 
+Meaning, you want to connect your component to a Metamatic store with name *STORE_USER_INFO*, and when the store is updated, 
+it will be dispatched to this component. From the incoming sore, *userData* state will be taken and put into this component's local state.
 
 Now, what will happen if the user data is not available in the store? Absolutely nothing! But that is possibly a situation that you don't want.
 Therefore it is possible to make a store to listen for component connecting events and program them to act upon them.
