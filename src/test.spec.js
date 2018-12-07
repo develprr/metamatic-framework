@@ -317,26 +317,39 @@ describe('metamatic framework', () => {
     receivedEvents.length.should.equal(1);
   })
 
- /* it('invoking store to load missing data for connected component', ()=> {
+  it('invoking store to load missing data for connected component', () => {
     const STORE_USER_INFO = 'STORE_USER_INFO';
-    const CONNECT_USER_INFO = 'CONNECT_USER_INFO';
+    const CONNECT_USER_INFO = `CONNECT/${STORE_USER_INFO}`;
+
+    //mimicking a React-style component with setState function.
     const listenerComponent = {
-      setState: (state) => this.state = state
+      state: {},
+      setState:  function (state) { this.state = state }
     };
-    connectToStore(listenerComponent, STORE_USER_INFO, (store) => listenerComponent.setState(store.userData));
 
-    handleEvent(CONNECT_USER_INFO,  )
-    const CONNECT_SOME_STORE = 'CONNECT/SOME_STORE';
-    const listener = { name: 'someListener' };
-    const receivedEvents = [];
-    handleEvent(CONNECT_SOME_STORE, (listener) => {
-      receivedEvents.push(listener)
-    })
+    const loadUserData = () => {
+      //load userData with ajax and then update store with that data
+      updateStore(STORE_USER_INFO, {
+        userData: {
+          name: 'Jon Doe'
+        }
+      })
+    };
 
-    connectToStore(listener,  SOME_STORE, (store) => {
-      //connecting to store
+    handleEvent(CONNECT_USER_INFO, () => {
+      loadUserData()
     });
 
-    receivedEvents.length.should.equal(1);
-  })*/
+    connectToStore(listenerComponent, STORE_USER_INFO, (store) => listenerComponent.setState({...listenerComponent.state, ...store.userData}));
+    listenerComponent.state.name.should.equal('Jon Doe');
+  });
+
+  it('connecting to multiple states inside one store', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    const listenerComponent = {
+      state: {},
+      setState:  function (state) { this.state = state }
+    };
+  });
+
 });
