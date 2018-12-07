@@ -53,6 +53,10 @@ The Metamatic is available as [installable package at Npmjs.com](https://www.npm
 You can also explore the [Metamatic source code at GitHub](https://github.com/develprr/metamatic-framework). 
 Or visit the official Metamatic home page at [www.metamatic.net](http://www.metamatic.net).
 
+## Practical Example
+
+Check out the [Metamatic Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of the Metamatic framework in action!
+
 ## Installing Metamatic
 
 Type:
