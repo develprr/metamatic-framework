@@ -47,13 +47,6 @@ into component's local states. This gives you more freedom to decide which state
 to Metamatic global states. In Metamatic, the root states are called **stores**. Stores can have nested properties, which are all understood as nested **states**.
 You can connect any component to listen to entire stores as well as just one nested state deep inside a store.
 
-## News
-
-### Version 2.0 is out!
-
-Metamatic Version 2.0 is now out. Metamatic 2.0.0 differs fundamentally from previous versions. The newest Metamatic framework implementation is based
-on real-world use cases when implementing a complex business frontend.
-
 ## Source Code
 
 The Metamatic is available as [installable package at Npmjs.com](https://www.npmjs.com/package/metamatic).  
