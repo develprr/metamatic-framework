@@ -146,7 +146,9 @@ initStore(STORE_USER_DATA, {
 
 ### Retrieving data from stores
 
-When you want to retrieve an entire store from the Metamatic state manager, just simply use **getStore** function:
+When you want to retrieve an entire store from the Metamatic state manager, just simply use **
+
+getStore** function:
 
 ```js
 import {getStore} from 'metamatic';
@@ -163,7 +165,15 @@ import {getState} from 'metamatic';
 const streetAddress = getState(STORE_USER_DATA, 'address.streetAddress');
 
 ```
+But as in Metamatic, a root state being called store and that store in turn being just a simple associative array, you can actually invoke *getState* without a second parameter.
+In such case, Metamatic will return the root state, the store:
 
+```js
+import {getState} from 'metamatic';
+
+const userDataStore = getState(STORE_USER_DATA);
+
+```
 
 ### Updating Stores
 

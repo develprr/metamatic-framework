@@ -167,7 +167,7 @@ export const getStore = (storeName) => {
   return store['_content'] || store;
 }
 
-export const getState = (storeName, stateName) => getNestedState(storeName, stateName);
+export const getState = (storeName, stateName) => stateName ? getNestedState(storeName, stateName) : getStore(storeName);
 
 export const setState = (storeName, statePath, state) => {
   const store = getStore(storeName) || {};
