@@ -368,7 +368,7 @@ Consider that you connect a React component to a store such as:
 
 ```js
 componentDidMount = () => connectToStore(this, 
-  STORE_USER_INFO, (incomingStore) => this.setState({...this.state, incomingStore.userData})
+  STORE_USER_INFO, (incomingStore) => this.setState({...this.state, userData: incomingStore.userData})
 );
 ```
 
@@ -395,7 +395,7 @@ The implementation for optionallyLoadUserData would check if the store already c
 
 ```js
 import {containsState, updateStore} from 'metamatic';
-const optionallfyLoadUserData = () => !containsState(STORE_USER_INFO, 'userData') && loadUserData(response => updateStore(STORE_USER_INFO, {
+const optionallyLoadUserData = () => !containsState(STORE_USER_INFO, 'userData') && loadUserData(response => updateStore(STORE_USER_INFO, {
    'userData': response.data
 })); 
 ```
