@@ -55,7 +55,8 @@ Or visit the official Metamatic home page at [www.metamatic.net](http://www.meta
 
 ## Practical Example
 
-Check out the [Metamatic Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of the Metamatic framework in action!
+Check out the source code [Metamatic Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of the Metamatic framework in action,
+and the actual deployment of the [demo live](https://develprr.github.io/metamatic-car-app/)!
 
 ## Installing Metamatic
 
@@ -108,14 +109,14 @@ initStores({
   },
   [STORE_CAR_OPTIONS]: {
     options: [
-        {
-          key: 'tesla',
-          label: 'Tesla'
-        },
-        {
-           key: 'toyota',
-           label: 'Toyota'
-        }
+      {
+        key: 'tesla',
+        label: 'Tesla'
+      },
+      {
+         key: 'toyota',
+         label: 'Toyota'
+      }
     ]
   }
 });
@@ -131,8 +132,8 @@ initStore(STORE_USER_DATA, {
       label: 'Tesla'
     },
     {
-       key: 'toyota',
-       label: 'Toyota'
+      key: 'toyota',
+      label: 'Toyota'
     }
   ],
   address: {
@@ -204,15 +205,15 @@ updateStores({
    },
    [STORE_CAR_OPTIONS]: {
      options: [
-         {
-           key: 'tesla',
-           label: 'Tesla',
-           active: true
-         },
-         {
-            key: 'toyota',
-            label: 'Toyota'
-         }
+       {
+         key: 'tesla',
+         label: 'Tesla',
+         active: true
+       },
+       {
+          key: 'toyota',
+          label: 'Toyota'
+       }
      ]
    }
  })
@@ -246,15 +247,15 @@ export class SomeReactComponent extends Component {
   }
   
   componentDidMount = () => connectToStores(this, {
-      [STORE_USER_INFO]: (userInfo) => this.setState({
-        ...this.state,
-        userInfo
-      }),
-      [STORE_CAR_INFO]: (carInfo) => this.setState({
-        ...this.state,
-        myCarInfo: carInfo
-      })
-    });
+    [STORE_USER_INFO]: (userInfo) => this.setState({
+      ...this.state,
+      userInfo
+    }),
+    [STORE_CAR_INFO]: (carInfo) => this.setState({
+      ...this.state,
+      myCarInfo: carInfo
+    })
+  });
 }
 ```
 
@@ -277,14 +278,14 @@ For this, use **connectToStates** to rather connect the listener component to a 
 
 ```js
 componentDidMount = () => connectToStates(this, STORE_USER_INFO, {
-   'address.streetAddress': (streetAddress) => this.setState({
-      ...this.state,
-      streetAddress
-    }),
-   'orderHistory.latestOrder': (latestOrder) => this.setState({
-        ...this.state,
-        latestOrder
-    })}
+  'address.streetAddress': (streetAddress) => this.setState({
+    ...this.state,
+    streetAddress
+  }),
+  'orderHistory.latestOrder': (latestOrder) => this.setState({
+    ...this.state,
+    latestOrder
+  })}
 )
 ```
 In the example above, component is connected to two different nested states inside *STORE_USER_INFO*. Only a change in a nested state *streetAdress*  inside *address* state
@@ -327,12 +328,10 @@ handleEvents({
     console.log('I process the event here..');
     console.log(item);
   },
-  
   'OTHER-EVENT': (item) => {
-      console.log('I process another one here..');
-      console.log(item);
-    },
-
+    console.log('I process another one here..');
+    console.log(item);
+  },
 });
 ```
 
