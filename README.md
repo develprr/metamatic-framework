@@ -143,9 +143,7 @@ initStore(STORE_USER_DATA, {
 
 ### Retrieving data from stores
 
-When you want to retrieve an entire store from the Metamatic state manager, just simply use **
-
-getStore** function:
+When you want to retrieve an entire store from the Metamatic state manager, just simply use **getStore** function:
 
 ```js
 import {getStore} from 'metamatic';
