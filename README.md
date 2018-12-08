@@ -151,7 +151,6 @@ getStore** function:
 import {getStore} from 'metamatic';
 
 const userStore = getStore(STORE_USER_DATA);
-
 ```
 
 But you may just need one particular state inside a store. For retrieving a nested state inside a store, use **getState** function:
@@ -160,7 +159,6 @@ But you may just need one particular state inside a store. For retrieving a nest
 import {getState} from 'metamatic';
 
 const streetAddress = getState(STORE_USER_DATA, 'address.streetAddress');
-
 ```
 But as in Metamatic, a root state being called store and that store in turn being just a simple associative array, you can actually invoke *getState* without a second parameter.
 In such case, Metamatic will return the root state, the store:
@@ -169,7 +167,6 @@ In such case, Metamatic will return the root state, the store:
 import {getState} from 'metamatic';
 
 const userDataStore = getState(STORE_USER_DATA);
-
 ```
 
 ### Updating Stores
@@ -178,7 +175,6 @@ When updating stores with **updateStore** or **updateStores** function, the stat
 Those values that are not defined in updater object will remain untouched in the Metamatic store.
 
 ```js
-
 import {updateStore} from 'metamatic';
 
 updateStore(STORE_USER_INFO, {
@@ -196,7 +192,6 @@ const mergedObject = updateStore(STORE_USER_INFO, {
 To update many stores simultaneously:
 
 ```js
-
 import {updateStores} from 'metamatic';
 
 updateStores({
@@ -228,11 +223,9 @@ updateStores({
 You might want to update just a single state inside a store. For that, use **setState** function:
 
 ```js
-
 import {setState} from 'metamatic';
 
 setState(STORE_USER_INFO, 'address.city.name', 'San Francisco');
-
 ```
 
 ## Rewriting and Clearing Stores
@@ -278,7 +271,6 @@ componentDidMount = () => connectToStore(this, STORE_CAR_INFO, (carInfo) => this
   ...this.state,
   myCarInfo: carInfo
 });
-
 ```
 
 There is a caveat, however! Every time either *STORE_USER_INFO* or *STORE_CAR_INFO* states are changed it will cause the component to be re-rendered even 
@@ -286,7 +278,6 @@ if there was nothing relevant in those stores for this given component. In such 
 For this, use **connectToStates** to rather connect the listener component to a particular nested substate or substates inside a store:
 
 ```js
-
 componentDidMount = () => connectToStates(this, STORE_USER_INFO, {
    'address.streetAddress': (streetAddress) => this.setState({
       ...this.state,
@@ -297,7 +288,6 @@ componentDidMount = () => connectToStates(this, STORE_USER_INFO, {
         latestOrder
     })}
 )
-
 ```
 In the example above, component is connected to two different nested states inside *STORE_USER_INFO*. Only a change in a nested state *streetAdress*  inside *address* state
 and *latestOrder* change in *orderHistory* state will cause the component to update through its *setState* native function call.
@@ -311,7 +301,6 @@ disconnectFromStores(this);
 ```
 
 To call disconnect inside **componentWillUnmount** React life cycle function:
-
 ```js
 componentWillUnmount = () => disconnectFromStores(this);
 ```
@@ -322,7 +311,6 @@ But when you want to handle Metamatic events inside components that don't need t
 simply use **handleEvent** and **handleEvents** functions for registering handlers for Metamatic events:
 
 ```js
-
 import {handleEvent} from 'metamatic';
 
 handleEvent('MY-EVENT', (item) => {
@@ -334,7 +322,6 @@ handleEvent('MY-EVENT', (item) => {
 and many events:
 
 ```js
-
 import {handleEvents} from 'metamatic';
 
 handleEvents({
