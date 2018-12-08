@@ -242,8 +242,7 @@ use **componentDidMount** life cycle callback to connect your component to Metam
 ```js
 export class SomeReactComponent extends Component {
   
-  constructor(props
-  ) {
+  constructor(props) {
     super(props);
     this.state = {};
   }
@@ -267,9 +266,10 @@ as nested state *myCarInfo*.
 To only connect to one store: 
 
 ```js
-componentDidMount = () => connectToStore(this, STORE_CAR_INFO, (carInfo) => this.setState({
-  ...this.state,
-  myCarInfo: carInfo
+componentDidMount = () => connectToStore(this, STORE_CAR_INFO, 
+  (carInfo) => this.setState({
+    ...this.state,
+    myCarInfo: carInfo
 });
 ```
 
@@ -355,7 +355,11 @@ Consider that you connect a React component to a store such as:
 
 ```js
 componentDidMount = () => connectToStore(this, 
-  STORE_USER_INFO, (incomingStore) => this.setState({...this.state, userData: incomingStore.userData})
+  STORE_USER_INFO, 
+  (incomingStore) => this.setState({
+    ...this.state, 
+    userData: incomingStore.userData
+  })
 );
 ```
 
@@ -382,9 +386,13 @@ The implementation for optionallyLoadUserData would check if the store already c
 
 ```js
 import {containsState, updateStore} from 'metamatic';
-const optionallyLoadUserData = () => !containsState(STORE_USER_INFO, 'userData') && loadUserData(response => updateStore(STORE_USER_INFO, {
-   'userData': response.data
-})); 
+
+const optionallyLoadUserData = () => 
+  !containsState(STORE_USER_INFO, 'userData') && loadUserData(response => 
+  updateStore(STORE_USER_INFO, {
+    'userData': response.data
+  })
+); 
 ```
 
 The code example checks if the metamatic STORE_USER_INFO contains state *userData*. If not, it invokes *loadUserData* function that actually 
