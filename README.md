@@ -168,7 +168,7 @@ import {getState} from 'metamatic';
 const userDataStore = getState(STORE_USER_DATA);
 ```
 
-*Remember that getters always return a copy of the store! You can safely mofify the received object without mutating the master copy inside the store!*
+Remember that getters always return a copy of the store. You can safely mofify the received object without mutating the master copy inside the store!
 
 ### Updating Stores
 
