@@ -2,8 +2,8 @@
 
 ## Introduction
 
-The Metamatic framework is a simple and clutter-free state manager for JavaScript apps for developers who want to get
-things actually done instead of just talking. Metamatic provides a robust toolset for data communication between components
+The Metamatic framework is a simple and clutter-free state manager for JavaScript apps and for developers who want to get
+things done. Metamatic provides a robust toolset for data communication between components
 inside your browser-based UI software. It can be used together with any modern JavaScript UI framework such as Vue, React, Angular and even basic JavaScript apps
 without any specific frameworks.
 
@@ -168,7 +168,7 @@ import {getState} from 'metamatic';
 const userDataStore = getState(STORE_USER_DATA);
 ```
 
-Remember that getters always return a copy of the store. You can safely mofify the received object without mutating the master copy inside the store!
+Remember that getters always return a copy of the store. You can safely modify the received object without mutating the master copy inside the store!
 
 ### Updating Stores
 
