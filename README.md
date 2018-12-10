@@ -142,7 +142,7 @@ initStore(STORE_USER_DATA, {
 });
 ```
 
-### Retrieving data from stores
+### Retrieving Data from Stores
 
 When you want to retrieve an entire store from the Metamatic state manager, just simply use **getStore** function:
 
@@ -167,6 +167,8 @@ import {getState} from 'metamatic';
 
 const userDataStore = getState(STORE_USER_DATA);
 ```
+
+*Remember that getters always return a copy of the store! You can safely mofify the received object without mutating the master copy inside the store!*
 
 ### Updating Stores
 
@@ -291,6 +293,9 @@ componentDidMount = () => connectToStates(this, STORE_USER_INFO, {
 In the example above, component is connected to two different nested states inside *STORE_USER_INFO*. Only a change in a nested state *streetAdress*  inside *address* state
 and *latestOrder* change in *orderHistory* state will cause the component to update through its *setState* native function call.
 
+Also remember here that all states and stores received this way are only clones of the master copy that resides protected inside the Metamatic state manager,
+thus modifying them locally won't mutate the master copy in the Metamatic store.
+
 ## Disconnecting Components from Metamatic Stores 
 
 Disconnecting a component from MetaStore upon unmounting:
@@ -340,8 +345,12 @@ Similarly, broadcast an event into app-wide bit-space to be processed with all e
 ```js
 import {broadcastEvent} from 'metamatic';
 
-broadcastEvent('SOME-EVENT', {something: 'here'});
+const someObject = {something: 'here'}
+
+broadcastEvent('SOME-EVENT', someObject);
 ```
+
+*broadcastEvent* will dispatch a clone of the data sent as a parameter, therefore the receiver can't directly modify the source version.
 
 ## The System Event CONNECT 
 
@@ -360,8 +369,8 @@ componentDidMount = () => connectToStore(this,
 );
 ```
 
-Meaning, you want to connect your component to a Metamatic store with name *STORE_USER_INFO*, and when the store is updated, 
-it will be dispatched to this component. From the incoming sore, *userData* state will be taken and put into this component's local state.
+In the code snippet above, you want to connect your component to a Metamatic store with name *STORE_USER_INFO*, and when the store is updated, 
+it will be dispatched to this component. From the incoming store, *userData* state will be taken and put into this component's local state.
 
 Now, what will happen if the user data is not available in the store? Absolutely nothing! But that is possibly a situation that you don't want.
 Therefore it is possible to make a store to listen for component connecting events and program them to act upon them.
