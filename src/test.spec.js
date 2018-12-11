@@ -352,4 +352,22 @@ describe('metamatic framework', () => {
     };
   });
 
+  it('should disconnect from stores on disconnectFromStores', () => {
+    const STORE_USER_INFO = 'STORE_USER_INFO';
+    let callCount = 0;
+    const listenerComponent = {
+      state: {},
+      setState:  function (state) {
+        this.state = state
+        callCount += 1;
+      }
+    };
+    connectToStore(listenerComponent, STORE_USER_INFO, (store) => listenerComponent.setState({...listenerComponent.state, ...store.userData}));
+    disconnectFromStores(listenerComponent);
+    updateStore(STORE_USER_INFO, {
+      something: 'else'
+    })
+    callCount.should.equal(1);
+  });
+
 });

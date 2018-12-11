@@ -238,7 +238,7 @@ const removeListenerFromStates = (listener) => {
 
 const removeListenerFromStore = (storeName, listener) => {
   const metamaticId = listener._metamaticId;
-  const listenerMap = storeListenerMap[metamaticId];
+  const listenerMap = storeListenerMap[storeName];
   if (!listenerMap) {
     return;
   }
