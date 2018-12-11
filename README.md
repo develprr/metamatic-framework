@@ -55,8 +55,8 @@ Or visit the official Metamatic home page at [www.metamatic.net](http://www.meta
 
 ## Practical Example
 
-Check out the source code [Metamatic Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of the Metamatic framework in action,
-and the actual deployment of the [demo live](https://develprr.github.io/metamatic-car-app/)!
+Check out the source code of [Metamatic Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of the Metamatic framework in action,
+and the actual deployment of the [demo live](https://metamatic-car-app.herokuapp.com/)!
 
 ## Installing Metamatic
 
