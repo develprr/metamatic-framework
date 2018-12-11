@@ -58,6 +58,10 @@ Or visit the official Metamatic home page at [www.metamatic.net](http://www.meta
 Check out the source code of [Metamatic Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of the Metamatic framework in action,
 and the actual deployment of the [demo live](https://metamatic-car-app.herokuapp.com/)!
 
+## Blog
+
+Check out [the Metamatic blog](https://develprr.github.io/metamatic-blog) for articles about using the framework!
+
 ## Installing Metamatic
 
 Type:
@@ -404,6 +408,8 @@ const optionallyLoadUserData = () =>
 The code example checks if the metamatic STORE_USER_INFO contains state *userData*. If not, it invokes *loadUserData* function that actually 
 loads the data from server - and finally updates the store, setting userData state that was received. *updateState* will cause the listener component 
 actually to receive the user data in question. Function *loadUserData* can be implemented using any available Ajax library.
+
+Read more about using CONNECT feature [here!](https://develprr.github.io/metamatic-blog/metamatic/2018/12/11/url-based-application-states-with-metamatic-connect-event.html)
 
 ## License 
 
