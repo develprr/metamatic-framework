@@ -413,7 +413,7 @@ However, if you connect your component to a particular nested state inside a sto
 will fire two distinct CONNECT events. It will fire a state-related event with format CONNECT/[STORE_NAME]:[NESTED_STATE_NAME], and a store-related CONNECT/[STORE_NAME]
 
 And if you connect the component to many states inside a store using *connectToStates* then for each state CONNECT/[STORE_NAME]:[NESTED_STATE_NAME] is fired
-and finally one CONNECT/[STORE_NAME] event is fire. For example, you want to connect your React component to nested states *model* and *speed* inside *carModelDetails*
+and finally one CONNECT/[STORE_NAME] event is fired. For example, you want to connect your React component to nested states *model* and *speed* inside *carModelDetails*
 state inside store STORE_CAR_MODEL_ITEM:
 
 ```js
