@@ -423,8 +423,8 @@ componentDidMount = () => connectToStates(this, STORE_CAR_MODEL_ITEM, {
   });
 ```
 
-Invoking *connectToStates* the way described above, will cause Metamatic fire system three events CONNECT/STORE_CAR_MODEL_ITEM:carModelDetails.model and 
-CONNECT/STORE_CAR_MODEL_ITEM:carModelDetails.speed and finally CONNECT/STORE_CAR_MODEL_ITEM event.
+Invoking *connectToStates* the way described above, will cause Metamatic fire system three events *CONNECT/STORE_CAR_MODEL_ITEM:carModelDetails.model* and 
+*CONNECT/STORE_CAR_MODEL_ITEM:carModelDetails.speed* and finally *CONNECT/STORE_CAR_MODEL_ITEM* event.
 
 Read more about using CONNECT feature [here!](https://develprr.github.io/metamatic-blog/metamatic/2018/12/11/url-based-application-states-with-metamatic-connect-event.html)
 
