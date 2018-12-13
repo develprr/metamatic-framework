@@ -1,4 +1,4 @@
-# The Metamatic State Manager 2.0 
+# The Metamatic State Manager
 
 ## Introduction
 
@@ -408,6 +408,23 @@ const optionallyLoadUserData = () =>
 The code example checks if the metamatic STORE_USER_INFO contains state *userData*. If not, it invokes *loadUserData* function that actually 
 loads the data from server - and finally updates the store, setting userData state that was received. *updateState* will cause the listener component 
 actually to receive the user data in question. Function *loadUserData* can be implemented using any available Ajax library.
+
+However, if you connect your component to a particular nested state inside a store instead, using *connectToState* or function,
+will fire two distinct CONNECT events. It will fire a state-related event with format CONNECT/[STORE_NAME]:[NESTED_STATE_NAME], and a store-related CONNECT/[STORE_NAME]
+
+And if you connect the component to many states inside a store using *connectToStates* then for each state CONNECT/[STORE_NAME]:[NESTED_STATE_NAME] is fired
+and finally one CONNECT/[STORE_NAME] event is fire. For example, you want to connect your React component to nested states *model* and *speed* inside *carModelDetails*
+state inside store STORE_CAR_MODEL_ITEM:
+
+```js
+componentDidMount = () => connectToStates(this, STORE_CAR_MODEL_ITEM, {
+    'carModelDetails.model': (model) => this.setState({...this.state, model}),
+    'carModelDetails.speed': (speed) => this.setState({...this.state, speed}),
+  });
+```
+
+Invoking *connectToStates* the way described above, will cause Metamatic fire system three events CONNECT/STORE_CAR_MODEL_ITEM:carModelDetails.model and 
+CONNECT/STORE_CAR_MODEL_ITEM:carModelDetails.speed and finally CONNECT/STORE_CAR_MODEL_ITEM event.
 
 Read more about using CONNECT feature [here!](https://develprr.github.io/metamatic-blog/metamatic/2018/12/11/url-based-application-states-with-metamatic-connect-event.html)
 

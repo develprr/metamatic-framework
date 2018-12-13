@@ -265,12 +265,18 @@ export const broadcastEvent = (eventName, item) => {
   invokeStateProcessorsInStore(eventName);
 }
 
-export const connectToStates = (listener, storeName, stateProcessorMap) => Object.keys(stateProcessorMap).forEach(stateName => {
-  const processor = stateProcessorMap[stateName];
-  connectToState(listener, storeName, stateName, processor);
-});
+export const connectToStates = (listener, storeName, stateProcessorMap) => {
+  Object.keys(stateProcessorMap).forEach(stateName => {
+    const processor = stateProcessorMap[stateName];
+    attachToState(listener, storeName, stateName, processor);
+  });
+  if (storeName.indexOf('CONNECT/') !== 0) {
+    const stateConnectorName = 'CONNECT/' + storeName;
+    broadcastEvent(stateConnectorName, listener);
+  }
+}
 
-export const connectToState = (listener, storeName, stateName, processor) => {
+const attachToState = (listener, storeName, stateName, processor) => {
   const metamaticId = ensureMetamaticId(listener);
   const currentValue = getNestedState(storeName, stateName);
   const processorPath = metamaticId + ':' + storeName + ':' + stateName;
@@ -280,8 +286,16 @@ export const connectToState = (listener, storeName, stateName, processor) => {
     processor(currentValue);
   }
   if (storeName.indexOf('CONNECT/') !== 0) {
-    const connectorName = 'CONNECT/' + storeName + ':' + stateName;
-    broadcastEvent(connectorName, listener);
+    const stateConnectorName = 'CONNECT/' + storeName + ':' + stateName;
+    broadcastEvent(stateConnectorName, listener);
+  }
+}
+
+export const connectToState = (listener, storeName, stateName, processor) => {
+  attachToState(listener, storeName, stateName, processor);
+  if (storeName.indexOf('CONNECT/') !== 0) {
+    const storeConnectorName = 'CONNECT/' + storeName;
+    broadcastEvent(storeConnectorName, listener);
   }
 };
 
