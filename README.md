@@ -14,7 +14,7 @@ without any specific frameworks.
 
 ### The Metamatic Concept
 
-The Metamatic framework solves a fundamental problem in frontend software design: When any data is changed anywhere in the application, 
+The Metamatic framework solves a fundamental problem in frontend software design: when any data is changed anywhere in the application, 
 this change must be reliably radiated to all parts of the software that uses that data. For example, your frontend app has many components that display
 user's order history. When that data changes it should be consistently updated in all parts of the app.
 
@@ -27,8 +27,8 @@ When you think about Metamatic, think about throwing an ice cube into a glass fu
 Metamatic provides an easy way to manage your data stores and states inside them. In Metamatic, the data flows typically as follows:
 
 1. A component updates the Metamatic store by directly invoking an updater function that is defined in a store utility file. 
-2. Store updater function in the store utility file updates the store and the store fires an update event.
-3. Component/components connected to the store receive the event from the Metamatic store, containing a copy the store itself as passenger.
+2. The store updater function in the store utility file updates the store and fires an update event containing a copy of the store itself.
+3. The component/components connected to the store receive the event from the Metamatic store.
 4. The connected components update their state from the event and the component refreshes itself.
 
 * The data maintains its integrity since updating the master copy in the central Metamatic data store radiates the change to every place where needed!
