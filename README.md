@@ -7,6 +7,11 @@ things done. Metamatic provides a robust toolset for data communication between 
 inside your browser-based UI software. It can be used together with any modern JavaScript UI framework such as Vue, React, Angular and even basic JavaScript apps
 without any specific frameworks.
 
+<div align="center" style="width:100%;background-color:green;nargin:auto">
+    <img width="208px" alt="water"
+      src="https://develprr.github.io/metamatic-blog/assets/pexels-photo-416520.jpeg" />
+</div>
+
 ### The Metamatic Concept
 
 The Metamatic framework solves a fundamental problem in frontend software design: When any data is changed anywhere in the application, 
