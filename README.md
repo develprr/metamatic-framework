@@ -13,19 +13,18 @@ The Metamatic framework solves a fundamental problem in frontend software design
 this change must be reliably radiated to all parts of the software that uses that data. For example, your frontend app has many components that display
 user's order history. When that data changes it should be consistently updated in all parts of the app.
 
-When you think about Metamatic, think about throwing a stone into a bucket full of water. 
+When you think about Metamatic, think about throwing a stone into a bucket full of water.
 
 * Think about the bucket. It is the Metamatic data store, a data container.
-* Think about the water. It is the data that radiates into every direction from the bucket.
+* Think about the water. It is the data that splashes into every direction from the bucket.
 * Think about the stone. It is the direct function invocation you call to update the Metamatic data container.
 
 Metamatic provides an easy way to manage your data stores and states inside them. In metamatic the data flows typically as follows:
 
-1. A component updates the metamatic store by directly invoking an updater function that is defined in a store utility file.
-2. Store updater function in the store utility file updates the store.
-3. Store fires an update event.
-4. Component/components depending on the updated store receive the event from the Metamatic store
-5. Components bound to the affected store update theair state from the event and the component refreshes itself.
+1. A component updates the metamatic store by directly invoking an updater function that is defined in a store utility file. 
+2. Store updater function in the store utility file updates the store and the store fires an update event.
+3. Component/components depending on the updated store receive the event from the Metamatic store.
+4. Components bound to the affected store update their state from the event and the component refreshes itself.
 
 * The data maintains its integratity since updating the master copy in the central Metamatic data store radiates the change to every place where needed!
 * The data store always fires only copies of itself, therefore there's no way to sneakily mutate the master copy.
