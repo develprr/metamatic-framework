@@ -15,9 +15,9 @@ user's order history. When that data changes it should be consistently updated i
 
 When you think about Metamatic, think about throwing a stone into a bucket full of water. 
 
-Think about the bucket. It is the Metamatic data store, a data container.
-Think about the water. It is the data that radiates into every direction from the bucket.
-Think about the stone. It is the direct function invocation you call to update the Metamatic data container.
+* Think about the bucket. It is the Metamatic data store, a data container.
+* Think about the water. It is the data that radiates into every direction from the bucket.
+* Think about the stone. It is the direct function invocation you call to update the Metamatic data container.
 
 Metamatic provides an easy way to manage your data stores and states inside them. In metamatic the data flows typically as follows:
 
