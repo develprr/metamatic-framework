@@ -69,15 +69,6 @@ export const getNestedState = (storeName, statePath) => {
   return getNestedObject(item, statePath);
 };
 
-const getContainerData = (container, pathArray) => {
-  if (pathArray.length === 0) {
-    return container;
-  }
-  let nextProp = pathArray.shift();
-  const innerContainer = container[nextProp];
-  return innerContainer ? getContainerData(innerContainer, pathArray) : null;
-};
-
 // conversion
 
 const jsonToObject = (json) => {
