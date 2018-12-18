@@ -4,6 +4,8 @@ Author: Heikki Kupiainen / Metamatic.net
 License: Apache 2.0
 */
 
+import {getNestedObject} from '@metamatic.net/meta-object';
+
 let stateValueMap = {};
 let stateProcessorMap = {};
 
@@ -64,11 +66,7 @@ const existsStore = (storeName) => existsItem(loadStore(storeName));
 
 export const getNestedState = (storeName, statePath) => {
   const item = loadStore(storeName);
-  if (!item) {
-    return null;
-  }
-  const pathArray = statePath.split('.');
-  return getContainerData(item, pathArray);
+  return getNestedObject(item, statePath);
 };
 
 const getContainerData = (container, pathArray) => {
@@ -208,7 +206,6 @@ export const connectToStore = (listener, storeName, processorFunction) => {
     const connectorName = 'CONNECT/' + storeName;
     broadcastEvent(connectorName, listener);
   }
-
 }
 
 // use handleEvent to connect anonymous listeners that don't need to be unmounted thus disconnected

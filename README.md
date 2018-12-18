@@ -33,7 +33,7 @@ Metamatic provides an easy way to manage your data stores and states inside them
 
 * The data maintains its integrity since updating the master copy in the central Metamatic data store radiates the change to every place where needed!
 * The data store always fires only copies of itself, therefore there's no way to sneakily mutate the master copy.
-* Events are almost the same as stores since updating datastore fires an event with the same name as the store itself. A copy of the store is the passenger of the event.
+* Events are almost the same as stores since updating a data store fires an event with the same name as the store itself. A copy of the store is the passenger of the event.
 
 ### Persistent States
 

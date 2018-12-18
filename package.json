@@ -1,6 +1,6 @@
 {
   "name": "metamatic",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "Metamatic is a next generation persistent state manager for JavaScript applications.",
   "main": "index.js",
   "scripts": {
@@ -37,5 +37,8 @@
     "mocha": "2.3.3",
     "should": "7.1.0"
   },
-  "homepage": "https://github.com/develprr/metamatic-framework#readme"
+  "homepage": "https://github.com/develprr/metamatic-framework#readme",
+  "dependencies": {
+    "@metamatic.net/meta-object": "1.1.2"
+  }
 }
