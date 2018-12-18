@@ -6,16 +6,27 @@ module.exports = function gruntConfig(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
+    concat: {
+      dist: {
+        src: ['lib/*.js', '!lib/*test.*.js'],
+        dest: 'index.js'
+      }
+    },
+
     babel: {
       options: {
         sourceMap: true,
       },
       dist: {
-        files: {
-          'lib/metamatic.js': 'src/metamatic.js',
-          'test/test.spec.js': 'src/test.spec.js',
-        },
-      },
+        files: [
+          {
+            expand: true,
+            cwd: 'src/',
+            src: ['*.js'],
+            dest: 'lib/'
+          }
+        ]
+      }
     },
 
     eslint: {
@@ -23,7 +34,7 @@ module.exports = function gruntConfig(grunt) {
     },
 
     mochaTest: {
-      src: ['test/**/*.js'],
+      src: ['lib/**/*.js'],
       options: {
         reporter: 'spec',
         require: ['babel/register', 'should'],
@@ -42,5 +53,7 @@ module.exports = function gruntConfig(grunt) {
   });
 
   grunt.registerTask('default', ['babel']);
-  grunt.registerTask('test', ['eslint', 'babel', 'mochaTest']);
+  grunt.registerTask('test', ['eslint', 'babel', 'mochaTest', 'concat']);
+  grunt.registerTask('build', ['test']);
+  grunt.loadNpmTasks('grunt-contrib-concat');
 };

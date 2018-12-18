@@ -1,0 +1,12 @@
+{
+  "ecmaFeatures": {
+    "globalReturn": true,
+    "jsx": true,
+    "modules": true
+  },
+
+  "env": {
+    "es6": true,
+    "node": true
+  }
+}

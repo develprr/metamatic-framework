@@ -1,8 +1,11 @@
 node_modules
 src
 test
+lib
 package-lock.json
 gruntfile.js
+.eslintrc
 .idea
 .git
 .gitignore
+*.iml
