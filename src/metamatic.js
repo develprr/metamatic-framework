@@ -152,7 +152,7 @@ export const initStores = (storesMap) => Object.keys(storesMap).map(storeName =>
 export const containsState = (storeName, property) => (loadStore(storeName) || {})[property];
 
 export const getStore = (storeName) => {
-  const store = loadStore(storeName);
+  const store = loadStore(storeName) || {};
   return store['_content'] || store;
 }
 

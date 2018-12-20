@@ -250,8 +250,11 @@ You might want to update just a single state inside a store. For that, use **set
 ```js
 import {setState} from 'metamatic';
 
-setState(STORE_USER_INFO, 'address.city.name', 'San Francisco');
+setState(STORE_USER_INFO, 'address.city.name', 'Malasiqui');
 ```
+
+
+
 
 ## Rewriting and Clearing Stores
 

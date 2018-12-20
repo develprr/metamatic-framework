@@ -370,4 +370,22 @@ describe('metamatic framework', () => {
     callCount.should.equal(1);
   });
 
+  describe('setState', () => {
+    it('shall create store if the store does not exist yet', () => {
+      const STORE_APPLICATION = 'STORE_APPLICATION';
+      setState(STORE_APPLICATION, 'userName', 'jondoe');
+      const username = getState(STORE_APPLICATION, 'userName');
+      username.should.equal('jondoe');
+    })
+
+    it('shall create a deep hierarchy even if it did not exist before', () => {
+      const STORE_APPLICATION = 'STORE_APPLICATION';
+      setState(STORE_APPLICATION, 'profile.skill.level', 3);
+      const skillLevel = getState(STORE_APPLICATION, 'profile.skill.level');
+      skillLevel.should.equal(3);
+    })
+  });
+
 });
+
+
