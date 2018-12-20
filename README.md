@@ -253,9 +253,6 @@ import {setState} from 'metamatic';
 setState(STORE_USER_INFO, 'address.city.name', 'Malasiqui');
 ```
 
-
-
-
 ## Rewriting and Clearing Stores
 
 Functions **setStore** and **setStores** work similarly to *updateStore* and *updateStores* except they completely overwrite the store or stores with the new one.
@@ -433,6 +430,34 @@ loads the data from server - and finally updates the store, setting userData sta
 actually to receive the user data in question. Function *loadUserData* can be implemented using any available Ajax library.
 
 Read more about using CONNECT feature [here!](https://develprr.github.io/metamatic-blog/metamatic/2018/12/11/url-based-application-states-with-metamatic-connect-event.html)
+
+## Routing
+
+Metamatic provides support for routing. To use Metamatic routing feature in your app, subscribe your main component to listen for URL changes with
+ **connectToUrl** function: 
+
+```js
+componentDidMount = () => connectToUrl(this, () => this.setState({...this.state}));
+```
+
+Then, map routes in main component's render function to routes using **matchRoute** function: 
+
+```js  
+render = () => (
+  <div className='mainä>
+    {matchRoute('/', <Header/>)}
+    {matchRoute('/language', <LanguageView/>)}
+    {matchRoute('/vocabulary', <VocabularyView/>)}
+    ..
+  </div>
+)
+```
+
+Whenever you want your app to programmatically redirect your app to some view defined in routes, use **updateUrl** function:
+
+```js  
+onClick = () => updateUrl(someUrlPath);
+```
 
 ## License 
 
