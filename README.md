@@ -444,7 +444,7 @@ Then, map routes in main component's render function to routes using **matchRout
 
 ```js  
 render = () => (
-  <div className='mainä>
+  <div className='main'>
     {matchRoute('/', <Header/>)}
     {matchRoute('/language', <LanguageView/>)}
     {matchRoute('/vocabulary', <VocabularyView/>)}
