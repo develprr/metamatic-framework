@@ -1,5 +1,41 @@
 # The Metamatic State Manager
 
+A state management library with routing support for JavaScript-based web-apps.
+
+## Chapters
+* [Introduction](#introduction)
+  - [The Metamatic Concept](#the-metamatic-concept)
+  - [Persistent States](#persistent-states)
+  - [Say Goodbye to Switch-Cases](#say-goodbye-to-manual-*switch-cases*)
+  - [Clean Solution Without Provider Clutter](#clean-solution-without-"provider"-clutter)
+  - [Robust States-Based Solution](#robust-state-based-solution-without-props-hassle)
+* [Source Code and Examples](#source-code-and-examples)
+  - [Sources](#sources)
+  - [Examples](#examples)
+  - [Blog](#blog) 
+* [Getting Started](#getting-started)
+  - [Installing Metamatic](#installing-metamatic)
+  - [Selecting Persistency Strategy](#selecting-persistency-strategy)
+* [Managing Stores](#managing-stores)
+  - [Define Your Stores as Constants](#define-your-stores-as-constants)
+  - [Initializing Stores](#initializing-stores)
+  - [Retrieving Data from Stores](#retrieving-data-from-stores)
+  - [Updating Stores](#updating-stores)
+  - [Rewriting and Clearing Stores](#rewriting-and-clearing-stores)
+* [Using Events](#using-events)
+  - [Implementing Event Listeners](#implementing-event-listeners)
+  - [Broadcasting Events](#broadcasting-events)
+  - [The System Event CONNECT](#the-system-event-connect)
+* [Routing](#routing)
+  - [Connecting to Router](#connecting-to-router)
+  - [Mapping Components to Routes](#mapping-components-to-routes)
+  - [Programmatically Redirecting to Routes](#programmatically-redirecting-to-routes)
+* [Miscellaneous](#miscellaneous)
+  - [Licence](#licence)
+  - [Author & Copyright](#author-&-copyright)
+  - [Background](#background)
+  - [Read More](#read-more)
+
 ## Introduction
 
 The Metamatic framework is a simple and clutter-free state manager for JavaScript apps and for developers who want to get
@@ -67,37 +103,42 @@ into component's local states. This gives you more freedom to decide which state
 to Metamatic global states. In Metamatic, the root states are called **stores**. Stores can have nested properties, which are all understood as nested **states**.
 You can connect any component to listen to entire stores as well as just one nested state deep inside a store.
 
-## Source Code
 
+## Source Code and Examples
+
+### Sources
 The Metamatic is available as [installable package at Npmjs.com](https://www.npmjs.com/package/metamatic).  
 You can also explore the [Metamatic source code at GitHub](https://github.com/develprr/metamatic-framework). 
 Or visit the official Metamatic home page at [www.metamatic.net](http://www.metamatic.net).
 
-## Practical Example
+### Examples
 
 Check out the source code of [Metamatic Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of the Metamatic framework in action,
-and the actual deployment of the [demo live](https://metamatic-car-app.herokuapp.com/)!
+and the actual deployment of the [demo live](https://metamatic-car-app.herokuapp.com/)! Also checkout the other demo, 
+[Metamatic Language Learning App 'meta-lang'](https://github.com/develprr/meta-lang) which also demonstrates the Metamatic Router feature.
 
-## Blog
+### Blog
 
 Check out [the Metamatic blog](https://develprr.github.io/metamatic-blog) for articles about using the framework!
 
-## Installing Metamatic
+## Getting Started
 
-Type:
+### Installing Metamatic
+To install Metamatic in your project, type:
 
 ```js
 npm i --save metamatic
 ```
-## Managing Stores
 
-### Select Persistency Strategy
+### Selecting Persistency Strategy
 
-In your app's starting point, for instance Main.js file, configure Metamatic to use any of the three available persistency modes calling
+In your app's starting point, for instance Main.js or App.js file, configure Metamatic to use any of the three available persistency modes calling
 
 **useLocalStorage()**, **useSessionStorage()** or **useMemoryStorage()**
 
 from which localStorage is set on by default.
+
+## Managing Stores
 
 ### Define Your Stores as Constants
 
@@ -253,13 +294,13 @@ import {setState} from 'metamatic';
 setState(STORE_USER_INFO, 'address.city.name', 'Malasiqui');
 ```
 
-## Rewriting and Clearing Stores
+### Rewriting and Clearing Stores
 
 Functions **setStore** and **setStores** work similarly to *updateStore* and *updateStores* except they completely overwrite the store or stores with the new one.
 **clearStore** empties a store. Function **existsStore** can be used if a store exists.
  
 
-## Connecting React Components to Stores
+### Connecting React Components to Stores
 
 Connecting a React component to listen for an entire store can be done with **connectToStore** and **connectToStores**. In ReactJS, 
 use **componentDidMount** life cycle callback to connect your component to Metamatic stores, for example:
@@ -320,7 +361,7 @@ and *latestOrder* change in *orderHistory* state will cause the component to upd
 Also remember here that all states and stores received this way are only clones of the master copy that resides protected inside the Metamatic state manager,
 thus modifying them locally won't mutate the master copy in the Metamatic store.
 
-## Disconnecting Components from Metamatic Stores 
+### Disconnecting Components from Metamatic Stores 
 
 Disconnecting a component from MetaStore upon unmounting:
 
@@ -333,9 +374,15 @@ To call disconnect inside **componentWillUnmount** React life cycle function:
 componentWillUnmount = () => disconnectFromStores(this);
 ```
 
-## Basic Event Handling with Metamatic
+## Using Events
 
-But when you want to handle Metamatic events inside components that don't need to be unmounted or any static methods and utility functions,
+Even though events are typically connected to stores the way that updating a store causes Metamatic to broadcast (or dispatch or radiate) a similarly named event 
+as the store itself, there are situations that you want to fire a standalone event without updating any store. 
+You may also want to implement a standalone event listener that handles events but does not necessarily update any store.
+
+### Implementing Event Listeners
+ 
+When you want to handle Metamatic events inside components that don't need to be unmounted or any static methods and utility functions,
 simply use **handleEvent** and **handleEvents** functions for registering handlers for Metamatic events:
 
 ```js
@@ -364,6 +411,8 @@ handleEvents({
 });
 ```
 
+### Broadcasting Events
+
 Similarly, broadcast an event into app-wide bit-space to be processed with all event handlers, use **broadcastEvent** function:
 
 ```js
@@ -376,7 +425,7 @@ broadcastEvent('SOME-EVENT', someObject);
 
 *broadcastEvent* will dispatch a clone of the data sent as a parameter, therefore the receiver can't directly modify the source version.
 
-## The System Event CONNECT 
+### The System Event CONNECT 
 
 A very useful thing to know about Metamatic is that every time a component is connected to a store or state, Metamatic automatically fires
 a system event to inform anybody who listens that a component has been connected to a store or a state.
@@ -433,16 +482,33 @@ Read more about using CONNECT feature [here!](https://develprr.github.io/metamat
 
 ## Routing
 
-Metamatic provides support for routing. To use Metamatic routing feature in your app, subscribe your main component to listen for URL changes with
- **connectToUrl** function: 
+When you use Metamatic you can use any router library available around the Internet. But some of those solutions require you to wrap
+your app's root component with some clumpy "Routing Provider" components before you can implement routing. Or if you want to programmatically soft-redirect
+your app to a certain sub-url then you may need to wrap your redirecting component inside some obscure wrapper again, possibly breaking your code's 
+otherwise sleek and clean syntax. 
+
+For this reason, Metamatic provides a simple out-of-the-box routing feature. It may be viable alternative to some external routing libraries. This depends of course
+on your use case.
+
+### Connecting to Router
+
+To use Metamatic routing feature in your app, subscribe your main component to listen for URL changes with
+ **connectToRouter** function: 
 
 ```js
-componentDidMount = () => connectToUrl(this, () => this.setState({...this.state}));
+componentDidMount = () => connectToRouter(this, () => this.forceUpdate());
 ```
 
-Then, map routes in main component's render function to routes using **matchRoute** function: 
+The code snippet above causes the main component to re-render itself every time the URL changes.
+
+### Mapping Components to Routes
+
+Inside your main component, make render function optionally render different components based on the current URL pattern
+using **matchRoute** function. As first parameter, give *matchRoute* any **regular expression** to define which URL patterns
+will match the current URL, thus causing the related component to be rendered, defined in the second parameter:
 
 ```js  
+
 render = () => (
   <div className='main'>
     {matchRoute('/', <Header/>)}
@@ -453,28 +519,32 @@ render = () => (
 )
 ```
 
+### Programmatically Redirecting to Routes
+
 Whenever you want your app to programmatically redirect your app to some view defined in routes, use **updateUrl** function:
 
 ```js  
 onClick = () => updateUrl(someUrlPath);
 ```
 
-## License 
+To see a complete example of using the Metamatic routing feature in action, please check out [the Metamatic Language demo](https://github.com/develprr/meta-lang).
+
+## Miscellaneous
+
+### Licence 
 
 Apache 2.0
 
-## Author 
+### Author & Copyright
 
 [Heikki Kupiainen](https://www.linkedin.com/in/heikki-kupiainen-oppikone) / [metamatic.net](http://www.metamatic.net)
 
-## Background
+### Background
 
 Metamatic is based on earlier prototype [Synchronous Dispatcher](https://www.npmjs.com/package/synchronous-dispatcher) package
-but has improvements that make it more suitable to be used together with ReactJS framework. Also the internal implementation has been upgraded to meet
-today's coding standards. If you are interested in Metamatic backgrounds, 
-read an article about Metamatic framework's prototype [Synchronous Dispatcher](http://www.oppikone.fi/blog/introducing-synchronous-dispatcher.html).
+but has many more improvements and is more suitable to be used together with ReactJS framework.
 
-## Read More
+### Read More
 
 * Wikipedia article about [hash tables](https://en.wikipedia.org/wiki/Hash_table).
 * Wikipedia article about [associative arrays](https://en.wikipedia.org/wiki/Associative_array).
