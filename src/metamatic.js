@@ -328,7 +328,7 @@ export const updateUrl = (url) => {
   setStore(STORE_URL, {url});
 }
 
-export const connectToUrl = (listener, callback) => connectToState(listener, STORE_URL, 'url', callback);
+export const connectToRouter = (listener, callback) => connectToState(listener, STORE_URL, 'url', callback);
 
 const getBrowserUrl = () => window.location.pathname;
 
