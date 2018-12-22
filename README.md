@@ -7,7 +7,7 @@ A state management library with routing support for JavaScript-based web-apps.
   - [The Metamatic Concept](#the-metamatic-concept)
   - [Persistent States](#persistent-states)
   - [Say Goodbye to Switch-Cases](#say-goodbye-to-manual-*switch-cases*)
-  - [Clean Solution Without Provider Clutter](#clean-solution-without-"provider"-clutter)
+  - [Clean Solution without Provider Clutter](#clean-solution-without-provider-clutter)
   - [Robust States-Based Solution](#robust-state-based-solution-without-props-hassle)
 * [Source Code and Examples](#source-code-and-examples)
   - [Sources](#sources)
@@ -71,11 +71,15 @@ Metamatic provides an easy way to manage your data stores and states inside them
 * The data store always fires only copies of itself, therefore there's no way to sneakily mutate the master copy.
 * Events are almost the same as stores since updating a data store fires an event with the same name as the store itself. A copy of the store is the passenger of the event.
 
+*[<- Back to contents](#chapters)*
+
 ### Persistent States
 
 Being tired of web portals that forget their state or get strangely messed when the browser is refreshed? Metamatic solves this problem by offering
 various out-of-the-box persistency modes, *localStorage*, *sessionStorage* and *memoryStorage*. Meaning, the web site remains exactly in the same state
 as it was before you refreshed the browser.
+
+*[<- Back to contents](#chapters)*
 
 ### Say Goodbye to Manual *Switch-Cases*
 
@@ -87,13 +91,17 @@ Simplistic and clean code prevents the application from turning into buggy bubbl
 Metamatic frees you from the need to manually write switch-case structures since it connects states to their listeners silently using hash tables, 
 taking internally advantage of JavaScript's` associative arrays. With this solution, you don't need to manually connect events to their handlers anymore.
 
-### Clean Solution without "Provider" Clutter
+*[<- Back to contents](#chapters)*
+
+### Clean Solution without Provider Clutter
 
 One major difference to verbose state manager frameworks is that you don't really need to "pre-configure" your app to use Metamatic. You don't
 need to wrap your application inside obscure "Provider" wrappers and you don't need to "inject stores" and other structures to your classes to enable a state
 container. Any class, component, object or helper function can be connected to Metamatic features at any point of the project without any need to do major 
 refactoring to existing application logic or code structure. You can use Metamatic functions on the fly anywhere inside your app, any time. 
 If your application already uses some other state container framework, you can still introduce Metamatic into your app without removing or changing anything that already exists.
+
+*[<- Back to contents](#chapters)*
 
 ### Robust State-Based Solution Without Props-Hassle
 
@@ -103,6 +111,7 @@ into component's local states. This gives you more freedom to decide which state
 to Metamatic global states. In Metamatic, the root states are called **stores**. Stores can have nested properties, which are all understood as nested **states**.
 You can connect any component to listen to entire stores as well as just one nested state deep inside a store.
 
+*[<- Back to contents](#chapters)*
 
 ## Source Code and Examples
 
@@ -111,15 +120,21 @@ The Metamatic is available as [installable package at Npmjs.com](https://www.npm
 You can also explore the [Metamatic source code at GitHub](https://github.com/develprr/metamatic-framework). 
 Or visit the official Metamatic home page at [www.metamatic.net](http://www.metamatic.net).
 
+*[<- Back to contents](#chapters)*
+
 ### Examples
 
 Check out the source code of [Metamatic Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of the Metamatic framework in action,
 and the actual deployment of the [demo live](https://metamatic-car-app.herokuapp.com/)! Also checkout the other demo, 
 [Metamatic Language Learning App 'meta-lang'](https://github.com/develprr/meta-lang) which also demonstrates the Metamatic Router feature.
 
+*[<- Back to contents](#chapters)*
+
 ### Blog
 
 Check out [the Metamatic blog](https://develprr.github.io/metamatic-blog) for articles about using the framework!
+
+*[<- Back to contents](#chapters)*
 
 ## Getting Started
 
@@ -138,6 +153,8 @@ In your app's starting point, for instance Main.js or App.js file, configure Met
 
 from which localStorage is set on by default.
 
+*[<- Back to contents](#chapters)*
+
 ## Managing Stores
 
 ### Define Your Stores as Constants
@@ -149,7 +166,9 @@ export const STORE_USER_INFO = 'STORE_USER_INFO';
 export const STORE_CAR_OPTIONS = 'STORE_CAR_OPTIONS';
 ```
 
-A good place to define store constants is inside your store utility files (equivalent of 'reducers') that update those stores anyway.
+A good place to define store constants is inside your store utility files that update those stores anyway.
+
+*[<- Back to contents](#chapters)*
 
 ### Initializing Stores
 
@@ -207,6 +226,8 @@ initStore(STORE_USER_DATA, {
 });
 ```
 
+*[<- Back to contents](#chapters)*
+
 ### Retrieving Data from Stores
 
 When you want to retrieve an entire store from the Metamatic state manager, just simply use **getStore** function:
@@ -234,6 +255,8 @@ const userDataStore = getState(STORE_USER_DATA);
 ```
 
 Remember that getters always return a copy of the store. You can safely modify the received object without mutating the master copy inside the store!
+
+*[<- Back to contents](#chapters)*
 
 ### Updating Stores
 
@@ -294,11 +317,14 @@ import {setState} from 'metamatic';
 setState(STORE_USER_INFO, 'address.city.name', 'Malasiqui');
 ```
 
+*[<- Back to contents](#chapters)*
+
 ### Rewriting and Clearing Stores
 
 Functions **setStore** and **setStores** work similarly to *updateStore* and *updateStores* except they completely overwrite the store or stores with the new one.
 **clearStore** empties a store. Function **existsStore** can be used if a store exists.
  
+*[<- Back to contents](#chapters)*
 
 ### Connecting React Components to Stores
 
@@ -361,6 +387,8 @@ and *latestOrder* change in *orderHistory* state will cause the component to upd
 Also remember here that all states and stores received this way are only clones of the master copy that resides protected inside the Metamatic state manager,
 thus modifying them locally won't mutate the master copy in the Metamatic store.
 
+*[<- Back to contents](#chapters)*
+
 ### Disconnecting Components from Metamatic Stores 
 
 Disconnecting a component from MetaStore upon unmounting:
@@ -374,11 +402,15 @@ To call disconnect inside **componentWillUnmount** React life cycle function:
 componentWillUnmount = () => disconnectFromStores(this);
 ```
 
+*[<- Back to contents](#chapters)*
+
 ## Using Events
 
 Even though events are typically connected to stores the way that updating a store causes Metamatic to broadcast (or dispatch or radiate) a similarly named event 
 as the store itself, there are situations that you want to fire a standalone event without updating any store. 
 You may also want to implement a standalone event listener that handles events but does not necessarily update any store.
+
+*[<- Back to contents](#chapters)*
 
 ### Implementing Event Listeners
  
@@ -411,6 +443,8 @@ handleEvents({
 });
 ```
 
+*[<- Back to contents](#chapters)*
+
 ### Broadcasting Events
 
 Similarly, broadcast an event into app-wide bit-space to be processed with all event handlers, use **broadcastEvent** function:
@@ -424,6 +458,8 @@ broadcastEvent('SOME-EVENT', someObject);
 ```
 
 *broadcastEvent* will dispatch a clone of the data sent as a parameter, therefore the receiver can't directly modify the source version.
+
+*[<- Back to contents](#chapters)*
 
 ### The System Event CONNECT 
 
@@ -480,6 +516,8 @@ actually to receive the user data in question. Function *loadUserData* can be im
 
 Read more about using CONNECT feature [here!](https://develprr.github.io/metamatic-blog/metamatic/2018/12/11/url-based-application-states-with-metamatic-connect-event.html)
 
+*[<- Back to contents](#chapters)*
+
 ## Routing
 
 When you use Metamatic you can use any router library available around the Internet. But some of those solutions require you to wrap
@@ -489,6 +527,8 @@ otherwise sleek and clean syntax.
 
 For this reason, Metamatic provides a simple out-of-the-box routing feature. It may be viable alternative to some external routing libraries. This depends of course
 on your use case.
+
+*[<- Back to contents](#chapters)*
 
 ### Connecting to Router
 
@@ -500,6 +540,8 @@ componentDidMount = () => connectToRouter(this, () => this.forceUpdate());
 ```
 
 The code snippet above causes the main component to re-render itself every time the URL changes.
+
+*[<- Back to contents](#chapters)*
 
 ### Mapping Components to Routes
 
@@ -519,6 +561,8 @@ render = () => (
 )
 ```
 
+*[<- Back to contents](#chapters)*
+
 ### Programmatically Redirecting to Routes
 
 Whenever you want your app to programmatically redirect your app to some view defined in routes, use **updateUrl** function:
@@ -528,6 +572,8 @@ onClick = () => updateUrl(someUrlPath);
 ```
 
 To see a complete example of using the Metamatic routing feature in action, please check out [the Metamatic Language demo](https://github.com/develprr/meta-lang).
+
+*[<- Back to contents](#chapters)*
 
 ## Miscellaneous
 
@@ -548,3 +594,5 @@ but has many more improvements and is more suitable to be used together with Rea
 
 * Wikipedia article about [hash tables](https://en.wikipedia.org/wiki/Hash_table).
 * Wikipedia article about [associative arrays](https://en.wikipedia.org/wiki/Associative_array).
+
+*[<- Back to contents](#chapters)*
