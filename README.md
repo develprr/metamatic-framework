@@ -6,7 +6,7 @@ A state management library with routing support for JavaScript-based web-apps.
 * [Introduction](#introduction)
   - [The Metamatic Concept](#the-metamatic-concept)
   - [Persistent States](#persistent-states)
-  - [Say Goodbye to Switch-Cases](#say-goodbye-to-manual-*switch-cases*)
+  - [Say Goodbye to Switch-Cases](#say-goodbye-to-manual-switch-cases)
   - [Clean Solution without Provider Clutter](#clean-solution-without-provider-clutter)
   - [Robust States-Based Solution](#robust-state-based-solution-without-props-hassle)
 * [Source Code and Examples](#source-code-and-examples)
@@ -16,15 +16,16 @@ A state management library with routing support for JavaScript-based web-apps.
 * [Getting Started](#getting-started)
   - [Installing Metamatic](#installing-metamatic)
   - [Selecting Persistency Strategy](#selecting-persistency-strategy)
-* [Managing Stores](#managing-stores)
+* [Stores](#stores)
   - [Define Your Stores as Constants](#define-your-stores-as-constants)
   - [Initializing Stores](#initializing-stores)
   - [Retrieving Data from Stores](#retrieving-data-from-stores)
   - [Updating Stores](#updating-stores)
   - [Rewriting and Clearing Stores](#rewriting-and-clearing-stores)
-* [Using Events](#using-events)
+* [Events](#events)
   - [Implementing Event Listeners](#implementing-event-listeners)
   - [Broadcasting Events](#broadcasting-events)
+  - [Parameterless Events](#parameterless-events)
   - [The System Event CONNECT](#the-system-event-connect)
 * [Routing](#routing)
   - [Connecting to Router](#connecting-to-router)
@@ -32,7 +33,7 @@ A state management library with routing support for JavaScript-based web-apps.
   - [Programmatically Redirecting to Routes](#programmatically-redirecting-to-routes)
 * [Miscellaneous](#miscellaneous)
   - [Licence](#licence)
-  - [Author & Copyright](#author-&-copyright)
+  - [Author & Copyright](#author-and-copyright)
   - [Background](#background)
   - [Read More](#read-more)
 
@@ -56,7 +57,7 @@ user's order history. When that data changes it should be consistently updated i
 
 When you think about Metamatic, think about throwing an ice cube into a glass full of water.
 
-* Think about the glass. It is the Metamatic data store, the data container.
+* Think about the glass. It is the Metamatic data store, the state container.
 * Think about the water. It is the data that splashes into every direction from the glass.
 * Think about the ice cube. It is the direct function invocation you call to update the Metamatic data container.
 
@@ -81,7 +82,7 @@ as it was before you refreshed the browser.
 
 *[<- Back to contents](#chapters)*
 
-### Say Goodbye to Manual *Switch-Cases*
+### Say Goodbye to Manual Switch-Cases
 
 Metamatic has fundamental differences to some well-known state manager frameworks. Metamatic directly binds event handlers to corresponding events already in the very moment
 you define them by calling **handleEvent** or **connectToStore** function. When the listener functions inside components are already inherently connected to their data source, 
@@ -155,7 +156,7 @@ from which localStorage is set on by default.
 
 *[<- Back to contents](#chapters)*
 
-## Managing Stores
+## Stores
 
 ### Define Your Stores as Constants
 
@@ -404,7 +405,7 @@ componentWillUnmount = () => disconnectFromStores(this);
 
 *[<- Back to contents](#chapters)*
 
-## Using Events
+## Events
 
 Even though events are typically connected to stores the way that updating a store causes Metamatic to broadcast (or dispatch or radiate) a similarly named event 
 as the store itself, there are situations that you want to fire a standalone event without updating any store. 
@@ -456,8 +457,23 @@ const someObject = {something: 'here'}
 
 broadcastEvent('SOME-EVENT', someObject);
 ```
-
 *broadcastEvent* will dispatch a clone of the data sent as a parameter, therefore the receiver can't directly modify the source version.
+
+### Parameterless Events
+
+*broadcastEvent* function does not need a parameter. It is correct to broadcast events without a passenger:
+
+```js
+broadcastEvent('SOME-EVENT');
+```
+
+The example above will just pass a null value as parameter. Accordingly, you can implement a handler without parameter: 
+
+```js
+handleEvent('SOME-EVENT', () => {
+  console.log('I process the event here..');
+});
+```
 
 *[<- Back to contents](#chapters)*
 
@@ -525,7 +541,7 @@ your app's root component with some clumpy "Routing Provider" components before 
 your app to a certain sub-url then you may need to wrap your redirecting component inside some obscure wrapper again, possibly breaking your code's 
 otherwise sleek and clean syntax. 
 
-For this reason, Metamatic provides a simple out-of-the-box routing feature. It may be viable alternative to some external routing libraries. This depends of course
+For this reason, Metamatic provides a simple out-of-the-box routing feature. It may be a viable alternative to some external routing libraries. This depends of course
 on your use case.
 
 *[<- Back to contents](#chapters)*
@@ -536,8 +552,14 @@ To use Metamatic routing feature in your app, subscribe your main component to l
  **connectToRouter** function: 
 
 ```js
-componentDidMount = () => connectToRouter(this, () => this.forceUpdate());
+componentDidMount = () => connectToRouter(
+    this, 
+    (url) => this.setState({...this.state, url: url})
+);
 ```
+
+The code snippet above causes the connected component to retrieve the updated URL from Metamatic when the URL changes. Then 
+the listener component is re-rerendered causing the main component show a different set of components based on that URL.
 
 The code snippet above causes the main component to re-render itself every time the URL changes.
 
@@ -547,7 +569,7 @@ The code snippet above causes the main component to re-render itself every time 
 
 Inside your main component, make render function optionally render different components based on the current URL pattern
 using **matchRoute** function. As first parameter, give *matchRoute* any **regular expression** to define which URL patterns
-will match the current URL, thus causing the related component to be rendered, defined in the second parameter:
+will match the current URL, thus causing the related component to be rendered that defined in the second parameter:
 
 ```js  
 
@@ -559,6 +581,21 @@ render = () => (
     ..
   </div>
 )
+```
+
+### Alternativre Ways of Connecting to Routes
+
+Since *matchRoute* function does not need the current URL as parameter, you don't necessarily need to retrieve the URL parameter from Router at all
+in your main component where you define the actual routes. Therefore you can cause re-render by setting state without any modification to it:
+
+```js
+componentDidMount = () => connectToRouter(this, (url) => this.setState(this.state));
+```
+
+Or use React's *forceUpdate* function, event though some puritanists may consider it ugly. But *beauty is in the eye of the beholder*. What works, just works:
+
+```js
+componentDidMount = () => connectToRouter(this, (url) => this.forceUpdate());
 ```
 
 *[<- Back to contents](#chapters)*
@@ -581,7 +618,7 @@ To see a complete example of using the Metamatic routing feature in action, plea
 
 Apache 2.0
 
-### Author & Copyright
+### Author and Copyright
 
 [Heikki Kupiainen](https://www.linkedin.com/in/heikki-kupiainen-oppikone) / [metamatic.net](http://www.metamatic.net)
 
