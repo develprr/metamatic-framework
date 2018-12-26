@@ -38,7 +38,7 @@ A state management library with routing support for JavaScript-based web-apps.
   - [Background](#background)
   - [Read More](#read-more)
 
-## Introduction§  
+## Introduction  
 
 The Metamatic framework is a simple and clutter-free state manager for JavaScript apps and for developers who want to get
 things done. Metamatic provides a robust toolset for data communication between components
