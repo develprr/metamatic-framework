@@ -127,8 +127,9 @@ Or visit the official Metamatic home page at [www.metamatic.net](http://www.meta
 ### Examples
 
 Check out the source code of [Metamatic Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of the Metamatic framework in action,
-and the actual deployment of the [demo live](https://metamatic-car-app.herokuapp.com/)! Also checkout the other demo, 
-[Metamatic Language Learning App 'meta-lang'](https://github.com/develprr/meta-lang) which also demonstrates the Metamatic Router feature.
+and the actual deployment of the [demo live](https://metamatic-car-app.herokuapp.com/)! 
+
+Also checkout the [Metamatic Router Demo](https://github.com/develprr/metamatic-router-demo) which also demonstrates the Metamatic Router feature.
 
 *[<- Back to contents](#chapters)*
 
