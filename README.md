@@ -609,8 +609,8 @@ componentDidMount = () => connectToRouter(
 
 ### Configuring Base Route
 
-When you deploy your app to some subfolder of your domain instead of domain route, you must define the sub path invoking **configureBaseRoute** function. 
-Call this function in your App before connecting any components to router. Optionally pass *basename* parameter that is important if you deploy your app
+When you deploy your app to some sub-folder of your domain instead of domain's root, you must define the sub-path invoking **configureBaseRoute** function  
+at some early point of your app.
 For example, I want to place my router demo app in sub folder 'router' of Metamatic demo domain [https://metamatic-demo.herokuapp.com/router/](https://metamatic-demo.herokuapp.com/router/):
 
 ```js
@@ -621,13 +621,13 @@ configureBaseRoute('/router');
 
 ### Programmatically Redirecting to Routes
 
-Whenever you want your app to programmatically redirect to some view defined in routes, use **updateUrl** function:
+Whenever you want your app to programmatically redirect to some view defined in routes, use **redirectTo** function:
 
 ```js  
-onClick = () => updateUrl(someUrlPath);
+onClick = () => redirectTo(someUrlPath);
 ```
 
-To see a complete example of using the Metamatic routing feature in action, please check out [the Metamatic Language demo](https://github.com/develprr/meta-lang).
+To see a complete example of using the Metamatic routing feature in action, please check out [The Metamatic Router Demo](https://github.com/develprr/metamatic-router-demo) on GitHub.
 
 *[<- Back to contents](#chapters)*
 
