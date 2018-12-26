@@ -314,34 +314,6 @@ const invokeStateProcessorsInStore = (storeName) => {
   processorPaths.forEach(invokeHandler);
 };
 
-// Routing
-
-export const STORE_URL = 'STORE_URL';
-
-let routerInitialized = false;
-
-const broadcastCurrentUrl = () => setStore(STORE_URL, {
-  url: getBrowserUrl()
-});
-
-// Calling updateUrl will set a new browser URL and broadcast a URL change event.
-export const updateUrl = (url) => {
-  window.history.pushState({}, '', url);
-  setStore(STORE_URL, {url});
-}
-
-export const connectToRouter = (listener, callback) => {
-  connectToState(listener, STORE_URL, 'url', callback);
-  if (!routerInitialized) {
-    broadcastCurrentUrl();
-    routerInitialized = true;
-  }
-}
-
-const getBrowserUrl = () => window.location.pathname;
-
-export const matchRoute = (pattern, component) => getBrowserUrl().match(pattern) && component;
-
 //reset Metamatic state manager.
 export const resetMetamatic = () => {
   stateValueMap = {};
