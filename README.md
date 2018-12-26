@@ -589,20 +589,26 @@ Since *matchRoute* function does not need the current URL as parameter, you don'
 in your main component where you define the actual routes. Therefore you can cause re-render by setting state without any modification to it:
 
 ```js
-componentDidMount = () => connectToRouter(this, (url) => this.setState(this.state));
+componentDidMount = () => connectToRouter(
+    this, 
+    (url) => this.setState(this.state)
+);
 ```
 
 Or use React's *forceUpdate* function, event though some puritanists may consider it ugly. But *beauty is in the eye of the beholder*. What works, just works:
 
 ```js
-componentDidMount = () => connectToRouter(this, (url) => this.forceUpdate());
+componentDidMount = () => connectToRouter(
+    this, 
+    (url) => this.forceUpdate()
+);
 ```
 
 *[<- Back to contents](#chapters)*
 
 ### Programmatically Redirecting to Routes
 
-Whenever you want your app to programmatically redirect your app to some view defined in routes, use **updateUrl** function:
+Whenever you want your app to programmatically redirect to some view defined in routes, use **updateUrl** function:
 
 ```js  
 onClick = () => updateUrl(someUrlPath);

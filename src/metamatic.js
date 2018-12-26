@@ -318,7 +318,9 @@ const invokeStateProcessorsInStore = (storeName) => {
 
 export const STORE_URL = 'STORE_URL';
 
-export const broadcastCurrentUrl = () => setStore(STORE_URL, {
+let routerInitialized = false;
+
+const broadcastCurrentUrl = () => setStore(STORE_URL, {
   url: getBrowserUrl()
 });
 
@@ -328,7 +330,13 @@ export const updateUrl = (url) => {
   setStore(STORE_URL, {url});
 }
 
-export const connectToRouter = (listener, callback) => connectToState(listener, STORE_URL, 'url', callback);
+export const connectToRouter = (listener, callback) => {
+  connectToState(listener, STORE_URL, 'url', callback);
+  if (!routerInitialized) {
+    broadcastCurrentUrl();
+    routerInitialized = true;
+  }
+}
 
 const getBrowserUrl = () => window.location.pathname;
 
