@@ -595,7 +595,7 @@ in your main component where you define the actual routes. Therefore you can cau
 ```js
 componentDidMount = () => connectToRouter(
     this, 
-    (url) => this.setState(this.state)
+    () => this.setState(this.state)
 );
 ```
 
@@ -604,7 +604,7 @@ Or use React's *forceUpdate* function, event though some puritanists may conside
 ```js
 componentDidMount = () => connectToRouter(
     this, 
-    (url) => this.forceUpdate()
+    () => this.forceUpdate()
 );
 ```
 
