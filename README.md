@@ -27,11 +27,11 @@ A state management library for JavaScript-based web-apps.
   - [Broadcasting Events](#broadcasting-events)
   - [Parameterless Events](#parameterless-events)
   - [The System Event CONNECT](#the-system-event-connect)
-* [The Metamatic Router](#the-metamatic-router)
 * [Miscellaneous](#miscellaneous)
-  - [Licence](#licence)
+  - [License](#license)
   - [Author & Copyright](#author-and-copyright)
   - [Background](#background)
+  - [The Metamatic Router](#the-metamatic-router)
   - [Read More](#read-more)
 
 ## Introduction  
@@ -532,39 +532,24 @@ Read more about using CONNECT feature [here!](https://develprr.github.io/metamat
 
 *[<- Back to contents](#chapters)*
 
-## The Metamatic Router
-
-The Metamatic Router is a standalone router component that is implemented on top of the core Metamatic library.
-
-When you use Metamatic you can use any router library available around the Internet. But some of those solutions require you to wrap
-your app's root component inside some "Routing Provider" tags before you can implement routing. This can be seen as an anti-pattern since visual JSX
-component declarations become messed with programmatic components. And some router libraries have the downside that when you want to programmatically
-soft-direct your app to a certain sub-URL you will need to wrap your redirecting component inside some obscure wrapper again, possibly breaking your code's 
-otherwise sleek and clean syntax. 
-
-For this reason, Metamatic provides a simple out-of-the-box routing feature. It may be a viable alternative to some external routing libraries. This depends of course
-on your use case. You can use Metamatic together with any other router library or you can also try out the Metamatic Router library.
-
-The Metamatic Router is implemented in a separate package since Metamatic version 2.5.1. The Metamatic Router can be installed either alongside the Metamatic framework or
-as a standalone version. It can be also used as a routing solution for any other React app or any other kind of a JavaScript app that 
-does not use Metamatic state manager as such for application state control.
-
-Check out the [installable Metamatic Router package on npmjs.com](https://www.npmjs.com/package/@metamatic.net/metamatic-router) 
-or study the [source code on GitHub](https://github.com/develprr/metamatic-router).
-
 ## Miscellaneous
 
-### Licence 
+### License 
 
 Apache 2.0
-d
+
 ### Author and Copyright
-r[Heikki Kupiainen](https://www.linkedin.com/in/heikki-kupiainen-oppikone) / [metamatic.net](http://www.metamatic.net)
+[Heikki Kupiainen](https://www.linkedin.com/in/heikki-kupiainen) / [metamatic.net](http://www.metamatic.net)
 
 ### Background
 
 Metamatic is based on earlier prototype [Synchronous Dispatcher](https://www.npmjs.com/package/synchronous-dispatcher) package
 but has many more improvements and is more suitable to be used together with ReactJS framework.
+
+### The Metamatic Router
+
+Also check the [Metamatic Router](https://www.npmjs.com/package/@metamatic.net/metamatic-router) library,  
+which is a simple router implementation based on the core Metamatic framework.
 
 ### Read More
 
