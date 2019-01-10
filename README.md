@@ -1,10 +1,10 @@
-# The Metamatic State Manager
+# Metamatic™ State Manager
 
 A state management library for JavaScript-based web-apps.
 
 ## Chapters
 * [Introduction](#introduction)
-  - [The Metamatic Concept](#the-metamatic-concept)
+  - [The Concept](#the-concept)
   - [Persistent States](#persistent-states)
   - [Say Goodbye to Switch-Cases](#say-goodbye-to-manual-switch-cases)
   - [Clean Solution without Provider Clutter](#clean-solution-without-provider-clutter)
@@ -14,7 +14,7 @@ A state management library for JavaScript-based web-apps.
   - [Examples](#examples)
   - [Blog](#blog) 
 * [Getting Started](#getting-started)
-  - [Installing Metamatic](#installing-metamatic)
+  - [Installing Metamatic™](#installing-metamatic)
   - [Selecting Persistency Strategy](#selecting-persistency-strategy)
 * [Stores](#stores)
   - [Define Your Stores as Constants](#define-your-stores-as-constants)
@@ -31,13 +31,13 @@ A state management library for JavaScript-based web-apps.
   - [License](#license)
   - [Author & Copyright](#author-and-copyright)
   - [Background](#background)
-  - [The Metamatic Router](#the-metamatic-router)
+  - [Metamatic™ Router](#the-metamatic-router)
   - [Read More](#read-more)
 
 ## Introduction  
 
-The Metamatic framework is a simple and clutter-free state manager for JavaScript apps and for developers who want to get
-things done. Metamatic provides a robust toolset for data communication between components
+Metamatic™ framework is a simple and clutter-free state manager for JavaScript apps and for developers who want to get
+things done. Metamatic™ provides a robust toolset for data communication between components
 inside your browser-based UI software. It can be used together with any modern JavaScript UI framework such as Vue, React, Angular and even basic JavaScript apps
 without any specific frameworks.
 
@@ -46,26 +46,26 @@ without any specific frameworks.
       src="https://develprr.github.io/metamatic-blog/assets/pexels-photo-416520.jpeg" />
 </div>
 
-### The Metamatic Concept
+### The Concept
 
-The Metamatic framework solves a fundamental problem in frontend software design: when any data is changed anywhere in the application, 
+Metamatic™ framework solves a fundamental problem in frontend software design: when any data is changed anywhere in the application, 
 this change must be reliably radiated to all parts of the software that uses that data. For example, your frontend app has many components that display
 user's order history. When that data changes it should be consistently updated in all parts of the app.
 
-When you think about Metamatic, think about throwing an ice cube into a glass full of water.
+When you think about Metamatic™, think about throwing an ice cube into a glass full of water.
 
-* Think about the glass. It is the Metamatic data store, the state container.
+* Think about the glass. It is the Metamatic™ data store, the state container.
 * Think about the water. It is the data that splashes into every direction from the glass.
-* Think about the ice cube. It is the direct function invocation you call to update the Metamatic data container.
+* Think about the ice cube. It is the direct function invocation you call to update the Metamatic™ data container.
 
-Metamatic provides an easy way to manage your data stores and states inside them. In Metamatic, the data flows typically as follows:
+Metamatic™ provides an easy way to manage your data stores and states inside them. In Metamatic™, the data flows typically as follows:
 
-1. A component updates the Metamatic store by directly invoking an updater function that is defined in a store utility file. 
+1. A component updates the Metamatic™ store by directly invoking an updater function that is defined in a store utility file. 
 2. The store updater function in the store utility file updates the store and fires an update event containing a copy of the store itself.
-3. The component/components connected to the store receive the event from the Metamatic store.
+3. The component/components connected to the store receive the event from the Metamatic™ store.
 4. The connected components update their state from the event and the component refreshes itself.
 
-* The data maintains its integrity since updating the master copy in the central Metamatic data store radiates the change to every place where needed!
+* The data maintains its integrity since updating the master copy in the central Metamatic™ data store radiates the change to every place where needed!
 * The data store always fires only copies of itself, therefore there's no way to sneakily mutate the master copy.
 * Events are almost the same as stores since updating a data store fires an event with the same name as the store itself. A copy of the store is the passenger of the event.
 
@@ -73,7 +73,7 @@ Metamatic provides an easy way to manage your data stores and states inside them
 
 ### Persistent States
 
-Being tired of web portals that forget their state or get strangely messed when the browser is refreshed? Metamatic solves this problem by offering
+Being tired of web portals that forget their state or get strangely messed when the browser is refreshed? Metamatic™ solves this problem by offering
 various out-of-the-box persistency modes, *localStorage*, *sessionStorage* and *memoryStorage*. Meaning, the web site remains exactly in the same state
 as it was before you refreshed the browser.
 
@@ -81,32 +81,32 @@ as it was before you refreshed the browser.
 
 ### Say Goodbye to Manual Switch-Cases
 
-Metamatic has fundamental differences to some well-known state manager frameworks. Metamatic directly binds event handlers to corresponding events already in the very moment
+Metamatic™ has fundamental differences to some well-known state manager frameworks. Metamatic™ directly binds event handlers to corresponding events already in the very moment
 you define them by calling **handleEvent** or **connectToStore** function. When the listener functions inside components are already inherently connected to their data source, 
 you don't need to explicitly write clumpy **switch-case** structures to explain the application what action shall be invoked upon which event. 
 Simplistic and clean code prevents the application from turning into buggy bubble gum that is too expensive to maintain.
 
-Metamatic frees you from the need to manually write switch-case structures since it connects states to their listeners silently using hash tables, 
+Metamatic™ frees you from the need to manually write switch-case structures since it connects states to their listeners silently using hash tables, 
 taking internally advantage of JavaScript's` associative arrays. With this solution, you don't need to manually connect events to their handlers anymore.
 
 *[<- Back to contents](#chapters)*
 
 ### Clean Solution without Provider Clutter
 
-One major difference to verbose state manager frameworks is that you don't really need to "pre-configure" your app to use Metamatic. You don't
+One major difference to verbose state manager frameworks is that you don't really need to "pre-configure" your app to use Metamatic™. You don't
 need to wrap your application inside obscure "Provider" wrappers and you don't need to "inject stores" and other structures to your classes to enable a state
-container. Any class, component, object or helper function can be connected to Metamatic features at any point of the project without any need to do major 
-refactoring to existing application logic or code structure. You can use Metamatic functions on the fly anywhere inside your app, any time. 
-If your application already uses some other state container framework, you can still introduce Metamatic into your app without removing or changing anything that already exists.
+container. Any class, component, object or helper function can be connected to Metamatic™ features at any point of the project without any need to do major 
+refactoring to existing application logic or code structure. You can use Metamatic™ functions on the fly anywhere inside your app, any time. 
+If your application already uses some other state container framework, you can still introduce Metamatic™ into your app without removing or changing anything that already exists.
 
 *[<- Back to contents](#chapters)*
 
 ### Robust State-Based Solution Without Props-Hassle
 
-A major innovation within the Metamatic Framework is that it eliminates the props vs. states dilemma that most state container frameworks seem to have. 
-In Metamatic framework, your components are not directly connected to states inside global stores. Instead, Metamatic effectively copies global states
+A major innovation within the Metamatic™ framework is that it eliminates the props vs. states dilemma that most state container frameworks seem to have. 
+In Metamatic™ framework, your components are not directly connected to states inside global stores. Instead, Metamatic™ effectively copies global states
 into component's local states. This gives you more freedom to decide which states you want to keep as component's local states and which ones you want to connect
-to Metamatic global states. In Metamatic, the root states are called **stores**. Stores can have nested properties, which are all understood as nested **states**.
+to Metamatic™ global states. In Metamatic™, the root states are called **stores**. Stores can have nested properties, which are all understood as nested **states**.
 You can connect any component to listen to entire stores as well as just one nested state deep inside a store.
 
 *[<- Back to contents](#chapters)*
@@ -114,31 +114,31 @@ You can connect any component to listen to entire stores as well as just one nes
 ## Source Code and Examples
 
 ### Sources
-The Metamatic is available as [installable package at Npmjs.com](https://www.npmjs.com/package/metamatic).  
-You can also explore the [Metamatic source code at GitHub](https://github.com/develprr/metamatic-framework). 
-Or visit the official Metamatic home page at [www.metamatic.net](http://www.metamatic.net).
+Metamatic™ is available as [installable package at Npmjs.com](https://www.npmjs.com/package/metamatic).  
+You can also explore the [Metamatic™ source code at GitHub](https://github.com/develprr/metamatic-framework). 
+Or visit the official Metamatic™ home page at [www.metamatic.net](http://www.metamatic.net).
 
 *[<- Back to contents](#chapters)*
 
 ### Examples
 
-Check out the source code of [Metamatic Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of the Metamatic framework in action,
+Check out the source code of [Metamatic™ Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of the Metamatic™ framework in action,
 and the actual deployment of the [demo live](https://metamatic-car-app.herokuapp.com/)! 
 
-Also checkout the [Metamatic Router Demo](https://github.com/develprr/metamatic-router-demo) which also demonstrates the Metamatic Router feature.
+Also checkout the [Metamatic™ Router Demo](https://github.com/develprr/metamatic-router-demo) which also demonstrates the Metamatic™ Router feature.
 
 *[<- Back to contents](#chapters)*
 
 ### Blog
 
-Check out [the Metamatic blog](https://develprr.github.io/metamatic-blog) for articles about using the framework!
+Check out [the Metamatic™ blog](https://develprr.github.io/metamatic-blog) for articles about using the framework!
 
 *[<- Back to contents](#chapters)*
 
 ## Getting Started
 
-### Installing Metamatic
-To install Metamatic in your project, type:
+### Installing Metamatic™
+To install Metamatic™ in your project, type:
 
 ```js
 npm i --save metamatic
@@ -146,7 +146,7 @@ npm i --save metamatic
 
 ### Selecting Persistency Strategy
 
-In your app's starting point, for instance Main.js or App.js file, configure Metamatic to use any of the three available persistency modes calling
+In your app's starting point, for instance Main.js or App.js file, configure Metamatic™ to use any of the three available persistency modes calling
 
 **useLocalStorage()**, **useSessionStorage()** or **useMemoryStorage()**
 
@@ -171,7 +171,7 @@ A good place to define store constants is inside your store utility files that u
 
 ### Initializing Stores
 
-Initializing a one Metamatic store can be done with **initStore** function. *initStore* is practical because it won't overwrite any existing states inside a store 
+Initializing one store can be done with **initStore** function. *initStore* is practical because it won't overwrite any existing states inside a store 
 if the store already exists
 ```js
 import {initStore} from 'metamatic';
@@ -181,7 +181,7 @@ initStore(STORE_USER_INFO, {
 });
 ```
 
-Initializing many Metamatic stores simultaneously with **initStores**:
+Initializing many Metamatic™ stores simultaneously with **initStores**:
 
 ```js
 import {initStores} from 'metamatic';
@@ -229,7 +229,7 @@ initStore(STORE_USER_DATA, {
 
 ### Retrieving Data from Stores
 
-When you want to retrieve an entire store from the Metamatic state manager, just simply use **getStore** function:
+When you want to retrieve an entire store from the Metamatic™ state manager, just simply use **getStore** function:
 
 ```js
 import {getStore} from 'metamatic';
@@ -244,8 +244,8 @@ import {getState} from 'metamatic';
 
 const streetAddress = getState(STORE_USER_DATA, 'address.streetAddress');
 ```
-But as in Metamatic, a root state being called store and that store in turn being just a simple associative array, you can actually invoke *getState* without a second parameter.
-In such case, Metamatic will return the root state, the store:
+But as in Metamatic™, a root state being called store and that store in turn being just a simple associative array, you can actually invoke *getState* without a second parameter.
+In such case, Metamatic™ will return the root state, the store:
 
 ```js
 import {getState} from 'metamatic';
@@ -260,7 +260,7 @@ Remember that getters always return a copy of the store. You can safely modify t
 ### Updating Stores
 
 When updating stores with **updateStore** or **updateStores** function, the states inside an existing store or stores are merged with the new incoming object.
-Those values that are not defined in updater object will remain untouched in the Metamatic store.
+Those values that are not defined in updater object will remain untouched in the Metamatic™ store.
 
 ```js
 import {updateStore} from 'metamatic';
@@ -328,7 +328,7 @@ Functions **setStore** and **setStores** work similarly to *updateStore* and *up
 ### Connecting React Components to Stores
 
 Connecting a React component to listen for an entire store can be done with **connectToStore** and **connectToStores**. In ReactJS, 
-use **componentDidMount** life cycle callback to connect your component to Metamatic stores, for example:
+use **componentDidMount** life cycle callback to connect your component to Metamatic™ stores, for example:
 
 ```js
 export class SomeReactComponent extends Component {
@@ -383,12 +383,12 @@ componentDidMount = () => connectToStates(this, STORE_USER_INFO, {
 In the example above, component is connected to two different nested states inside *STORE_USER_INFO*. Only a change in a nested state *streetAdress*  inside *address* state
 and *latestOrder* change in *orderHistory* state will cause the component to update through its *setState* native function call.
 
-Also remember here that all states and stores received this way are only clones of the master copy that resides protected inside the Metamatic state manager,
-thus modifying them locally won't mutate the master copy in the Metamatic store.
+Also remember here that all states and stores received this way are only clones of the master copy that resides protected inside the Metamatic™ state manager,
+thus modifying them locally won't mutate the master copy in the Metamatic™ store.
 
 *[<- Back to contents](#chapters)*
 
-### Disconnecting Components from Metamatic Stores 
+### Disconnecting Components from Metamatic™ Stores 
 
 Disconnecting a component from MetaStore upon unmounting:
 
@@ -405,7 +405,7 @@ componentWillUnmount = () => disconnectFromStores(this);
 
 ## Events
 
-Even though events are typically connected to stores the way that updating a store causes Metamatic to broadcast (or dispatch or radiate) a similarly named event 
+Even though events are typically connected to stores the way that updating a store causes Metamatic™ to broadcast (or dispatch or radiate) a similarly named event 
 as the store itself, there are situations that you want to fire a standalone event without updating any store. 
 You may also want to implement a standalone event listener that handles events but does not necessarily update any store.
 
@@ -413,8 +413,8 @@ You may also want to implement a standalone event listener that handles events b
 
 ### Implementing Event Listeners
  
-When you want to handle Metamatic events inside components that don't need to be unmounted or any static methods and utility functions,
-simply use **handleEvent** and **handleEvents** functions for registering handlers for Metamatic events:
+When you want to handle Metamatic™ events inside components that don't need to be unmounted or any static methods and utility functions,
+simply use **handleEvent** and **handleEvents** functions for registering handlers for Metamatic™ events:
 
 ```js
 import {handleEvent} from 'metamatic';
@@ -477,7 +477,7 @@ handleEvent('SOME-EVENT', () => {
 
 ### The System Event CONNECT 
 
-A very useful thing to know about Metamatic is that every time a component is connected to a store or state, Metamatic automatically fires
+A very useful thing to know about Metamatic™ is that every time a component is connected to a store or state, Metamatic™ automatically fires
 a system event to inform anybody who listens that a component has been connected to a store or a state.
 
 Consider that you connect a React component to a store such as:
@@ -492,13 +492,13 @@ componentDidMount = () => connectToStore(this,
 );
 ```
 
-In the code snippet above, you want to connect your component to a Metamatic store with name *STORE_USER_INFO*, and when the store is updated, 
+In the code snippet above, you want to connect your component to a store with name *STORE_USER_INFO*, and when the store is updated, 
 it will be dispatched to this component. From the incoming store, *userData* state will be taken and put into this component's local state.
 
 Now, what will happen if the user data is not available in the store? Absolutely nothing! But that is possibly a situation that you don't want.
 Therefore it is possible to make a store to listen for component connecting events and program them to act upon them.
 
-When the component was connected to STORE_USER_INFO, Metamatic hiddenly fired a CONNECT system event, which has syntax *CONNECT/YOUR_STORE_NAME* - 
+When the component was connected to STORE_USER_INFO, Metamatic™ hiddenly fired a CONNECT system event, which has syntax *CONNECT/YOUR_STORE_NAME* - 
 that would be in this example "CONNECT/STORE_USER_INFO".
 
 This is very helpful because you can add a piece of code to the user info store to handle such connect event:
@@ -524,7 +524,7 @@ const optionallyLoadUserData = () =>
 ); 
 ```
 
-The code example checks if the metamatic STORE_USER_INFO contains state *userData*. If not, it invokes *loadUserData* function that actually 
+The code example checks if STORE_USER_INFO contains state *userData*. If not, it invokes *loadUserData* function that actually 
 loads the data from server - and finally updates the store, setting userData state that was received. *updateState* will cause the listener component 
 actually to receive the user data in question. Function *loadUserData* can be implemented using any available Ajax library.
 
@@ -543,13 +543,13 @@ Apache 2.0
 
 ### Background
 
-Metamatic is based on earlier prototype [Synchronous Dispatcher](https://www.npmjs.com/package/synchronous-dispatcher) package
+Metamatic™ is based on earlier prototype [Synchronous Dispatcher](https://www.npmjs.com/package/synchronous-dispatcher) package
 but has many more improvements and is more suitable to be used together with ReactJS framework.
 
-### The Metamatic Router
+### Metamatic™ Router
 
-Also check the [Metamatic Router](https://www.npmjs.com/package/@metamatic.net/metamatic-router) library,  
-which is a simple router implementation based on the core Metamatic framework.
+Also check the [Metamatic™ Router](https://www.npmjs.com/package/@metamatic.net/metamatic-router) library,  
+which is a simple router implementation based on the core Metamatic™ framework.
 
 ### Read More
 

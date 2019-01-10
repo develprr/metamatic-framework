@@ -1,7 +1,7 @@
 {
   "name": "metamatic",
-  "version": "2.5.4",
-  "description": "Metamatic is a next generation persistent state manager for JavaScript applications.",
+  "version": "2.5.5",
+  "description": "Metamatic™ is a next generation persistent state manager for JavaScript applications.",
   "main": "index.js",
   "scripts": {
     "test": "grunt test -v",
