@@ -54,18 +54,18 @@ user's order history. When that data changes it should be consistently updated i
 
 When you think about Metamatic™, think about throwing an ice cube into a glass full of water.
 
-* Think about the glass. It is the Metamatic™ data store, the state container.
+* Think about the glass. It is the data store, the state container.
 * Think about the water. It is the data that splashes into every direction from the glass.
-* Think about the ice cube. It is the direct function invocation you call to update the Metamatic™ data container.
+* Think about the ice cube. It is the direct function invocation you call to update the data container.
 
 Metamatic™ provides an easy way to manage your data stores and states inside them. In Metamatic™, the data flows typically as follows:
 
-1. A component updates the Metamatic™ store by directly invoking an updater function that is defined in a store utility file. 
+1. A component updates the store by directly invoking an updater function that is defined in a store utility file. 
 2. The store updater function in the store utility file updates the store and fires an update event containing a copy of the store itself.
-3. The component/components connected to the store receive the event from the Metamatic™ store.
+3. The component/components connected to the store receive the event from the store.
 4. The connected components update their state from the event and the component refreshes itself.
 
-* The data maintains its integrity since updating the master copy in the central Metamatic™ data store radiates the change to every place where needed!
+* The data maintains its integrity since updating the master copy in the central data store radiates the change to every place where needed!
 * The data store always fires only copies of itself, therefore there's no way to sneakily mutate the master copy.
 * Events are almost the same as stores since updating a data store fires an event with the same name as the store itself. A copy of the store is the passenger of the event.
 
@@ -95,18 +95,18 @@ taking internally advantage of JavaScript's` associative arrays. With this solut
 
 One major difference to verbose state manager frameworks is that you don't really need to "pre-configure" your app to use Metamatic™. You don't
 need to wrap your application inside obscure "Provider" wrappers and you don't need to "inject stores" and other structures to your classes to enable a state
-container. Any class, component, object or helper function can be connected to Metamatic™ features at any point of the project without any need to do major 
-refactoring to existing application logic or code structure. You can use Metamatic™ functions on the fly anywhere inside your app, any time. 
+container. Any class, component, object or helper function can be connected to Metamatic™ at any point of the project without any need to do major 
+refactoring to existing application logic or code structure. You can use functions provided by  Metamatic™ on the fly anywhere inside your app, any time. 
 If your application already uses some other state container framework, you can still introduce Metamatic™ into your app without removing or changing anything that already exists.
 
 *[<- Back to contents](#chapters)*
 
 ### Robust State-Based Solution Without Props-Hassle
 
-A major innovation within the Metamatic™ framework is that it eliminates the props vs. states dilemma that most state container frameworks seem to have. 
+A major innovation within Metamatic™ framework is that it eliminates the props vs. states dilemma that most state container frameworks seem to have. 
 In Metamatic™ framework, your components are not directly connected to states inside global stores. Instead, Metamatic™ effectively copies global states
 into component's local states. This gives you more freedom to decide which states you want to keep as component's local states and which ones you want to connect
-to Metamatic™ global states. In Metamatic™, the root states are called **stores**. Stores can have nested properties, which are all understood as nested **states**.
+to global states. In Metamatic™, the root states are called **stores**. Stores can have nested properties, which are all understood as nested **states**.
 You can connect any component to listen to entire stores as well as just one nested state deep inside a store.
 
 *[<- Back to contents](#chapters)*
@@ -115,17 +115,17 @@ You can connect any component to listen to entire stores as well as just one nes
 
 ### Sources
 Metamatic™ is available as [installable package at Npmjs.com](https://www.npmjs.com/package/metamatic).  
-You can also explore the [Metamatic™ source code at GitHub](https://github.com/develprr/metamatic-framework). 
-Or visit the official Metamatic™ home page at [www.metamatic.net](http://www.metamatic.net).
+You can also explore the [source code at GitHub](https://github.com/develprr/metamatic-framework). 
+Or visit the official home page at [www.metamatic.net](http://www.metamatic.net).
 
 *[<- Back to contents](#chapters)*
 
 ### Examples
 
-Check out the source code of [Metamatic™ Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of the Metamatic™ framework in action,
+Check out the source code of [Car App demo](https://github.com/develprr/metamatic-car-app) for a practical example of Metamatic™ framework in action,
 and the actual deployment of the [demo live](https://metamatic-car-app.herokuapp.com/)! 
 
-Also checkout the [Metamatic™ Router Demo](https://github.com/develprr/metamatic-router-demo) which also demonstrates the Metamatic™ Router feature.
+Also checkout the [Router Demo](https://github.com/develprr/metamatic-router-demo) which also demonstrates the Router feature of Metamatic.
 
 *[<- Back to contents](#chapters)*
 
@@ -229,7 +229,7 @@ initStore(STORE_USER_DATA, {
 
 ### Retrieving Data from Stores
 
-When you want to retrieve an entire store from the Metamatic™ state manager, just simply use **getStore** function:
+When you want to retrieve an entire store from Metamatic™ state manager, just simply use **getStore** function:
 
 ```js
 import {getStore} from 'metamatic';
@@ -260,7 +260,7 @@ Remember that getters always return a copy of the store. You can safely modify t
 ### Updating Stores
 
 When updating stores with **updateStore** or **updateStores** function, the states inside an existing store or stores are merged with the new incoming object.
-Those values that are not defined in updater object will remain untouched in the Metamatic™ store.
+Those values that are not defined in updater object will remain untouched in the store.
 
 ```js
 import {updateStore} from 'metamatic';
@@ -383,8 +383,8 @@ componentDidMount = () => connectToStates(this, STORE_USER_INFO, {
 In the example above, component is connected to two different nested states inside *STORE_USER_INFO*. Only a change in a nested state *streetAdress*  inside *address* state
 and *latestOrder* change in *orderHistory* state will cause the component to update through its *setState* native function call.
 
-Also remember here that all states and stores received this way are only clones of the master copy that resides protected inside the Metamatic™ state manager,
-thus modifying them locally won't mutate the master copy in the Metamatic™ store.
+Also remember here that all states and stores received this way are only clones of the master copy that resides protected inside Metamatic™ state manager,
+thus modifying them locally won't mutate the master copy in the store.
 
 *[<- Back to contents](#chapters)*
 
@@ -413,8 +413,8 @@ You may also want to implement a standalone event listener that handles events b
 
 ### Implementing Event Listeners
  
-When you want to handle Metamatic™ events inside components that don't need to be unmounted or any static methods and utility functions,
-simply use **handleEvent** and **handleEvents** functions for registering handlers for Metamatic™ events:
+When you want to handle events inside components that don't need to be unmounted or any static methods and utility functions,
+simply use **handleEvent** and **handleEvents** functions for registering handlers for vevents:
 
 ```js
 import {handleEvent} from 'metamatic';
@@ -546,10 +546,10 @@ Apache 2.0
 Metamatic™ is based on earlier prototype [Synchronous Dispatcher](https://www.npmjs.com/package/synchronous-dispatcher) package
 but has many more improvements and is more suitable to be used together with ReactJS framework.
 
-### Metamatic™ Router
+### Metamatic™ Based Router
 
-Also check the [Metamatic™ Router](https://www.npmjs.com/package/@metamatic.net/metamatic-router) library,  
-which is a simple router implementation based on the core Metamatic™ framework.
+Also check the [Metamatic-based router](https://www.npmjs.com/package/@metamatic.net/metamatic-router) library,  
+which is a simple router implementation based on the coreframework.
 
 ### Read More
 
